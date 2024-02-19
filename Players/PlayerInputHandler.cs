@@ -192,8 +192,6 @@ public partial class PlayerInputHandler : Node
     {
         base._Ready();
         SetDevice(this, GetNextOpenDevice());
-        SetDevice(this, GetNextOpenDevice());
-        //SetDevice(this, GetNextOpenDevice());
         GD.Print(_device);
     }
 

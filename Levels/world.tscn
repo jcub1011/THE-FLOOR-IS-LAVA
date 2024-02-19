@@ -6,3 +6,9 @@
 
 [node name="PlayerInputHandler" type="Node" parent="."]
 script = ExtResource("1_p0uo2")
+
+[node name="PlayerInputHandler2" type="Node" parent="."]
+script = ExtResource("1_p0uo2")
+
+[node name="PlayerInputHandler3" type="Node" parent="."]
+script = ExtResource("1_p0uo2")
