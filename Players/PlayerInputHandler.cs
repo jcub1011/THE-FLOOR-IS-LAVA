@@ -193,7 +193,7 @@ public partial class PlayerInputHandler : Node
         base._Ready();
         SetDevice(this, GetNextOpenDevice());
         SetDevice(this, GetNextOpenDevice());
-        SetDevice(this, GetNextOpenDevice());
+        //SetDevice(this, GetNextOpenDevice());
         GD.Print(_device);
     }
 
@@ -205,10 +205,6 @@ public partial class PlayerInputHandler : Node
             GD.Print(_device);
         }
         else return;
-        //foreach (var device in Input.GetConnectedJoypads())
-        //{
-        //    GD.Print(Input.GetJoyName(device), device);
-        //}
 
         if (@event.IsActionPressed(InputNames.LEFT.ConvertInputName(_device.Type)))
         {
