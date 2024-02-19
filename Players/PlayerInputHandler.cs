@@ -182,18 +182,51 @@ public partial class PlayerInputHandler : Node
     InputDevice _device;
 
     #region Signals
-    [Signal] public delegate void MoveLeftEventHandler();
-    [Signal] public delegate void MoveRightEventHandler();
-    [Signal] public delegate void JumpEventHandler();
-    [Signal] public delegate void ActionEventHandler();
+    [Signal] public delegate void MoveLeftPressedEventHandler();
+    [Signal] public delegate void MoveLeftReleasedEventHandler();
+    [Signal] public delegate void MoveRightPressedEventHandler();
+    [Signal] public delegate void MoveRightReleasedEventHandler();
+    [Signal] public delegate void JumpPressedEventHandler();
+    [Signal] public delegate void JumpReleasedEventHandler();
+    [Signal] public delegate void ActionPressedEventHandler();
+    [Signal] public delegate void ActionReleasedEventHandler();
     #endregion
+
+    //Dictionary<StringName, bool> _previousStateMap;
 
     public override void _Ready()
     {
         base._Ready();
         SetDevice(this, GetNextOpenDevice());
         GD.Print(_device);
+        //_previousStateMap = new()
+        //{
+        //    { InputNames.LEFT, false },
+        //    { InputNames.RIGHT, false },
+        //    { InputNames.JUMP, false },
+        //    { InputNames.ACTION, false }
+        //};
     }
+
+    //void SetState(StringName name, bool state)
+    //{
+    //    if (!_previousStateMap.TryAdd(name, state))
+    //    {
+    //        _previousStateMap[name] = state;
+    //    }
+    //}
+    
+    //bool StateChanged(StringName name, bool newState)
+    //{
+    //    if (!_previousStateMap.TryGetValue(name, out var state))
+    //    {
+    //        return newState;
+    //    }
+    //    else
+    //    {
+    //        return state != newState;
+    //    }
+    //}
 
     public override void _Input(InputEvent @event)
     {
@@ -206,23 +239,43 @@ public partial class PlayerInputHandler : Node
 
         if (@event.IsActionPressed(InputNames.LEFT.ConvertInputName(_device.Type)))
         {
-            EmitSignal(SignalName.MoveLeft);
             GD.Print($"{_device}: Left Input");
+            EmitSignal(SignalName.MoveLeftPressed);
+        }
+        if (@event.IsActionReleased(InputNames.LEFT.ConvertInputName(_device.Type)))
+        {
+            GD.Print($"{_device}: Stopped Left Input");
+            EmitSignal(SignalName.MoveLeftReleased);
         }
         if (@event.IsActionPressed(InputNames.RIGHT.ConvertInputName(_device.Type)))
         {
-            EmitSignal(SignalName.MoveRight);
             GD.Print($"{_device}: Right Input");
+            EmitSignal(SignalName.MoveRightPressed);
+        }
+        if (@event.IsActionReleased(InputNames.RIGHT.ConvertInputName(_device.Type)))
+        {
+            GD.Print($"{_device}: Stopped Right Input");
+            EmitSignal(SignalName.MoveRightReleased);
         }
         if (@event.IsActionPressed(InputNames.JUMP.ConvertInputName(_device.Type)))
         {
-            EmitSignal(SignalName.Jump);
             GD.Print($"{_device}: Jump Input");
+            EmitSignal(SignalName.JumpPressed);
+        }
+        if (@event.IsActionReleased(InputNames.JUMP.ConvertInputName(_device.Type)))
+        {
+            GD.Print($"{_device}: Stopped Jump Input");
+            EmitSignal(SignalName.JumpReleased);
         }
         if (@event.IsActionPressed(InputNames.ACTION.ConvertInputName(_device.Type)))
         {
-            EmitSignal(SignalName.Action);
             GD.Print($"{_device}: Action Input");
+            EmitSignal(SignalName.ActionPressed);
+        }
+        if (@event.IsActionReleased(InputNames.ACTION.ConvertInputName(_device.Type)))
+        {
+            GD.Print($"{_device}: Stopped Action Input");
+            EmitSignal(SignalName.ActionReleased);
         }
     }
 }
