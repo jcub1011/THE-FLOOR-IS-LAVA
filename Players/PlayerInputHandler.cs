@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Players;
 
@@ -16,6 +17,7 @@ public readonly struct InputNames
 
 public enum DeviceType
 {
+    None,
     Gamepad,
     KeyboardRight,
     KeyboardLeft
@@ -30,6 +32,17 @@ public readonly struct InputDevice
     {
         Type = type;
         DeviceID = deviceID;
+    }
+
+    public InputDevice()
+    {
+        Type = DeviceType.None;
+        DeviceID = int.MinValue;
+    }
+
+    public override string ToString()
+    {
+        return $"Type: {Type} | ID: {DeviceID}";
     }
 }
 
@@ -78,7 +91,36 @@ public partial class PlayerInputHandler : Node
 
     public static InputDevice GetNextOpenDevice()
     {
-
+        if (RegisteredDevices.Find(x => x.Type == DeviceType.KeyboardLeft).Type 
+            == DeviceType.None)
+        {
+            RegisteredDevices.Add(new(DeviceType.KeyboardLeft, 0));
+        }
+        else if (RegisteredDevices.Find(x => x.Type == DeviceType.KeyboardRight).Type
+            == DeviceType.None)
+        {
+            RegisteredDevices.Add(new(DeviceType.KeyboardRight, 0));
+        }
+        else
+        {
+            List<int> usedIDs = new();
+            foreach(var device in RegisteredDevices)
+            {
+                if (device.Type == DeviceType.Gamepad)
+                {
+                    usedIDs.Add(device.DeviceID);
+                }
+            }
+            foreach(var id in Input.GetConnectedJoypads())
+            {
+                if (!usedIDs.Contains(id))
+                {
+                    RegisteredDevices.Add(new(DeviceType.Gamepad, id));
+                    break;
+                }
+            }
+        }
+        return RegisteredDevices.Last();
     }
     #endregion
 
@@ -94,7 +136,7 @@ public partial class PlayerInputHandler : Node
     public override void _Ready()
     {
         base._Ready();
-        _device = GetNextOpenDevice();
+        SetDevice(GetNextOpenDevice());
     }
 
     public override void _Input(InputEvent @event)
@@ -102,7 +144,7 @@ public partial class PlayerInputHandler : Node
         base._Input(@event);
         if (_device.IsEventForDevice(@event))
         {
-            GD.Print(@event.Device, _device.Type);
+            GD.Print(_device);
         }
         else return;
         //foreach (var device in Input.GetConnectedJoypads())
