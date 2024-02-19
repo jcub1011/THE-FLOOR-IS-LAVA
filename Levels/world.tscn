@@ -8,7 +8,7 @@ distance = -1.0
 [node name="World" type="Node2D"]
 
 [node name="Player1" parent="." instance=ExtResource("1_pixmk")]
-position = Vector2(-175, -113)
+position = Vector2(-179, -373)
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 
@@ -19,3 +19,4 @@ shape = SubResource("WorldBoundaryShape2D_p8caa")
 position = Vector2(0, -205)
 
 [node name="Player2" parent="." instance=ExtResource("1_pixmk")]
+position = Vector2(161, -385)

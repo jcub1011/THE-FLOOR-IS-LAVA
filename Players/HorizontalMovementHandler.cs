@@ -5,7 +5,7 @@ namespace Players;
 
 public partial class HorizontalMovementHandler : Node
 {
-    [Export] PlayerController _body;
+    [Export] CharacterBody2D _body;
     [Export] float _moveSpeed;
     bool _isLeftButtonDown;
     bool _isRightButtonDown;
@@ -14,6 +14,12 @@ public partial class HorizontalMovementHandler : Node
     public void OnLeftReleased() => _isLeftButtonDown = false;
     public void OnRightPressed() => _isRightButtonDown = true;
     public void OnRightReleased() => _isRightButtonDown = false;
+
+    public override void _Ready()
+    {
+        base._Ready();
+        _body ??= GetParent() as CharacterBody2D;
+    }
 
     public override void _Process(double delta)
     {
