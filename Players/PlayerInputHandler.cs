@@ -1,7 +1,9 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Players;
 
@@ -43,6 +45,26 @@ public readonly struct InputDevice
     public override string ToString()
     {
         return $"Type: {Type} | ID: {DeviceID}";
+    }
+
+    public static bool operator == (InputDevice left, InputDevice right)
+    {
+        return (left.Type == right.Type) && (left.DeviceID == right.DeviceID);
+    }
+
+    public static bool operator != (InputDevice left, InputDevice right)
+    {
+        return !(left == right);
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is InputDevice device && this == device;
+    }
+
+    public override int GetHashCode()
+    {
+        return Type.GetHashCode() ^ DeviceID.GetHashCode();
     }
 }
 
@@ -87,43 +109,76 @@ public static class InputDeviceExtensions
 public partial class PlayerInputHandler : Node
 {
     #region Static
-    private static readonly List<InputDevice> RegisteredDevices = new();
+    static readonly List<InputDevice> RegisteredDevices = new();
 
-    public static InputDevice GetNextOpenDevice()
+    static InputDevice GetNextOpenDevice()
     {
-        if (RegisteredDevices.Find(x => x.Type == DeviceType.KeyboardLeft).Type 
-            == DeviceType.None)
+        var openDevices = GetOpenDevices();
+        if (openDevices.Count == 0) return default;
+        else return openDevices[0];
+    }
+
+    static void ReleaseDevice(PlayerInputHandler handler)
+    {
+        RegisteredDevices.Remove(handler._device);
+        handler._device = default;
+    }
+
+    static void SetDevice(PlayerInputHandler handler, InputDevice newDevice)
+    {
+        ReleaseDevice(handler);
+        handler._device = newDevice;
+        RegisteredDevices.Add(handler._device);
+        GD.Print($"Changed {handler.Name} to new device {newDevice}.");
+    }
+
+    static List<InputDevice> GetOpenDevices()
+    {
+        List<InputDevice> openDevices = new();
+        List<int> takenControllerIds = new();
+        bool hasLeftKeyboard = false;
+        bool hasRightKeyboard = false;
+
+        GD.Print(RegisteredDevices);
+        foreach(var device in RegisteredDevices)
         {
-            RegisteredDevices.Add(new(DeviceType.KeyboardLeft, 0));
-        }
-        else if (RegisteredDevices.Find(x => x.Type == DeviceType.KeyboardRight).Type
-            == DeviceType.None)
-        {
-            RegisteredDevices.Add(new(DeviceType.KeyboardRight, 0));
-        }
-        else
-        {
-            List<int> usedIDs = new();
-            foreach(var device in RegisteredDevices)
+            if (device.Type == DeviceType.KeyboardLeft)
             {
-                if (device.Type == DeviceType.Gamepad)
-                {
-                    usedIDs.Add(device.DeviceID);
-                }
+                hasLeftKeyboard = true;
             }
-            foreach(var id in Input.GetConnectedJoypads())
+            else if (device.Type == DeviceType.KeyboardRight)
             {
-                if (!usedIDs.Contains(id))
-                {
-                    RegisteredDevices.Add(new(DeviceType.Gamepad, id));
-                    break;
-                }
+                hasRightKeyboard = true;
+            }
+            else
+            {
+                takenControllerIds.Add(device.DeviceID);
             }
         }
-        return RegisteredDevices.Last();
+
+        if (!hasLeftKeyboard)
+        {
+            openDevices.Add(new(DeviceType.KeyboardLeft, 0));
+        }
+        if (!hasRightKeyboard)
+        {
+            openDevices.Add(new(DeviceType.KeyboardRight, 0));
+        }
+        foreach(var id in Input.GetConnectedJoypads())
+        {
+            if (!takenControllerIds.Contains(id))
+            {
+                openDevices.Add(new(DeviceType.Gamepad, id));
+            }
+        }
+
+        return openDevices;
     }
     #endregion
 
+    /// <summary>
+    /// Use the static methods to change device.
+    /// </summary>
     InputDevice _device;
 
     #region Signals
@@ -136,7 +191,10 @@ public partial class PlayerInputHandler : Node
     public override void _Ready()
     {
         base._Ready();
-        SetDevice(GetNextOpenDevice());
+        SetDevice(this, GetNextOpenDevice());
+        SetDevice(this, GetNextOpenDevice());
+        SetDevice(this, GetNextOpenDevice());
+        GD.Print(_device);
     }
 
     public override void _Input(InputEvent @event)
@@ -172,11 +230,5 @@ public partial class PlayerInputHandler : Node
             EmitSignal(SignalName.Action);
             GD.Print($"{_device}: Action Input");
         }
-    }
-
-    public void SetDevice(InputDevice device)
-    {
-        GD.Print($"Setting {Name} device to {device}.");
-        _device = device;
     }
 }
