@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://cv7g2fnqrxx7s"]
+[gd_scene load_steps=16 format=3 uid="uid://cv7g2fnqrxx7s"]
 
 [ext_resource type="Script" path="res://Players/PlayerController.cs" id="1_bukco"]
 [ext_resource type="Script" path="res://Players/PlayerInputHandler.cs" id="2_bjy2i"]
@@ -7,6 +7,8 @@
 [ext_resource type="Script" path="res://Players/JumpHandler.cs" id="5_mw2vm"]
 [ext_resource type="Script" path="res://Players/MeleeAttackHandler.cs" id="6_rgnv7"]
 [ext_resource type="Script" path="res://Players/TimedCollider.cs" id="7_xohju"]
+[ext_resource type="Texture2D" uid="uid://da0if34ra3ndq" path="res://Players/Sprite Sheets/AxeMan.png" id="8_25ywt"]
+[ext_resource type="Script" path="res://Players/VelocityBasedAnimationSelector.cs" id="9_igj33"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_meg5j"]
 radius = 12.0
@@ -14,6 +16,61 @@ height = 50.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lqg1u"]
 size = Vector2(91.4531, 63)
+
+[sub_resource type="Animation" id="Animation_rbf0t"]
+resource_name = "idle"
+length = 0.666683
+step = 0.166667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.166667, 0.333333, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3]
+}
+
+[sub_resource type="Animation" id="Animation_lkr48"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_qxqf1"]
+resource_name = "run"
+step = 0.166667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.166667, 0.333333, 0.5, 0.666667, 0.833333),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [24, 25, 26, 27, 28, 29]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_r5udm"]
+_data = {
+"RESET": SubResource("Animation_lkr48"),
+"idle": SubResource("Animation_rbf0t"),
+"run": SubResource("Animation_qxqf1")
+}
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("InputHandler")]
 collision_layer = 2
@@ -52,9 +109,29 @@ position = Vector2(50, -32)
 shape = SubResource("RectangleShape2D_lqg1u")
 script = ExtResource("7_xohju")
 
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -36)
+texture = ExtResource("8_25ywt")
+hframes = 12
+vframes = 7
+
+[node name="VelocityBasedAniSelector" type="Node" parent="." node_paths=PackedStringArray("_body", "_sprite", "_player")]
+script = ExtResource("9_igj33")
+_body = NodePath("..")
+_sprite = NodePath("../Sprite2D")
+_player = NodePath("../AnimationPlayer")
+_walkToRunTransitionThreshold = 100.0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_r5udm")
+}
+
 [connection signal="JumpPressed" from="PlayerInputHandler" to="JumpHandler" method="OnJumpPressed"]
 [connection signal="JumpReleased" from="PlayerInputHandler" to="JumpHandler" method="OnJumpReleased"]
 [connection signal="MoveLeftPressed" from="PlayerInputHandler" to="HorizontalMovementHandler" method="OnLeftPressed"]
+[connection signal="MoveLeftPressed" from="PlayerInputHandler" to="MeleeAttackHandler" method="OnLeftPressed"]
 [connection signal="MoveLeftReleased" from="PlayerInputHandler" to="HorizontalMovementHandler" method="OnLeftReleased"]
 [connection signal="MoveRightPressed" from="PlayerInputHandler" to="HorizontalMovementHandler" method="OnRightPressed"]
+[connection signal="MoveRightPressed" from="PlayerInputHandler" to="MeleeAttackHandler" method="OnRightPressed"]
 [connection signal="MoveRightReleased" from="PlayerInputHandler" to="HorizontalMovementHandler" method="OnRightReleased"]

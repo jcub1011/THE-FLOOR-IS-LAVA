@@ -56,4 +56,7 @@ public partial class MeleeAttackHandler : Area2D
 
         Scale = new(Scale.X * -1f, Scale.Y);
     }
+
+    public void OnLeftPressed() => SetFlipState(true);
+    public void OnRightPressed() => SetFlipState(false);
 }
