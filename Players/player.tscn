@@ -202,6 +202,8 @@ _body = NodePath("..")
 _jumpVelocity = 500.0
 _maxJumpTime = 0.2
 
+[node name="AttackHandler" type="Node" parent="."]
+
 [node name="MeleeHurtboxHandler" type="Area2D" parent="."]
 script = ExtResource("6_rgnv7")
 
