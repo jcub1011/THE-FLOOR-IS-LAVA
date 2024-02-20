@@ -12,6 +12,7 @@ public partial class AttackHandler : Node
 
     [Export] StringName _dropkickAnimation = "dropkick";
     [Export] StringName _punchAnimation = "punch";
+    [Export] StringName _deflectAnimation = "deflect";
 
     [Signal] public delegate void OnDisableMovementControlEventHandler();
     [Signal] public delegate void OnEnableMovementControlEventHandler();
@@ -74,7 +75,8 @@ public partial class AttackHandler : Node
             {
                 // Perform deflect.
                 GD.Print("Performing deflect.");
-                DisableHandlers(0.5f);
+                DisableHandlers(1f);
+                _aniPlayer.Play(_deflectAnimation);
             }
             else
             {
