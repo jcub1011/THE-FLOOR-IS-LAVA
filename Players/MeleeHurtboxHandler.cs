@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Players;
 
-public partial class MeleeAttackHandler : Area2D
+public partial class MeleeHurtboxHandler : Area2D
 {
     /// <summary>
     /// Defaults to length of frame @ 24fps.
@@ -18,21 +18,23 @@ public partial class MeleeAttackHandler : Area2D
     public override void _Ready()
     {
         base._Ready();
+        DisableHitboxes();
     }
 
-    public void OnHitboxEnable(StringName hitboxName)
-    {
-        EnableHitbox(hitboxName);
-    }
-
-    void EnableHitbox(StringName hitboxName)
+    public void EnableHitbox(StringName hitboxName, float duration)
     {
         foreach (var child in GetChildren())
         {
-            if (child is CollisionShape2D collider)
+            if (child is TimedCollider collider)
             {
-                collider.Disabled = !(collider.Name == hitboxName);
-                if (!collider.Disabled) _activeCollider = collider;
+                if (collider.Name != hitboxName)
+                {
+                    collider.ForceDisableCollider();
+                }
+                else
+                {
+                    collider.EnableCollider(duration);
+                }
             }
         }
     }
@@ -41,7 +43,11 @@ public partial class MeleeAttackHandler : Area2D
     {
         foreach(var child in GetChildren())
         {
-            if (child is CollisionShape2D collider)
+            if (child is TimedCollider timedCollider)
+            {
+                timedCollider.ForceDisableCollider();
+            }
+            else if (child is CollisionShape2D collider)
             {
                 collider.Disabled = true;
             }

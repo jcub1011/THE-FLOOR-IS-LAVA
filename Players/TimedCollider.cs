@@ -19,4 +19,10 @@ public partial class TimedCollider : CollisionShape2D
         _remainingLifeTime = timeToLive;
         Disabled = false;
     }
+
+    public void ForceDisableCollider()
+    {
+        _remainingLifeTime = 0f;
+        Disabled = true;
+    }
 }

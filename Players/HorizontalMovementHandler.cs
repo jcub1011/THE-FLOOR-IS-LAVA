@@ -9,6 +9,7 @@ public partial class HorizontalMovementHandler : Node
     [Export] float _moveSpeed;
     bool _isLeftButtonDown;
     bool _isRightButtonDown;
+    bool _isEnabled;
 
     public void OnLeftPressed() => _isLeftButtonDown = true;
     public void OnLeftReleased() => _isLeftButtonDown = false;
@@ -24,6 +25,7 @@ public partial class HorizontalMovementHandler : Node
     public override void _Process(double delta)
     {
         base._Process(delta);
+        if (!_isEnabled) return;
         Vector2 newVel = new(0, _body.Velocity.Y);
 
         if (_isLeftButtonDown)
@@ -36,5 +38,10 @@ public partial class HorizontalMovementHandler : Node
         }
 
         _body.Velocity = newVel;
+    }
+
+    public void SetIfEnabled(bool enabled)
+    {
+        _isEnabled = enabled;
     }
 }
