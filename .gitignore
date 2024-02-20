@@ -1,3 +1,5 @@
 # Godot 4+ specific ignores
 .godot/
 /.vs/THE FLOOR IS LAVA
+/.vs/THE-FLOOR-IS-LAVA
+/.vs/ProjectEvaluation
