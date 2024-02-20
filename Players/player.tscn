@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://cv7g2fnqrxx7s"]
+[gd_scene load_steps=26 format=3 uid="uid://cv7g2fnqrxx7s"]
 
 [ext_resource type="Script" path="res://Players/PlayerController.cs" id="1_bukco"]
 [ext_resource type="Script" path="res://Players/PlayerInputHandler.cs" id="2_bjy2i"]
@@ -7,13 +7,18 @@
 [ext_resource type="Script" path="res://Players/JumpHandler.cs" id="5_mw2vm"]
 [ext_resource type="Script" path="res://Players/MeleeHurtboxHandler.cs" id="6_rgnv7"]
 [ext_resource type="Script" path="res://Players/AttackHandler.cs" id="6_wkqlm"]
+[ext_resource type="Script" path="res://Players/DeflectHandler.cs" id="7_bcpnl"]
 [ext_resource type="Script" path="res://Players/TimedCollider.cs" id="7_xohju"]
 [ext_resource type="Texture2D" uid="uid://da0if34ra3ndq" path="res://Players/Sprite Sheets/AxeMan.png" id="8_25ywt"]
+[ext_resource type="Script" path="res://Players/Hitbox.cs" id="9_4xjwb"]
 [ext_resource type="Script" path="res://Players/VelocityBasedAnimationSelector.cs" id="9_igj33"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_meg5j"]
 radius = 12.0
 height = 50.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_f5o2s"]
+size = Vector2(24, 50)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lqg1u"]
 size = Vector2(91.4531, 63)
@@ -128,7 +133,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0.333333),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [&"DropkickHurtbox", 0.333],
+"args": [&"DropkickHurtbox", 0.333, 100.0],
 "method": &"EnableHitbox"
 }]
 }
@@ -158,7 +163,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0.5),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [&"PunchHurtbox", 0.16],
+"args": [&"PunchHurtbox", 0.16, 150.0],
 "method": &"EnableHitbox"
 }]
 }
@@ -226,6 +231,23 @@ _body = NodePath("..")
 _aniPlayer = NodePath("../AnimationPlayer")
 _dropkickDrag = 3.0
 
+[node name="DeflectHandler" type="Node" parent="."]
+script = ExtResource("7_bcpnl")
+
+[node name="VelocityBasedAniSelector" type="Node" parent="." node_paths=PackedStringArray("_body", "_sprite", "_player")]
+script = ExtResource("9_igj33")
+_body = NodePath("..")
+_sprite = NodePath("../Sprite2D")
+_player = NodePath("../AnimationPlayer")
+_walkToRunTransitionThreshold = 100.0
+
+[node name="Hitbox" type="Area2D" parent="."]
+script = ExtResource("9_4xjwb")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(0, -25)
+shape = SubResource("RectangleShape2D_f5o2s")
+
 [node name="MeleeHurtboxHandler" type="Area2D" parent="."]
 script = ExtResource("6_rgnv7")
 
@@ -237,19 +259,13 @@ script = ExtResource("7_xohju")
 [node name="DropkickHurtbox" type="CollisionShape2D" parent="MeleeHurtboxHandler"]
 position = Vector2(50, -20.5)
 shape = SubResource("RectangleShape2D_sg5v1")
+script = ExtResource("7_xohju")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, -36)
 texture = ExtResource("8_25ywt")
 hframes = 12
 vframes = 7
-
-[node name="VelocityBasedAniSelector" type="Node" parent="." node_paths=PackedStringArray("_body", "_sprite", "_player")]
-script = ExtResource("9_igj33")
-_body = NodePath("..")
-_sprite = NodePath("../Sprite2D")
-_player = NodePath("../AnimationPlayer")
-_walkToRunTransitionThreshold = 100.0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

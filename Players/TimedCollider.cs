@@ -5,6 +5,10 @@ namespace Players;
 
 public partial class TimedCollider : CollisionShape2D
 {
+    public MeleeHurtboxHandler ColliderOwner
+    {
+        get => GetParent<MeleeHurtboxHandler>();
+    }
     float _remainingLifeTime;
 
     public override void _PhysicsProcess(double delta)

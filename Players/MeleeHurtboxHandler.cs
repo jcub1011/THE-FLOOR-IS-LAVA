@@ -16,6 +16,11 @@ public partial class MeleeHurtboxHandler : Area2D
     CollisionShape2D _activeCollider;
     bool _isFlipped = false;
     bool? _cachedFlip;
+    public Node2D HurtboxOwner
+    {
+        get => GetParent<CharacterBody2D>();
+    }
+    public float Knockback { get; private set; }
 
     public override void _Ready()
     {
@@ -33,7 +38,7 @@ public partial class MeleeHurtboxHandler : Area2D
         }
     }
 
-    public void EnableHitbox(StringName hitboxName, float duration)
+    public void EnableHitbox(StringName hitboxName, float duration, float knockback)
     {
         foreach (var child in GetChildren())
         {

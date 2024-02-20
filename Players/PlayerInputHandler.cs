@@ -199,43 +199,12 @@ public partial class PlayerInputHandler : Node
         base._Ready();
         SetDevice(this, GetNextOpenDevice());
         GD.Print(_device);
-        //_previousStateMap = new()
-        //{
-        //    { InputNames.LEFT, false },
-        //    { InputNames.RIGHT, false },
-        //    { InputNames.JUMP, false },
-        //    { InputNames.ACTION, false }
-        //};
     }
-
-    //void SetState(StringName name, bool state)
-    //{
-    //    if (!_previousStateMap.TryAdd(name, state))
-    //    {
-    //        _previousStateMap[name] = state;
-    //    }
-    //}
-    
-    //bool StateChanged(StringName name, bool newState)
-    //{
-    //    if (!_previousStateMap.TryGetValue(name, out var state))
-    //    {
-    //        return newState;
-    //    }
-    //    else
-    //    {
-    //        return state != newState;
-    //    }
-    //}
 
     public override void _Input(InputEvent @event)
     {
         base._Input(@event);
         if (!_device.IsEventForDevice(@event)) return;
-        //else
-        //{
-        //    GD.Print(_device);
-        //}
 
         if (@event.IsActionPressed(InputNames.LEFT.ConvertInputName(_device.Type)))
         {
