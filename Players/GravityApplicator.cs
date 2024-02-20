@@ -7,7 +7,7 @@ public partial class GravityApplicator : Node
 {
     [Export] CharacterBody2D _body;
     [Export] float _gravity;
-    bool _isEnabled;
+    [Export] bool _isEnabled = true;
 
     public override void _Ready()
     {

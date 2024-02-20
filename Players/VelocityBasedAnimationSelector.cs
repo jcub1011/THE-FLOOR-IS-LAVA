@@ -47,7 +47,7 @@ public partial class VelocityBasedAnimationSelector : Node
         }
         else
         {
-            if (_body.Velocity.Y < 0f)
+            if (_body.Velocity.Y > 0f)
             {
                 _player.PlayIfExists(_fallAnimation);
             }

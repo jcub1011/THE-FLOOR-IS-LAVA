@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://cv7g2fnqrxx7s"]
+[gd_scene load_steps=18 format=3 uid="uid://cv7g2fnqrxx7s"]
 
 [ext_resource type="Script" path="res://Players/PlayerController.cs" id="1_bukco"]
 [ext_resource type="Script" path="res://Players/PlayerInputHandler.cs" id="2_bjy2i"]
@@ -65,10 +65,46 @@ tracks/0/keys = {
 "values": [24, 25, 26, 27, 28, 29]
 }
 
+[sub_resource type="Animation" id="Animation_nss8v"]
+resource_name = "fall"
+length = 0.166683
+step = 0.166667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [52]
+}
+
+[sub_resource type="Animation" id="Animation_i5v2i"]
+resource_name = "rise"
+length = 0.166683
+step = 0.166667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [50]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_r5udm"]
 _data = {
 "RESET": SubResource("Animation_lkr48"),
+"fall": SubResource("Animation_nss8v"),
 "idle": SubResource("Animation_rbf0t"),
+"rise": SubResource("Animation_i5v2i"),
 "run": SubResource("Animation_qxqf1")
 }
 
@@ -103,7 +139,6 @@ _maxJumpTime = 0.2
 
 [node name="MeleeHurtboxHandler" type="Area2D" parent="."]
 script = ExtResource("6_rgnv7")
-_defaultHitboxLifeTime = null
 
 [node name="PunchHurtbox" type="CollisionShape2D" parent="MeleeHurtboxHandler"]
 position = Vector2(50, -32)

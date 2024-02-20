@@ -7,9 +7,9 @@ public partial class HorizontalMovementHandler : Node
 {
     [Export] CharacterBody2D _body;
     [Export] float _moveSpeed;
+    [Export] bool _isEnabled = true;
     bool _isLeftButtonDown;
     bool _isRightButtonDown;
-    bool _isEnabled;
 
     public void OnLeftPressed() => _isLeftButtonDown = true;
     public void OnLeftReleased() => _isLeftButtonDown = false;

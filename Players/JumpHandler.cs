@@ -8,6 +8,7 @@ public partial class JumpHandler : Node
     [Export] CharacterBody2D _body;
     [Export] float _jumpVelocity;
     [Export] float _maxJumpTime;
+    [Export] bool _isEnabled = true;
     bool _isJumpPressed;
     float _remainingJumpTime;
 
@@ -24,6 +25,7 @@ public partial class JumpHandler : Node
     {
         base._Process(delta);
         _remainingJumpTime -= (float)delta;
+        if (!_isEnabled) return;
         if (_isJumpPressed)
         {
             if (_body.IsOnFloor())
@@ -35,5 +37,10 @@ public partial class JumpHandler : Node
                 _body.Velocity = new(_body.Velocity.X, -_jumpVelocity);
             }
         }
+    }
+
+    public void SetIfEnabled(bool enabled)
+    {
+        _isEnabled = enabled;
     }
 }
