@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://cv7g2fnqrxx7s"]
+[gd_scene load_steps=22 format=3 uid="uid://cv7g2fnqrxx7s"]
 
 [ext_resource type="Script" path="res://Players/PlayerController.cs" id="1_bukco"]
 [ext_resource type="Script" path="res://Players/PlayerInputHandler.cs" id="2_bjy2i"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://Players/GravityApplicator.cs" id="4_46gxe"]
 [ext_resource type="Script" path="res://Players/JumpHandler.cs" id="5_mw2vm"]
 [ext_resource type="Script" path="res://Players/MeleeHurtboxHandler.cs" id="6_rgnv7"]
+[ext_resource type="Script" path="res://Players/AttackHandler.cs" id="6_wkqlm"]
 [ext_resource type="Script" path="res://Players/TimedCollider.cs" id="7_xohju"]
 [ext_resource type="Texture2D" uid="uid://da0if34ra3ndq" path="res://Players/Sprite Sheets/AxeMan.png" id="8_25ywt"]
 [ext_resource type="Script" path="res://Players/VelocityBasedAnimationSelector.cs" id="9_igj33"]
@@ -202,7 +203,12 @@ _body = NodePath("..")
 _jumpVelocity = 500.0
 _maxJumpTime = 0.2
 
-[node name="AttackHandler" type="Node" parent="."]
+[node name="AttackHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_movementHandler", "_jumpHandler", "_velocityAnimationSelector")]
+script = ExtResource("6_wkqlm")
+_body = NodePath("..")
+_movementHandler = NodePath("../HorizontalMovementHandler")
+_jumpHandler = NodePath("../JumpHandler")
+_velocityAnimationSelector = NodePath("../VelocityBasedAniSelector")
 
 [node name="MeleeHurtboxHandler" type="Area2D" parent="."]
 script = ExtResource("6_rgnv7")
@@ -234,6 +240,7 @@ libraries = {
 "": SubResource("AnimationLibrary_r5udm")
 }
 
+[connection signal="ActionPressed" from="PlayerInputHandler" to="AttackHandler" method="OnAction"]
 [connection signal="JumpPressed" from="PlayerInputHandler" to="JumpHandler" method="OnJumpPressed"]
 [connection signal="JumpReleased" from="PlayerInputHandler" to="JumpHandler" method="OnJumpReleased"]
 [connection signal="MoveLeftPressed" from="PlayerInputHandler" to="HorizontalMovementHandler" method="OnLeftPressed"]

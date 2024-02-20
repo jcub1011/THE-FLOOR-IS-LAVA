@@ -39,15 +39,18 @@ public partial class AttackHandler : Node
             if (_body.Velocity.X == 0f)
             {
                 // Perform deflect.
+                GD.Print("Performing deflect.");
             }
             else
             {
                 // Perform punch.
+                GD.Print("Performing punch.");
             }
         }
-        else
+        else if (_body.Velocity.X != 0f)
         {
             // Perform dropkick.
+            GD.Print("Performing dropkick.");
         }
     }
 }

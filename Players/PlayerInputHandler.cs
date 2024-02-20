@@ -231,11 +231,11 @@ public partial class PlayerInputHandler : Node
     public override void _Input(InputEvent @event)
     {
         base._Input(@event);
-        if (_device.IsEventForDevice(@event))
-        {
-            GD.Print(_device);
-        }
-        else return;
+        if (!_device.IsEventForDevice(@event)) return;
+        //else
+        //{
+        //    GD.Print(_device);
+        //}
 
         if (@event.IsActionPressed(InputNames.LEFT.ConvertInputName(_device.Type)))
         {
