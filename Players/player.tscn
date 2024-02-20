@@ -202,13 +202,10 @@ _body = NodePath("..")
 _jumpVelocity = 500.0
 _maxJumpTime = 0.2
 
-[node name="AttackHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_movementHandler", "_jumpHandler", "_velocityAnimationSelector", "_gravityApplicator")]
+[node name="AttackHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_aniPlayer")]
 script = ExtResource("6_wkqlm")
 _body = NodePath("..")
-_movementHandler = NodePath("../HorizontalMovementHandler")
-_jumpHandler = NodePath("../JumpHandler")
-_velocityAnimationSelector = NodePath("../VelocityBasedAniSelector")
-_gravityApplicator = NodePath("../GravityApplicator")
+_aniPlayer = NodePath("../AnimationPlayer")
 _dropkickDrag = 3.0
 
 [node name="MeleeHurtboxHandler" type="Area2D" parent="."]
@@ -250,3 +247,11 @@ libraries = {
 [connection signal="MoveRightPressed" from="PlayerInputHandler" to="HorizontalMovementHandler" method="OnRightPressed"]
 [connection signal="MoveRightPressed" from="PlayerInputHandler" to="MeleeHurtboxHandler" method="OnRightPressed"]
 [connection signal="MoveRightReleased" from="PlayerInputHandler" to="HorizontalMovementHandler" method="OnRightReleased"]
+[connection signal="OnDisableMovementControl" from="AttackHandler" to="MeleeHurtboxHandler" method="DisableFlipping"]
+[connection signal="OnDisableMovementControl" from="AttackHandler" to="HorizontalMovementHandler" method="SetIfEnabled" binds= [false]]
+[connection signal="OnDisableMovementControl" from="AttackHandler" to="JumpHandler" method="SetIfEnabled" binds= [false]]
+[connection signal="OnDisableMovementControl" from="AttackHandler" to="VelocityBasedAniSelector" method="SetIfEnabled" binds= [false]]
+[connection signal="OnEnableMovementControl" from="AttackHandler" to="MeleeHurtboxHandler" method="EnableFlipping"]
+[connection signal="OnEnableMovementControl" from="AttackHandler" to="HorizontalMovementHandler" method="SetIfEnabled" binds= [true]]
+[connection signal="OnEnableMovementControl" from="AttackHandler" to="JumpHandler" method="SetIfEnabled" binds= [true]]
+[connection signal="OnEnableMovementControl" from="AttackHandler" to="VelocityBasedAniSelector" method="SetIfEnabled" binds= [true]]

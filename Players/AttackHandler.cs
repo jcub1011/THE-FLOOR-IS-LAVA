@@ -7,11 +7,14 @@ namespace Players;
 public partial class AttackHandler : Node
 {
     [Export] CharacterBody2D _body;
-    [Export] HorizontalMovementHandler _movementHandler;
-    [Export] JumpHandler _jumpHandler;
-    [Export] VelocityBasedAnimationSelector _velocityAnimationSelector;
-    [Export] GravityApplicator _gravityApplicator;
+    [Export] AnimationPlayer _aniPlayer;
     [Export] float _dropkickDrag;
+
+    [Export] StringName _dropkickAnimation = "dropkick";
+    [Export] StringName _punchAnimation = "punch";
+
+    [Signal] public delegate void OnDisableMovementControlEventHandler();
+    [Signal] public delegate void OnEnableMovementControlEventHandler();
 
     float _remainingDisableTime;
     float _previousRemainingDisableTime;
@@ -34,28 +37,21 @@ public partial class AttackHandler : Node
 
         if (JustEnabled())
         {
-            GD.Print("Re-enabling handlers.");
-            _movementHandler.SetIfEnabled(true);
-            _jumpHandler.SetIfEnabled(true);
-            _velocityAnimationSelector.IsEnabled = true;
+            EnableHandlers();
         }
     }
 
     void EnableHandlers()
     {
         GD.Print("Re-enabling handlers.");
-        _movementHandler.SetIfEnabled(true);
-        _jumpHandler.SetIfEnabled(true);
-        _velocityAnimationSelector.IsEnabled = true;
+        EmitSignal(SignalName.OnEnableMovementControl);
     }
 
     void DisableHandlers(float time)
     {
         _remainingDisableTime = time;
         GD.Print($"Disabling handlers for {_remainingDisableTime}s.");
-        _movementHandler.SetIfEnabled(false);
-        _jumpHandler.SetIfEnabled(false);
-        _velocityAnimationSelector.IsEnabled = false;
+        EmitSignal(SignalName.OnDisableMovementControl);
     }
 
     bool JustEnabled()
@@ -86,6 +82,7 @@ public partial class AttackHandler : Node
                 GD.Print("Performing punch.");
                 DisableHandlers(1f);
                 _body.Velocity = new(0f, _body.Velocity.Y);
+                _aniPlayer.Play(_punchAnimation);
             }
         }
         else if (_body.Velocity.X != 0f)
@@ -93,6 +90,7 @@ public partial class AttackHandler : Node
             // Perform dropkick.
             GD.Print("Performing dropkick.");
             DisableHandlers(1f);
+            _aniPlayer.Play(_dropkickAnimation);
         }
     }
 }

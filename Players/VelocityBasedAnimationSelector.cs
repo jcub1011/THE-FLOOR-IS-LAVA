@@ -57,4 +57,6 @@ public partial class VelocityBasedAnimationSelector : Node
             }
         }
     }
+
+    public void SetIfEnabled(bool enabled) => IsEnabled = enabled;
 }
