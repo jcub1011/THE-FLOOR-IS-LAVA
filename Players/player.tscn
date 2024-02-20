@@ -195,7 +195,6 @@ _moveSpeed = 200.0
 [node name="GravityApplicator" type="Node" parent="." node_paths=PackedStringArray("_body")]
 script = ExtResource("4_46gxe")
 _body = NodePath("..")
-_gravity = 2000.0
 
 [node name="JumpHandler" type="Node" parent="." node_paths=PackedStringArray("_body")]
 script = ExtResource("5_mw2vm")
@@ -203,12 +202,14 @@ _body = NodePath("..")
 _jumpVelocity = 500.0
 _maxJumpTime = 0.2
 
-[node name="AttackHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_movementHandler", "_jumpHandler", "_velocityAnimationSelector")]
+[node name="AttackHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_movementHandler", "_jumpHandler", "_velocityAnimationSelector", "_gravityApplicator")]
 script = ExtResource("6_wkqlm")
 _body = NodePath("..")
 _movementHandler = NodePath("../HorizontalMovementHandler")
 _jumpHandler = NodePath("../JumpHandler")
 _velocityAnimationSelector = NodePath("../VelocityBasedAniSelector")
+_gravityApplicator = NodePath("../GravityApplicator")
+_dropkickDrag = 3.0
 
 [node name="MeleeHurtboxHandler" type="Area2D" parent="."]
 script = ExtResource("6_rgnv7")

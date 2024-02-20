@@ -6,7 +6,7 @@ namespace Physics;
 public partial class GravityApplicator : Node
 {
     [Export] CharacterBody2D _body;
-    [Export] float _gravity;
+    [Export] public float Gravity { get; private set; } = 2000f;
     [Export] bool _isEnabled = true;
 
     public override void _Ready()
@@ -19,7 +19,7 @@ public partial class GravityApplicator : Node
     {
         base._Process(delta);
         if (!_isEnabled) return;
-        _body.Velocity += new Vector2(0f, _gravity * (float)delta);
+        _body.Velocity += new Vector2(0f, Gravity * (float)delta);
     }
 
     public void SetIfEnabled(bool enabled) => _isEnabled = enabled;
