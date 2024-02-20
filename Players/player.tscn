@@ -1,14 +1,19 @@
-[gd_scene load_steps=7 format=3 uid="uid://cv7g2fnqrxx7s"]
+[gd_scene load_steps=10 format=3 uid="uid://cv7g2fnqrxx7s"]
 
 [ext_resource type="Script" path="res://Players/PlayerController.cs" id="1_bukco"]
 [ext_resource type="Script" path="res://Players/PlayerInputHandler.cs" id="2_bjy2i"]
 [ext_resource type="Script" path="res://Players/HorizontalMovementHandler.cs" id="3_8cg7j"]
 [ext_resource type="Script" path="res://Players/GravityApplicator.cs" id="4_46gxe"]
 [ext_resource type="Script" path="res://Players/JumpHandler.cs" id="5_mw2vm"]
+[ext_resource type="Script" path="res://Players/MeleeAttackHandler.cs" id="6_rgnv7"]
+[ext_resource type="Script" path="res://Players/TimedCollider.cs" id="7_xohju"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_meg5j"]
 radius = 12.0
 height = 50.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lqg1u"]
+size = Vector2(91.4531, 63)
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("InputHandler")]
 collision_layer = 2
@@ -17,6 +22,7 @@ script = ExtResource("1_bukco")
 InputHandler = NodePath("PlayerInputHandler")
 
 [node name="Collider" type="CollisionShape2D" parent="."]
+position = Vector2(0, -25)
 shape = SubResource("CapsuleShape2D_meg5j")
 
 [node name="PlayerInputHandler" type="Node" parent="."]
@@ -37,6 +43,14 @@ script = ExtResource("5_mw2vm")
 _body = NodePath("..")
 _jumpVelocity = 500.0
 _maxJumpTime = 0.2
+
+[node name="MeleeAttackHandler" type="Area2D" parent="."]
+script = ExtResource("6_rgnv7")
+
+[node name="PunchHurtbox" type="CollisionShape2D" parent="MeleeAttackHandler"]
+position = Vector2(50, -32)
+shape = SubResource("RectangleShape2D_lqg1u")
+script = ExtResource("7_xohju")
 
 [connection signal="JumpPressed" from="PlayerInputHandler" to="JumpHandler" method="OnJumpPressed"]
 [connection signal="JumpReleased" from="PlayerInputHandler" to="JumpHandler" method="OnJumpReleased"]
