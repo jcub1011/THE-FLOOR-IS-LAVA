@@ -6,6 +6,7 @@ namespace Players;
 public partial class PlayerController : CharacterBody2D
 {
     [Export] PlayerInputHandler InputHandler;
+    [Export] Vector2 _speedLimit;
 
     public override void _Ready()
     {
@@ -16,6 +17,10 @@ public partial class PlayerController : CharacterBody2D
     public override void _Process(double delta)
     {
         base._Process(delta);
+        Vector2 limitedVelocity = Velocity;
+        limitedVelocity.X = Mathf.Clamp(Velocity.X, -_speedLimit.X, _speedLimit.X);
+        limitedVelocity.Y = Mathf.Clamp(Velocity.Y, -_speedLimit.Y, _speedLimit.Y);
+        Velocity = limitedVelocity;
         MoveAndSlide();
     }
 }

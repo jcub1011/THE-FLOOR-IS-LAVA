@@ -1,11 +1,19 @@
 using Godot;
 using System;
+using System.Collections.Specialized;
 
 namespace Players;
 
+public partial class OnHitArgs : GodotObject
+{
+    public MeleeHurtboxHandler HitBy { get; set; }
+    public bool ReturnKnockback = false;
+}
+
 public partial class Hitbox : Area2D
 {
-    [Signal] public delegate void OnReceivedHitEventHandler(MeleeHurtboxHandler hitBy);
+    [Signal] public delegate void OnReceivedHitEventHandler(OnHitArgs args);
+    [Signal] public delegate void OnReceivedDamageEventHandler(float knockback, Node2D source);
     CharacterBody2D _body
     {
         get => GetParent<CharacterBody2D>();
@@ -23,7 +31,21 @@ public partial class Hitbox : Area2D
         {
             if (_body == collider.HurtboxOwner) return;
             GD.Print($"{_body.Name} was hit by {collider.HurtboxOwner.Name}.");
-            EmitSignal(SignalName.OnReceivedHit, collider);
+            var args = new OnHitArgs
+            {
+                HitBy = collider
+            };
+            EmitSignal(SignalName.OnReceivedHit, args);
+
+            if (args.ReturnKnockback)
+            {
+                GD.Print($"{collider.HurtboxOwner.Name} was deflected by " +
+                    $"{_body.Name}.");
+            }
+            else
+            {
+                EmitSignal(SignalName.OnReceivedDamage, collider.Knockback, collider.HurtboxOwner);
+            }
         }
     }
 }

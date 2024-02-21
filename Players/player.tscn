@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://cv7g2fnqrxx7s"]
+[gd_scene load_steps=27 format=3 uid="uid://cv7g2fnqrxx7s"]
 
 [ext_resource type="Script" path="res://Players/PlayerController.cs" id="1_bukco"]
 [ext_resource type="Script" path="res://Players/PlayerInputHandler.cs" id="2_bjy2i"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" path="res://Players/TimedCollider.cs" id="7_xohju"]
 [ext_resource type="Texture2D" uid="uid://da0if34ra3ndq" path="res://Players/Sprite Sheets/AxeMan.png" id="8_25ywt"]
 [ext_resource type="Script" path="res://Players/Hitbox.cs" id="9_4xjwb"]
+[ext_resource type="Script" path="res://Players/KnockbackHandler.cs" id="9_ad621"]
 [ext_resource type="Script" path="res://Players/VelocityBasedAnimationSelector.cs" id="9_igj33"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_meg5j"]
@@ -202,6 +203,7 @@ collision_layer = 2
 collision_mask = 3
 script = ExtResource("1_bukco")
 InputHandler = NodePath("PlayerInputHandler")
+_speedLimit = Vector2(2000, 2000)
 
 [node name="Collider" type="CollisionShape2D" parent="."]
 position = Vector2(0, -25)
@@ -231,8 +233,9 @@ _body = NodePath("..")
 _aniPlayer = NodePath("../AnimationPlayer")
 _dropkickDrag = 3.0
 
-[node name="DeflectHandler" type="Node" parent="."]
+[node name="DeflectHandler" type="Node" parent="." node_paths=PackedStringArray("_sprite")]
 script = ExtResource("7_bcpnl")
+_sprite = NodePath("../Sprite2D")
 
 [node name="VelocityBasedAniSelector" type="Node" parent="." node_paths=PackedStringArray("_body", "_sprite", "_player")]
 script = ExtResource("9_igj33")
@@ -240,6 +243,11 @@ _body = NodePath("..")
 _sprite = NodePath("../Sprite2D")
 _player = NodePath("../AnimationPlayer")
 _walkToRunTransitionThreshold = 100.0
+
+[node name="HealthHandler" type="Node" parent="."]
+
+[node name="KnockbackHandler" type="Node" parent="."]
+script = ExtResource("9_ad621")
 
 [node name="Hitbox" type="Area2D" parent="."]
 script = ExtResource("9_4xjwb")
@@ -289,3 +297,15 @@ libraries = {
 [connection signal="OnEnableMovementControl" from="AttackHandler" to="HorizontalMovementHandler" method="SetIfEnabled" binds= [true]]
 [connection signal="OnEnableMovementControl" from="AttackHandler" to="JumpHandler" method="SetIfEnabled" binds= [true]]
 [connection signal="OnEnableMovementControl" from="AttackHandler" to="VelocityBasedAniSelector" method="SetIfEnabled" binds= [true]]
+[connection signal="OnDisableMovementControl" from="KnockbackHandler" to="AttackHandler" method="OnDisable"]
+[connection signal="OnDisableMovementControl" from="KnockbackHandler" to="MeleeHurtboxHandler" method="DisableHitboxes"]
+[connection signal="OnDisableMovementControl" from="KnockbackHandler" to="MeleeHurtboxHandler" method="DisableFlipping"]
+[connection signal="OnDisableMovementControl" from="KnockbackHandler" to="HorizontalMovementHandler" method="SetIfEnabled" binds= [false]]
+[connection signal="OnDisableMovementControl" from="KnockbackHandler" to="JumpHandler" method="SetIfEnabled" binds= [false]]
+[connection signal="OnDisableMovementControl" from="KnockbackHandler" to="VelocityBasedAniSelector" method="SetIfEnabled" binds= [false]]
+[connection signal="OnEnableMovementControl" from="KnockbackHandler" to="AttackHandler" method="OnEnable"]
+[connection signal="OnEnableMovementControl" from="KnockbackHandler" to="MeleeHurtboxHandler" method="EnableFlipping"]
+[connection signal="OnEnableMovementControl" from="KnockbackHandler" to="HorizontalMovementHandler" method="SetIfEnabled" binds= [true]]
+[connection signal="OnEnableMovementControl" from="KnockbackHandler" to="JumpHandler" method="SetIfEnabled" binds= [true]]
+[connection signal="OnEnableMovementControl" from="KnockbackHandler" to="VelocityBasedAniSelector" method="SetIfEnabled" binds= [true]]
+[connection signal="OnReceivedHit" from="Hitbox" to="DeflectHandler" method="OnReceivedHitHandler"]

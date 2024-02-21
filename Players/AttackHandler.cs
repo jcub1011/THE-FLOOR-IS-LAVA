@@ -20,6 +20,8 @@ public partial class AttackHandler : Node
     float _remainingDisableTime;
     float _previousRemainingDisableTime;
 
+    bool _isDisabled;
+
     public override void _PhysicsProcess(double delta)
     {
         base._PhysicsProcess(delta);
@@ -62,6 +64,14 @@ public partial class AttackHandler : Node
 
     public void OnAction()
     {
+        if (_isDisabled)
+        {
+            GD.Print($"{GetParent().Name} unable to perform action, currently " +
+                $"disabled.");
+            _remainingDisableTime = 0f;
+            _previousRemainingDisableTime = 0f;
+            return;
+        }
         if (_remainingDisableTime > 0f)
         {
             GD.Print($"{GetParent().Name} unable to perform action, currently " +
@@ -95,4 +105,7 @@ public partial class AttackHandler : Node
             _aniPlayer.Play(_dropkickAnimation);
         }
     }
+
+    public void OnEnable() => _isDisabled = false;
+    public void OnDisable() => _isDisabled = true;
 }

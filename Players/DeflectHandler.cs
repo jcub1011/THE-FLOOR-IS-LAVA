@@ -6,6 +6,7 @@ namespace Players;
 public partial class DeflectHandler : Node
 {
     [Export] Sprite2D _sprite;
+    [Export] CharacterBody2D _body;
     float _remainingDeflectTime;
 
     public void EnableDeflect(float duration)
@@ -17,5 +18,14 @@ public partial class DeflectHandler : Node
     {
         base._PhysicsProcess(delta);
         _remainingDeflectTime -= (float)delta;
+    }
+
+    public void OnReceivedHitHandler(OnHitArgs args)
+    {
+        if (_remainingDeflectTime <= 0f) return;
+        var direction = args.HitBy.HurtboxOwner.GlobalPosition
+            .RelativeTo(_body.GlobalPosition);
+        bool isTowardsLeft = direction.X < 0f;
+        args.ReturnKnockback = _sprite.FlipH == isTowardsLeft;
     }
 }

@@ -40,6 +40,7 @@ public partial class MeleeHurtboxHandler : Area2D
 
     public void EnableHitbox(StringName hitboxName, float duration, float knockback)
     {
+        Knockback = knockback;
         foreach (var child in GetChildren())
         {
             if (child is TimedCollider collider)
