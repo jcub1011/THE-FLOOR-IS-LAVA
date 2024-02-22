@@ -217,7 +217,6 @@ _data = {
 collision_layer = 2
 script = ExtResource("1_bukco")
 InputHandler = NodePath("PlayerInputHandler")
-_speedLimit = Vector2(2000, 2000)
 
 [node name="Collider" type="CollisionShape2D" parent="."]
 position = Vector2(0, -25)
@@ -247,10 +246,9 @@ _body = NodePath("..")
 _aniPlayer = NodePath("../AnimationPlayer")
 _dropkickDrag = 3.0
 
-[node name="DeflectHandler" type="Node" parent="." node_paths=PackedStringArray("_sprite", "_body")]
+[node name="DeflectHandler" type="Node" parent="." node_paths=PackedStringArray("_sprite")]
 script = ExtResource("7_bcpnl")
 _sprite = NodePath("../Sprite2D")
-_body = NodePath("..")
 
 [node name="VelocityBasedAniSelector" type="Node" parent="." node_paths=PackedStringArray("_body", "_sprite", "_player")]
 script = ExtResource("9_igj33")
@@ -326,4 +324,3 @@ libraries = {
 [connection signal="OnEnableMovementControl" from="KnockbackHandler" to="VelocityBasedAniSelector" method="SetIfEnabled" binds= [true]]
 [connection signal="OnReceivedDamage" from="Hitbox" to="KnockbackHandler" method="OnApplyKnockback"]
 [connection signal="OnReceivedHit" from="Hitbox" to="DeflectHandler" method="OnReceivedHitHandler"]
-[connection signal="OnHurtboxDeflected" from="MeleeHurtboxHandler" to="KnockbackHandler" method="OnApplyDeflectedKnockback"]
