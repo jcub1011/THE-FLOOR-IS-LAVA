@@ -58,6 +58,20 @@ tracks/0/keys = {
 "update": 1,
 "values": [48, 49, 50, 42]
 }
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("DeflectHandler")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [0.5],
+"method": &"EnableDeflect"
+}]
+}
 
 [sub_resource type="Animation" id="Animation_8dm73"]
 resource_name = "dropkick"
@@ -233,9 +247,10 @@ _body = NodePath("..")
 _aniPlayer = NodePath("../AnimationPlayer")
 _dropkickDrag = 3.0
 
-[node name="DeflectHandler" type="Node" parent="." node_paths=PackedStringArray("_sprite")]
+[node name="DeflectHandler" type="Node" parent="." node_paths=PackedStringArray("_sprite", "_body")]
 script = ExtResource("7_bcpnl")
 _sprite = NodePath("../Sprite2D")
+_body = NodePath("..")
 
 [node name="VelocityBasedAniSelector" type="Node" parent="." node_paths=PackedStringArray("_body", "_sprite", "_player")]
 script = ExtResource("9_igj33")
