@@ -11,7 +11,6 @@ public partial class WorldSection : CharacterBody2D
     public override void _Ready()
     {
         base._Ready();
-        Velocity = new(0f, 50f);
     }
 
     public override void _Process(double delta)
