@@ -6,6 +6,8 @@ namespace Players;
 
 public partial class MeleeHurtboxHandler : Area2D
 {
+    [Signal] public delegate void OnHurtboxDeflectedEventHandler(CharacterBody2D body, float knockback);
+
     /// <summary>
     /// Defaults to length of frame @ 24fps.
     /// </summary>
@@ -86,6 +88,12 @@ public partial class MeleeHurtboxHandler : Area2D
         _isFlipped = flipState;
 
         Scale = new(Scale.X * -1f, Scale.Y);
+    }
+
+    public void HandleAttackDeflected(CharacterBody2D body, float knockback)
+    {
+        GD.Print($"{HurtboxOwner.Name} emitting attack deflected.");
+        EmitSignal(SignalName.OnHurtboxDeflected, body, knockback);
     }
 
     public void OnLeftPressed() => SetFlipState(true);

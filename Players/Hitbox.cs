@@ -41,6 +41,7 @@ public partial class Hitbox : Area2D
             {
                 GD.Print($"{_body.Name} deflected " +
                     $"{collider.HurtboxOwner.Name}.");
+                args.HitBy.HandleAttackDeflected(_body, collider.Knockback);
             }
             else
             {
