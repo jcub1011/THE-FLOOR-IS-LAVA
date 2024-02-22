@@ -1,4 +1,5 @@
 ﻿using Godot;
+using System.Linq;
 
 namespace Players;
 
@@ -80,6 +81,11 @@ public static class NodeExtensionMethods
                 obj.Disabled = disabled;
             }
         }
+    }
+
+    public static string ConvertToFilename(string godotPath)
+    {
+        return godotPath.Split('/').Last();
     }
 }
 

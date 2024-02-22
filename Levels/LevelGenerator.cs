@@ -10,7 +10,8 @@ public partial class LevelGenerator : Node2D
     [Export] Camera2D _camera;
     [Export] float _scrollSpeed = 25f;
 
-    List<WorldSection> _activeWorldSections;
+    LinkedList<WorldSection> _activeWorldSections;
+    [Export] Godot.Collections.Array<StringName> _templates;
 
     public float? _worldBottomY;
     public float WorldBottomY
@@ -32,11 +33,29 @@ public partial class LevelGenerator : Node2D
         {
             if (child is WorldSection section)
             {
-                _activeWorldSections.Add(section);
+                _activeWorldSections.AddFirst(section);
             }
         }
 
         SetSectionsScrollVelocity(_scrollSpeed);
+    }
+
+    void RemoveDeletedScenes()
+    {
+        foreach (var scene in _activeWorldSections)
+        {
+            if (IsInstanceValid(scene)) continue;
+            else
+            {
+                _activeWorldSections.Remove(scene);
+            }
+        }
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        base._PhysicsProcess(delta);
+        RemoveDeletedScenes();
     }
 
     float GetWorldBottomY()
@@ -55,5 +74,13 @@ public partial class LevelGenerator : Node2D
         {
             section.Velocity = new(0f, velocity);
         }
+    }
+
+    StringName GetNextSection()
+    {
+        var curSection = _activeWorldSections.Last.Value;
+        int index = Mathf.Abs((int)(GD.Randi() - uint.MaxValue / 2)) 
+            % curSection.PossibleContinuations.Count;
+        return curSection.PossibleContinuations[index];
     }
 }

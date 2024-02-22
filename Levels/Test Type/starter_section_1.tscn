@@ -1,0 +1,73 @@
+[gd_scene load_steps=8 format=3 uid="uid://w13tk03om3nc"]
+
+[ext_resource type="Script" path="res://Levels/WorldSection.cs" id="1_0cird"]
+[ext_resource type="Script" path="res://Levels/PlayerSpawner.cs" id="2_tww6n"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6213d"]
+size = Vector2(1200, 15)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vyhjr"]
+size = Vector2(460, 31)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xjhov"]
+size = Vector2(543, 33.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j3gnh"]
+size = Vector2(434, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_at7le"]
+size = Vector2(820, 26)
+
+[node name="Starter_Section_1" type="CharacterBody2D" node_paths=PackedStringArray("_sectionUpperBound", "_sectionLowerBound")]
+collision_mask = 0
+script = ExtResource("1_0cird")
+_sectionUpperBound = NodePath("Section Bounds/Upper")
+_sectionLowerBound = NodePath("Section Bounds/Lower")
+_possibleContinuations = Array[StringName]([])
+
+[node name="Section Bounds" type="Node2D" parent="."]
+
+[node name="Upper" type="Marker2D" parent="Section Bounds"]
+position = Vector2(0, -337.5)
+
+[node name="Lower" type="Marker2D" parent="Section Bounds"]
+position = Vector2(0, 337.5)
+
+[node name="Floor" type="CollisionShape2D" parent="."]
+position = Vector2(0, 330)
+shape = SubResource("RectangleShape2D_6213d")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
+position = Vector2(-431, 186)
+shape = SubResource("RectangleShape2D_vyhjr")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="."]
+position = Vector2(414, 186)
+shape = SubResource("RectangleShape2D_xjhov")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="."]
+position = Vector2(0, 69)
+shape = SubResource("RectangleShape2D_j3gnh")
+
+[node name="CollisionShape2D5" type="CollisionShape2D" parent="."]
+position = Vector2(-211, -74)
+shape = SubResource("RectangleShape2D_at7le")
+
+[node name="CollisionShape2D6" type="CollisionShape2D" parent="."]
+position = Vector2(215, -220)
+shape = SubResource("RectangleShape2D_at7le")
+
+[node name="Spawn_Locations" type="Node2D" parent="."]
+script = ExtResource("2_tww6n")
+
+[node name="Marker2D" type="Marker2D" parent="Spawn_Locations"]
+position = Vector2(-427, 129)
+
+[node name="Marker2D2" type="Marker2D" parent="Spawn_Locations"]
+position = Vector2(431, 124)
+
+[node name="Marker2D3" type="Marker2D" parent="Spawn_Locations"]
+position = Vector2(-298, 290)
+
+[node name="Marker2D4" type="Marker2D" parent="Spawn_Locations"]
+position = Vector2(144, 295)

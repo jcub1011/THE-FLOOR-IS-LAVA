@@ -7,6 +7,7 @@ public partial class WorldSection : CharacterBody2D
 {
     [Export] Marker2D _sectionUpperBound;
     [Export] Marker2D _sectionLowerBound;
+    [Export] public Godot.Collections.Array<StringName> PossibleContinuations;
 
     public override void _Ready()
     {
