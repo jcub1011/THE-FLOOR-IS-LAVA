@@ -30,7 +30,7 @@ public partial class Hitbox : Area2D
         if (area is MeleeHurtboxHandler collider)
         {
             if (_body == collider.HurtboxOwner) return;
-            GD.Print($"{_body.Name} was hit by {collider.HurtboxOwner.Name}.");
+            //GD.Print($"{_body.Name} was hit by {collider.HurtboxOwner.Name}.");
             var args = new OnHitArgs
             {
                 HitBy = collider
@@ -39,11 +39,12 @@ public partial class Hitbox : Area2D
 
             if (args.ReturnKnockback)
             {
-                GD.Print($"{collider.HurtboxOwner.Name} was deflected by " +
-                    $"{_body.Name}.");
+                GD.Print($"{_body.Name} deflected " +
+                    $"{collider.HurtboxOwner.Name}.");
             }
             else
             {
+                GD.Print($"{_body.Name} was hit by {collider.HurtboxOwner.Name}.");
                 EmitSignal(SignalName.OnReceivedDamage, collider.Knockback, collider.HurtboxOwner);
             }
         }
