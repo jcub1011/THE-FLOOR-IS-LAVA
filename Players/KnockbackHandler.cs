@@ -28,7 +28,15 @@ public partial class KnockbackHandler : Node
     public void OnApplyKnockback(float knockback, Node2D source)
     {
         DisableHandlers(_recoveryTime);
-        Vector2 newVel = source.GlobalPosition.RelativeTo(_body.GlobalPosition)
+        Vector2 newVel = _body.GlobalPosition.RelativeTo(source.GlobalPosition)
+            .Normalized() * knockback;
+        _body.Velocity = newVel;
+    }
+
+    public void OnApplyDeflectedKnockback(CharacterBody2D deflector, float knockback)
+    {
+        DisableHandlers(_recoveryTime);
+        Vector2 newVel = deflector.GlobalPosition.RelativeTo(_body.GlobalPosition)
             .Normalized() * knockback;
         _body.Velocity = newVel;
     }

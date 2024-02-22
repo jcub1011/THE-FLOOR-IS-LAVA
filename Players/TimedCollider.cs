@@ -15,18 +15,18 @@ public partial class TimedCollider : CollisionShape2D
     {
         base._PhysicsProcess(delta);
         _remainingLifeTime -= (float)delta;
-        Disabled = _remainingLifeTime <= 0f;
+        SetDeferred("disabled", _remainingLifeTime <= 0f);
     }
 
     public void EnableCollider(float timeToLive)
     {
         _remainingLifeTime = timeToLive;
-        Disabled = false;
+        SetDeferred("disabled", false);
     }
 
     public void ForceDisableCollider()
     {
         _remainingLifeTime = 0f;
-        Disabled = true;
+        SetDeferred("disabled", true);
     }
 }
