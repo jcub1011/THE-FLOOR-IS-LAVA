@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://c6vxsfrvbssc6"]
+[gd_scene load_steps=10 format=3 uid="uid://c6vxsfrvbssc6"]
 
 [ext_resource type="PackedScene" uid="uid://cv7g2fnqrxx7s" path="res://Players/player.tscn" id="1_pixmk"]
 [ext_resource type="Script" path="res://Levels/LevelGenerator.cs" id="2_lriob"]
+[ext_resource type="Script" path="res://Levels/PlayerSpawner.cs" id="3_p7vuf"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6213d"]
 size = Vector2(1236, 25)
@@ -24,12 +25,12 @@ distance = -449.0
 [node name="World" type="Node2D"]
 
 [node name="Player1" parent="." instance=ExtResource("1_pixmk")]
-position = Vector2(-390, -121)
+position = Vector2(-474, 291)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
 [node name="Player2" parent="." instance=ExtResource("1_pixmk")]
-position = Vector2(290, -126)
+position = Vector2(414, 292)
 
 [node name="Level Generator" type="Node2D" parent="."]
 script = ExtResource("2_lriob")
@@ -42,15 +43,32 @@ position = Vector2(-3, 337)
 shape = SubResource("RectangleShape2D_6213d")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Level Generator/Starter_Section"]
-position = Vector2(-440, 109)
+position = Vector2(-431, 186)
 shape = SubResource("RectangleShape2D_vyhjr")
 
 [node name="CollisionShape2D3" type="CollisionShape2D" parent="Level Generator/Starter_Section"]
 
 [node name="CollisionShape2D4" type="CollisionShape2D" parent="Level Generator/Starter_Section"]
 
+[node name="Spawn_Locations" type="Node2D" parent="Level Generator/Starter_Section"]
+script = ExtResource("3_p7vuf")
+
+[node name="Marker2D" type="Marker2D" parent="Level Generator/Starter_Section/Spawn_Locations"]
+position = Vector2(-427, 129)
+
+[node name="Marker2D2" type="Marker2D" parent="Level Generator/Starter_Section/Spawn_Locations"]
+position = Vector2(431, 80)
+
+[node name="Marker2D3" type="Marker2D" parent="Level Generator/Starter_Section/Spawn_Locations"]
+position = Vector2(-296, 264)
+
+[node name="Marker2D4" type="Marker2D" parent="Level Generator/Starter_Section/Spawn_Locations"]
+position = Vector2(126, 258)
+
 [node name="World Bounds" type="StaticBody2D" parent="."]
 collision_mask = 0
+metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
 
 [node name="Top" type="CollisionShape2D" parent="World Bounds"]
 rotation = 3.14159
