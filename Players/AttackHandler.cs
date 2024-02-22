@@ -85,14 +85,14 @@ public partial class AttackHandler : Node
             {
                 // Perform deflect.
                 GD.Print("Performing deflect.");
-                DisableHandlers(1f);
+                DisableHandlers(_aniPlayer.GetAnimation(_deflectAnimation).Length);
                 _aniPlayer.Play(_deflectAnimation);
             }
             else
             {
                 // Perform punch.
                 GD.Print("Performing punch.");
-                DisableHandlers(1f);
+                DisableHandlers(_aniPlayer.GetAnimation(_punchAnimation).Length);
                 _body.Velocity = new(0f, _body.Velocity.Y);
                 _aniPlayer.Play(_punchAnimation);
             }
@@ -101,7 +101,7 @@ public partial class AttackHandler : Node
         {
             // Perform dropkick.
             GD.Print("Performing dropkick.");
-            DisableHandlers(1f);
+            DisableHandlers(_aniPlayer.GetAnimation(_dropkickAnimation).Length);
             _aniPlayer.Play(_dropkickAnimation);
         }
     }

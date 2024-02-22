@@ -20,3 +20,6 @@ position = Vector2(0, -205)
 
 [node name="Player2" parent="." instance=ExtResource("1_pixmk")]
 position = Vector2(161, -385)
+
+[node name="Player" parent="." instance=ExtResource("1_pixmk")]
+position = Vector2(9, -386)
