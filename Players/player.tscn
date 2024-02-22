@@ -22,10 +22,10 @@ height = 50.0
 size = Vector2(24, 50)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lqg1u"]
-size = Vector2(91.4531, 63)
+size = Vector2(55.7266, 63)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sg5v1"]
-size = Vector2(92, 41)
+size = Vector2(56, 32)
 
 [sub_resource type="Animation" id="Animation_lkr48"]
 length = 0.001
@@ -276,12 +276,12 @@ shape = SubResource("RectangleShape2D_f5o2s")
 script = ExtResource("6_rgnv7")
 
 [node name="PunchHurtbox" type="CollisionShape2D" parent="MeleeHurtboxHandler"]
-position = Vector2(50, -32)
+position = Vector2(32.1367, -32)
 shape = SubResource("RectangleShape2D_lqg1u")
 script = ExtResource("7_xohju")
 
 [node name="DropkickHurtbox" type="CollisionShape2D" parent="MeleeHurtboxHandler"]
-position = Vector2(50, -20.5)
+position = Vector2(32, -25)
 shape = SubResource("RectangleShape2D_sg5v1")
 script = ExtResource("7_xohju")
 
