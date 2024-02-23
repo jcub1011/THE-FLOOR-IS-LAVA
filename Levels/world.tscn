@@ -19,12 +19,14 @@ distance = -449.0
 [node name="World" type="Node2D"]
 
 [node name="Player1" parent="." instance=ExtResource("1_pixmk")]
-position = Vector2(-474, 291)
+position = Vector2(-110, 193)
 
 [node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(0, 132)
+zoom = Vector2(4, 4)
 
 [node name="Player2" parent="." instance=ExtResource("1_pixmk")]
-position = Vector2(414, 292)
+position = Vector2(66, 191)
 
 [node name="Level Generator" type="Node2D" parent="." node_paths=PackedStringArray("_camera")]
 script = ExtResource("2_lriob")
