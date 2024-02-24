@@ -48,23 +48,23 @@ _camera = NodePath("../Camera2D")
 _scrollSpeed = 50.0
 _templates = Array[StringName]([&"res://Levels/Test Type/starter_section_1.tscn"])
 
-[node name="TileMap" parent="Level Generator" node_paths=PackedStringArray("_sectionUpperBound", "_sectionLowerBound") instance=ExtResource("4_h62ia")]
+[node name="Test_Section_Starter_1" parent="Level Generator" node_paths=PackedStringArray("_sectionUpperBound", "_sectionLowerBound") instance=ExtResource("4_h62ia")]
 script = ExtResource("4_k0ns7")
 _sectionUpperBound = NodePath("Section Bounds/Upper_L")
 _sectionLowerBound = NodePath("Section Bounds/Lower_L")
 
-[node name="Section Bounds" type="Node2D" parent="Level Generator/TileMap"]
+[node name="Section Bounds" type="Node2D" parent="Level Generator/Test_Section_Starter_1"]
 
-[node name="Upper_L" type="Marker2D" parent="Level Generator/TileMap/Section Bounds"]
+[node name="Upper_L" type="Marker2D" parent="Level Generator/Test_Section_Starter_1/Section Bounds"]
 position = Vector2(-150, -85)
 
-[node name="Upper_R" type="Marker2D" parent="Level Generator/TileMap/Section Bounds"]
+[node name="Upper_R" type="Marker2D" parent="Level Generator/Test_Section_Starter_1/Section Bounds"]
 position = Vector2(150, -85)
 
-[node name="Lower_L" type="Marker2D" parent="Level Generator/TileMap/Section Bounds"]
+[node name="Lower_L" type="Marker2D" parent="Level Generator/Test_Section_Starter_1/Section Bounds"]
 position = Vector2(-150, 85)
 
-[node name="Lower_R" type="Marker2D" parent="Level Generator/TileMap/Section Bounds"]
+[node name="Lower_R" type="Marker2D" parent="Level Generator/Test_Section_Starter_1/Section Bounds"]
 position = Vector2(150, 85)
 
 [node name="World Bounds" type="StaticBody2D" parent="."]
