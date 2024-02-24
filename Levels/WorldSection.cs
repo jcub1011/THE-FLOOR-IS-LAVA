@@ -12,6 +12,7 @@ public partial class WorldSection : TileMap
     public override void _Ready()
     {
         base._Ready();
+        CollisionAnimatable = false;
     }
 
     public override void _PhysicsProcess(double delta)

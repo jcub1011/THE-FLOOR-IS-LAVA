@@ -8,7 +8,7 @@ public partial class LevelGenerator : Node2D
 {
     [Export] float _startDelay = 5f;
     [Export] Camera2D _camera;
-    [Export] float _scrollSpeed = 25f;
+    [Export] double _scrollSpeed = 25f;
 
     LinkedList<WorldSection> _activeWorldSections;
     [Export] Godot.Collections.Array<StringName> _templates;
@@ -60,7 +60,7 @@ public partial class LevelGenerator : Node2D
     public override void _Process(double delta)
     {
         base._Process(delta);
-        UpdateSectionPositions(_scrollSpeed, (float)delta);
+        UpdateSectionPositions(_scrollSpeed, delta);
     }
 
     float GetWorldBottomY()
@@ -73,13 +73,13 @@ public partial class LevelGenerator : Node2D
         return returnVal;
     }
 
-    void UpdateSectionPositions(float velocity, float delta)
+    void UpdateSectionPositions(double velocity, double delta)
     {
-        Vector2 deltaPos = Vector2.Down * velocity * delta;
+        Vector2 deltaPos = new(0f, (float)(velocity * delta));
         foreach(var section in _activeWorldSections)
         {
             if (!IsInstanceValid(section)) continue;
-            section.GlobalPosition += deltaPos;
+            section.Position += deltaPos;
         }
     }
 

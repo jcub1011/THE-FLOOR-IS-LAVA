@@ -1,9 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://c6vxsfrvbssc6"]
+[gd_scene load_steps=8 format=3 uid="uid://c6vxsfrvbssc6"]
 
 [ext_resource type="PackedScene" uid="uid://cv7g2fnqrxx7s" path="res://Players/player.tscn" id="1_pixmk"]
 [ext_resource type="Script" path="res://Levels/LevelGenerator.cs" id="2_lriob"]
 [ext_resource type="PackedScene" uid="uid://sufc8uq6r5fu" path="res://Levels/Test Type/starter_section_2.tscn" id="4_h62ia"]
-[ext_resource type="Script" path="res://Levels/WorldSection.cs" id="4_k0ns7"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_xfy5v"]
 distance = -90.0
@@ -15,7 +14,7 @@ distance = -154.0
 distance = -154.0
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_5eqt8"]
-distance = -90.0
+distance = -120.0
 
 [node name="World" type="Node2D"]
 
@@ -34,38 +33,22 @@ position = Vector2(-150, 85)
 position = Vector2(150, 85)
 
 [node name="Player1" parent="." instance=ExtResource("1_pixmk")]
-position = Vector2(-93, 44)
+position = Vector2(-93, -33.69)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(4, 4)
 
 [node name="Player2" parent="." instance=ExtResource("1_pixmk")]
-position = Vector2(83, 63)
+position = Vector2(83, -30.12)
 
 [node name="Level Generator" type="Node2D" parent="." node_paths=PackedStringArray("_camera")]
 script = ExtResource("2_lriob")
 _camera = NodePath("../Camera2D")
-_scrollSpeed = 50.0
+_scrollSpeed = 20.0
 _templates = Array[StringName]([&"res://Levels/Test Type/starter_section_1.tscn"])
 
-[node name="Test_Section_Starter_1" parent="Level Generator" node_paths=PackedStringArray("_sectionUpperBound", "_sectionLowerBound") instance=ExtResource("4_h62ia")]
-script = ExtResource("4_k0ns7")
-_sectionUpperBound = NodePath("Section Bounds/Upper_L")
-_sectionLowerBound = NodePath("Section Bounds/Lower_L")
-
-[node name="Section Bounds" type="Node2D" parent="Level Generator/Test_Section_Starter_1"]
-
-[node name="Upper_L" type="Marker2D" parent="Level Generator/Test_Section_Starter_1/Section Bounds"]
-position = Vector2(-150, -85)
-
-[node name="Upper_R" type="Marker2D" parent="Level Generator/Test_Section_Starter_1/Section Bounds"]
-position = Vector2(150, -85)
-
-[node name="Lower_L" type="Marker2D" parent="Level Generator/Test_Section_Starter_1/Section Bounds"]
-position = Vector2(-150, 85)
-
-[node name="Lower_R" type="Marker2D" parent="Level Generator/Test_Section_Starter_1/Section Bounds"]
-position = Vector2(150, 85)
+[node name="Test_Section_Starter_1" parent="Level Generator" instance=ExtResource("4_h62ia")]
+position = Vector2(0, -100)
 
 [node name="World Bounds" type="StaticBody2D" parent="."]
 collision_mask = 0
