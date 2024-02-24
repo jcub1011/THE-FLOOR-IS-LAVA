@@ -36,19 +36,18 @@ public partial class LevelGenerator : Node2D
                 _activeWorldSections.AddFirst(section);
             }
         }
-
-        SetSectionsScrollVelocity(_scrollSpeed);
     }
 
     void RemoveDeletedScenes()
     {
-        foreach (var scene in _activeWorldSections)
+        LinkedListNode<WorldSection> iterator = _activeWorldSections.First;
+
+        while (iterator != null)
         {
-            if (IsInstanceValid(scene)) continue;
-            else
-            {
-                _activeWorldSections.Remove(scene);
+            if (!IsInstanceValid(iterator.Value)) {
+                _activeWorldSections.Remove(iterator);
             }
+            iterator = iterator.Next;
         }
     }
 
@@ -56,6 +55,12 @@ public partial class LevelGenerator : Node2D
     {
         base._PhysicsProcess(delta);
         RemoveDeletedScenes();
+    }
+
+    public override void _Process(double delta)
+    {
+        base._Process(delta);
+        UpdateSectionPositions(_scrollSpeed, (float)delta);
     }
 
     float GetWorldBottomY()
@@ -68,11 +73,13 @@ public partial class LevelGenerator : Node2D
         return returnVal;
     }
 
-    void SetSectionsScrollVelocity(float velocity)
+    void UpdateSectionPositions(float velocity, float delta)
     {
+        Vector2 deltaPos = Vector2.Down * velocity * delta;
         foreach(var section in _activeWorldSections)
         {
-            section.Velocity = new(0f, velocity);
+            if (!IsInstanceValid(section)) continue;
+            section.GlobalPosition += deltaPos;
         }
     }
 

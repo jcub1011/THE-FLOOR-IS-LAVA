@@ -3,7 +3,7 @@ using System;
 
 namespace WorldGeneration;
 
-public partial class WorldSection : CharacterBody2D
+public partial class WorldSection : TileMap
 {
     [Export] Marker2D _sectionUpperBound;
     [Export] Marker2D _sectionLowerBound;
@@ -12,12 +12,6 @@ public partial class WorldSection : CharacterBody2D
     public override void _Ready()
     {
         base._Ready();
-    }
-
-    public override void _Process(double delta)
-    {
-        base._Process(delta);
-        MoveAndSlide();
     }
 
     public override void _PhysicsProcess(double delta)
