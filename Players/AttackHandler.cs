@@ -22,6 +22,16 @@ public partial class AttackHandler : Node
 
     bool _isDisabled;
 
+    #region Interface Implementation
+    public string ControlID { get => ControlIDs.ATTACK_HANDLER; }
+
+    public void SetControlState(bool enabled)
+    {
+        if (enabled) OnEnable();
+        else OnDisable();
+    }
+    #endregion
+
     public override void _PhysicsProcess(double delta)
     {
         base._PhysicsProcess(delta);

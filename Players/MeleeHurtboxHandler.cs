@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Players;
 
-public partial class MeleeHurtboxHandler : Area2D
+public partial class MeleeHurtboxHandler : Area2D, IDisableableControl
 {
     [Signal] public delegate void OnHurtboxDeflectedEventHandler(CharacterBody2D deflector, float knockback);
 
@@ -23,6 +23,23 @@ public partial class MeleeHurtboxHandler : Area2D
         get => GetParent<CharacterBody2D>();
     }
     public float Knockback { get; private set; }
+
+    #region Interface Implementation
+    public string ControlID { get => ControlIDs.HURTBOX; }
+
+    public void SetControlState(bool enabled)
+    {
+        if (enabled)
+        {
+            EnableFlipping();
+        }
+        else
+        {
+            DisableFlipping();
+            DisableHitboxes();
+        }
+    }
+    #endregion
 
     public override void _Ready()
     {

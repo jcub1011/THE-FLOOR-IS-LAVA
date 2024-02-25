@@ -3,7 +3,7 @@ using System;
 
 namespace Players;
 
-public partial class KnockbackHandler : Node
+public partial class KnockbackHandler : Node, IDisableableControl
 {
     [Signal] public delegate void OnEnableMovementControlEventHandler();
     [Signal] public delegate void OnDisableMovementControlEventHandler();
@@ -12,6 +12,16 @@ public partial class KnockbackHandler : Node
 
     float _remainingDisableTime;
     float _previousRemainingDisableTime;
+
+    #region Interface Implementation
+    public string ControlID { get => ControlIDs.KNOCKBACK; }
+
+    public void SetControlState(bool enabled)
+    {
+        GD.PushWarning($"{nameof(KnockbackHandler)}.{nameof(SetControlState)} " +
+            $"is not implemented.");
+    }
+    #endregion
 
     public override void _PhysicsProcess(double delta)
     {

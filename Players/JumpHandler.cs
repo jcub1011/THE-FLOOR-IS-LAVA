@@ -3,7 +3,7 @@ using System;
 
 namespace Players;
 
-public partial class JumpHandler : Node
+public partial class JumpHandler : Node, IDisableableControl
 {
     [Export] CharacterBody2D _body;
     [Export] float _jumpVelocity;
@@ -11,6 +11,15 @@ public partial class JumpHandler : Node
     [Export] bool _isEnabled = true;
     bool _isJumpPressed;
     float _remainingJumpTime;
+
+    #region Interface Implementation
+    public string ControlID { get => ControlIDs.MOVEMENT; }
+
+    public void SetControlState(bool enabled)
+    {
+        SetIfEnabled(enabled);
+    }
+    #endregion
 
     public override void _Ready()
     {

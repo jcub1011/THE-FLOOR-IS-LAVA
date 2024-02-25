@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://cv7g2fnqrxx7s"]
+[gd_scene load_steps=29 format=3 uid="uid://cv7g2fnqrxx7s"]
 
 [ext_resource type="Script" path="res://Players/PlayerController.cs" id="1_bukco"]
 [ext_resource type="Script" path="res://Players/PlayerInputHandler.cs" id="2_bjy2i"]
@@ -12,6 +12,7 @@
 [ext_resource type="Script" path="res://Players/Hitbox.cs" id="9_4xjwb"]
 [ext_resource type="Script" path="res://Players/KnockbackHandler.cs" id="9_ad621"]
 [ext_resource type="Script" path="res://Players/VelocityBasedAnimationSelector.cs" id="9_igj33"]
+[ext_resource type="Script" path="res://Players/ControlDisablerHandler.cs" id="10_t2a0i"]
 [ext_resource type="Texture2D" uid="uid://bqsnyl44uidhf" path="res://Players/Sprite Sheets/Male_2_Clothes_1_Long.png" id="14_t54lr"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_meg5j"]
@@ -202,6 +203,9 @@ tracks/0/keys = {
 "values": [59, 60, 61, 62, 63, 64, 57, 58]
 }
 
+[sub_resource type="Animation" id="Animation_m8p3t"]
+resource_name = "on_deflect_landed"
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_r5udm"]
 _data = {
 "RESET": SubResource("Animation_lkr48"),
@@ -209,6 +213,7 @@ _data = {
 "dropkick": SubResource("Animation_8dm73"),
 "fall": SubResource("Animation_nss8v"),
 "idle": SubResource("Animation_rbf0t"),
+"on_deflect_landed": SubResource("Animation_m8p3t"),
 "punch": SubResource("Animation_qvcop"),
 "rise": SubResource("Animation_i5v2i"),
 "run": SubResource("Animation_qxqf1")
@@ -266,6 +271,9 @@ _walkToRunTransitionThreshold = 100.0
 [node name="KnockbackHandler" type="Node" parent="." node_paths=PackedStringArray("_body")]
 script = ExtResource("9_ad621")
 _body = NodePath("..")
+
+[node name="ControlDisablerHandler" type="Node" parent="."]
+script = ExtResource("10_t2a0i")
 
 [node name="Hitbox" type="Area2D" parent="."]
 script = ExtResource("9_4xjwb")

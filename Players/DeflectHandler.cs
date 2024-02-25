@@ -3,11 +3,20 @@ using System;
 
 namespace Players;
 
-public partial class DeflectHandler : Node
+public partial class DeflectHandler : Node, IDisableableControl
 {
     [Export] Sprite2D _sprite;
     [Export] CharacterBody2D _body;
     float _remainingDeflectTime;
+
+    #region Interface Implementation
+    public string ControlID { get => ControlIDs.DEFLECT; }
+
+    public void SetControlState(bool enabled)
+    {
+        _remainingDeflectTime = 0f;
+    }
+    #endregion
 
     public void EnableDeflect(float duration)
     {

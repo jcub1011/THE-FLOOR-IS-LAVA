@@ -1,13 +1,23 @@
 using Godot;
+using Players;
 using System;
 
 namespace Physics;
 
-public partial class GravityApplicator : Node
+public partial class GravityApplicator : Node, IDisableableControl
 {
     [Export] CharacterBody2D _body;
     [Export] public float Gravity { get; private set; } = 2000f;
     [Export] bool _isEnabled = true;
+
+    #region Interface Implementation
+    public string ControlID { get => ControlIDs.GRAVITY; }
+
+    public void SetControlState(bool enabled)
+    {
+        SetIfEnabled(enabled);
+    }
+    #endregion
 
     public override void _Ready()
     {

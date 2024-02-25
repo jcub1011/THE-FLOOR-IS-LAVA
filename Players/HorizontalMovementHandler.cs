@@ -3,7 +3,7 @@ using System;
 
 namespace Players;
 
-public partial class HorizontalMovementHandler : Node
+public partial class HorizontalMovementHandler : Node, IDisableableControl
 {
     [Export] CharacterBody2D _body;
     [Export] float _moveSpeed;
@@ -15,6 +15,15 @@ public partial class HorizontalMovementHandler : Node
     public void OnLeftReleased() => _isLeftButtonDown = false;
     public void OnRightPressed() => _isRightButtonDown = true;
     public void OnRightReleased() => _isRightButtonDown = false;
+
+    #region Interface Implementation
+    public string ControlID { get => ControlIDs.MOVEMENT; }
+
+    public void SetControlState(bool enabled)
+    {
+        SetIfEnabled(enabled);
+    }
+    #endregion
 
     public override void _Ready()
     {

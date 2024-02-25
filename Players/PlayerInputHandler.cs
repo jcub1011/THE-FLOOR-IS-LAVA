@@ -106,7 +106,7 @@ public static class InputDeviceExtensions
     }
 }
 
-public partial class PlayerInputHandler : Node
+public partial class PlayerInputHandler : Node, IDisableableControl
 {
     #region Static
     static readonly List<InputDevice> RegisteredDevices = new();
@@ -180,6 +180,7 @@ public partial class PlayerInputHandler : Node
     /// Use the static methods to change device.
     /// </summary>
     InputDevice _device;
+    bool _isEnabled = true;
 
     #region Signals
     [Signal] public delegate void MoveLeftPressedEventHandler();
@@ -194,6 +195,15 @@ public partial class PlayerInputHandler : Node
 
     //Dictionary<StringName, bool> _previousStateMap;
 
+    #region Interface Implementation
+    public string ControlID { get => ControlIDs.INPUT; }
+
+    public void SetControlState(bool enabled)
+    {
+        _isEnabled = enabled;
+    }
+    #endregion
+
     public override void _Ready()
     {
         base._Ready();
@@ -204,6 +214,7 @@ public partial class PlayerInputHandler : Node
     public override void _Input(InputEvent @event)
     {
         base._Input(@event);
+        if (!_isEnabled) return;
         if (!_device.IsEventForDevice(@event)) return;
 
         if (@event.IsActionPressed(InputNames.LEFT.ConvertInputName(_device.Type)))
