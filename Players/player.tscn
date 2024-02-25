@@ -16,16 +16,16 @@
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_meg5j"]
 radius = 4.0
-height = 16.0
+height = 14.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_f5o2s"]
-size = Vector2(8, 16)
+size = Vector2(8, 14)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lqg1u"]
-size = Vector2(16, 15.75)
+size = Vector2(16, 11)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sg5v1"]
-size = Vector2(21, 13)
+size = Vector2(15.9375, 4.875)
 
 [sub_resource type="Animation" id="Animation_lkr48"]
 length = 0.001
@@ -221,7 +221,7 @@ InputHandler = NodePath("PlayerInputHandler")
 _speedLimit = Vector2(500, 500)
 
 [node name="Collider" type="CollisionShape2D" parent="."]
-position = Vector2(0, -8)
+position = Vector2(0, -7)
 shape = SubResource("CapsuleShape2D_meg5j")
 
 [node name="PlayerInputHandler" type="Node" parent="."]
@@ -271,19 +271,19 @@ _body = NodePath("..")
 script = ExtResource("9_4xjwb")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
-position = Vector2(0, -8)
+position = Vector2(0, -7)
 shape = SubResource("RectangleShape2D_f5o2s")
 
 [node name="MeleeHurtboxHandler" type="Area2D" parent="."]
 script = ExtResource("6_rgnv7")
 
 [node name="PunchHurtbox" type="CollisionShape2D" parent="MeleeHurtboxHandler"]
-position = Vector2(12, -8)
+position = Vector2(12, -7.5)
 shape = SubResource("RectangleShape2D_lqg1u")
 script = ExtResource("7_xohju")
 
 [node name="DropkickHurtbox" type="CollisionShape2D" parent="MeleeHurtboxHandler"]
-position = Vector2(14.5, -6.5)
+position = Vector2(12.0313, -2.5625)
 shape = SubResource("RectangleShape2D_sg5v1")
 script = ExtResource("7_xohju")
 
@@ -294,8 +294,8 @@ libraries = {
 
 [node name="Sprite_New" type="Sprite2D" parent="."]
 texture_filter = 5
-position = Vector2(0, -8)
-scale = Vector2(0.5, 0.5)
+position = Vector2(0, -7.2)
+scale = Vector2(0.45, 0.45)
 texture = ExtResource("14_t54lr")
 hframes = 99
 frame = 5
