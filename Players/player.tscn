@@ -140,6 +140,9 @@ tracks/0/keys = {
 "values": [21, 22, 23, 24, 25, 26, 27, 28]
 }
 
+[sub_resource type="Animation" id="Animation_m8p3t"]
+resource_name = "on_deflect_landed"
+
 [sub_resource type="Animation" id="Animation_qvcop"]
 resource_name = "punch"
 length = 0.666675
@@ -204,9 +207,6 @@ tracks/0/keys = {
 "update": 1,
 "values": [59, 60, 61, 62, 63, 64, 57, 58]
 }
-
-[sub_resource type="Animation" id="Animation_m8p3t"]
-resource_name = "on_deflect_landed"
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_r5udm"]
 _data = {

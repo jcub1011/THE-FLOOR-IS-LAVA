@@ -27,25 +27,11 @@ public partial class FlipHandler : Node, IDisableableControl
 
     public void OnFaceLeft()
     {
-        if (_isEnabled)
-        {
-            EmitSignal(SignalName.OnFlip, true);
-        }
-        else
-        {
-            _cachedFlip = true;
-        }
+        _cachedFlip = true;
     }
 
     public void OnFaceRight()
     {
-        if (_isEnabled)
-        {
-            EmitSignal(SignalName.OnFlip, false);
-        }
-        else
-        {
-            _cachedFlip = false;
-        }
+        _cachedFlip = false;
     }
 }
