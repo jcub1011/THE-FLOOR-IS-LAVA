@@ -8,6 +8,7 @@ public partial class DeflectHandler : Node, IDisableableControl
     [Export] Sprite2D _sprite;
     [Export] CharacterBody2D _body;
     float _remainingDeflectTime;
+    bool _isEnabled;
 
     #region Interface Implementation
     public string ControlID { get => ControlIDs.DEFLECT; }

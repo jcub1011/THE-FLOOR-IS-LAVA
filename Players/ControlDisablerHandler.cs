@@ -15,6 +15,7 @@ public readonly struct ControlIDs
     public const string GRAVITY = "Gravity";
     public const string KNOCKBACK = "Knockback";
     public const string DEFLECT = "Deflect";
+    public const string FLIPPER = "Flipper";
 }
 
 public interface IDisableableControl
@@ -31,15 +32,27 @@ public partial class ControlDisablerHandler : Node
     [Signal] public delegate void OnMovementDisabledEventHandler();
     [Signal] public delegate void OnMovementEnabledEventHandler();
 
-    public void SetControlStates(bool enabled, params string[] controls)
+    SceneTreeTimer _curTimer = null;
+
+    public void SetControlStates(bool enabled, float undoAfterTime,
+        params string[] controls)
     {
+        if (_curTimer != null && _curTimer.TimeLeft > 0f) return;
+
         foreach(var control in controls)
         {
             SetControlStateByID(control, enabled);
         }
+        if (!float.IsNaN(undoAfterTime) && undoAfterTime > 0f)
+        {
+            _curTimer = GetTree().CreateTimer(undoAfterTime, false);
+            _curTimer.Timeout += () => {
+                SetControlStates(!enabled, float.NaN, controls);
+            };
+        }
     }
 
-    public void SetControlStateByID(string controlID, bool enabled)
+    void SetControlStateByID(string controlID, bool enabled)
     {
         foreach(var child in GetParent().GetChildren())
         {
