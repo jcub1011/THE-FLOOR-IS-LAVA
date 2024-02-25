@@ -330,3 +330,4 @@ frame = 5
 [connection signal="OnEnableMovementControl" from="KnockbackHandler" to="VelocityBasedAniSelector" method="SetIfEnabled" binds= [true]]
 [connection signal="OnReceivedDamage" from="Hitbox" to="KnockbackHandler" method="OnApplyKnockback"]
 [connection signal="OnReceivedHit" from="Hitbox" to="DeflectHandler" method="OnReceivedHitHandler"]
+[connection signal="OnHurtboxDeflected" from="MeleeHurtboxHandler" to="KnockbackHandler" method="OnApplyDeflectedKnockback"]
