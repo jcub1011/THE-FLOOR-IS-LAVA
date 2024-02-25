@@ -1,8 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://c6vxsfrvbssc6"]
+[gd_scene load_steps=15 format=3 uid="uid://c6vxsfrvbssc6"]
 
 [ext_resource type="PackedScene" uid="uid://cv7g2fnqrxx7s" path="res://Players/player.tscn" id="1_pixmk"]
 [ext_resource type="Script" path="res://Levels/LevelGenerator.cs" id="2_lriob"]
+[ext_resource type="Texture2D" uid="uid://tj7yfsiuowo0" path="res://Levels/Tilemaps/cavesofgallet_tiles.png" id="4_83wch"]
 [ext_resource type="PackedScene" uid="uid://sufc8uq6r5fu" path="res://Levels/Test Type/starter_section_2.tscn" id="4_h62ia"]
+[ext_resource type="Texture2D" uid="uid://c4odmib8ofaak" path="res://Levels/Tilemaps/Lava_Frames/AnimatedFloorLava_1.png" id="5_h5y7s"]
+[ext_resource type="Texture2D" uid="uid://b1qjldpvjx1k0" path="res://Levels/Tilemaps/Lava_Frames/AnimatedFloorLava_2.png" id="6_52op3"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_xfy5v"]
 distance = -90.0
@@ -16,7 +19,62 @@ distance = -154.0
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_5eqt8"]
 distance = -120.0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1iuj7"]
+texture = ExtResource("4_83wch")
+texture_region_size = Vector2i(8, 8)
+4:7/next_alternative_id = 2
+4:7/0 = 0
+4:7/1 = 1
+4:7/1/flip_h = true
+4:8/0 = 0
+4:9/next_alternative_id = 2
+4:9/0 = 0
+4:9/1 = 1
+4:9/1/flip_h = true
+4:10/next_alternative_id = 2
+4:10/0 = 0
+4:10/1 = 1
+4:10/1/flip_h = true
+3:8/0 = 0
+5:8/0 = 0
+5:9/0 = 0
+6:9/0 = 0
+6:8/0 = 0
+7:8/0 = 0
+7:9/0 = 0
+4:11/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_0cc68"]
+tile_size = Vector2i(8, 8)
+sources/0 = SubResource("TileSetAtlasSource_1iuj7")
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_fcu7n"]
+distance = -87.0
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_liptw"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_h5y7s")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_52op3")
+}],
+"loop": true,
+"name": &"default",
+"speed": 1.0
+}]
+
 [node name="World" type="Node2D"]
+
+[node name="Level Generator" type="Node2D" parent="." node_paths=PackedStringArray("_camera")]
+script = ExtResource("2_lriob")
+_camera = NodePath("../Camera2D")
+_scrollSpeed = 10.0
+_templates = Array[StringName]([&"res://Levels/Test Type/starter_section_1.tscn"])
+
+[node name="TileMap" parent="Level Generator" instance=ExtResource("4_h62ia")]
+position = Vector2(0, -26)
 
 [node name="Section Bounds" type="Node2D" parent="."]
 
@@ -33,21 +91,13 @@ position = Vector2(-150, 85)
 position = Vector2(150, 85)
 
 [node name="Player1" parent="." instance=ExtResource("1_pixmk")]
-position = Vector2(-138, 62)
+position = Vector2(-116, 58)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(4, 4)
 
 [node name="Player2" parent="." instance=ExtResource("1_pixmk")]
-position = Vector2(138, 71)
-
-[node name="Level Generator" type="Node2D" parent="." node_paths=PackedStringArray("_camera")]
-script = ExtResource("2_lriob")
-_camera = NodePath("../Camera2D")
-_scrollSpeed = 0.0
-_templates = Array[StringName]([&"res://Levels/Test Type/starter_section_1.tscn"])
-
-[node name="TileMap" parent="Level Generator" instance=ExtResource("4_h62ia")]
+position = Vector2(107, 59)
 
 [node name="World Bounds" type="StaticBody2D" parent="."]
 collision_mask = 0
@@ -68,3 +118,24 @@ shape = SubResource("WorldBoundaryShape2D_453lm")
 
 [node name="Bottom" type="CollisionShape2D" parent="World Bounds"]
 shape = SubResource("WorldBoundaryShape2D_5eqt8")
+
+[node name="LAVA" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 0
+
+[node name="TileMap" type="TileMap" parent="LAVA"]
+texture_filter = 5
+tile_set = SubResource("TileSet_0cc68")
+rendering_quadrant_size = 8
+format = 2
+layer_0/tile_data = PackedInt32Array(720877, 262144, 8, 720878, 262144, 8, 720879, 262144, 8, 720880, 262144, 8, 720881, 262144, 8, 720882, 262144, 8, 720883, 262144, 8, 720884, 262144, 8, 720885, 262144, 8, 720886, 262144, 8, 720887, 262144, 8, 720888, 262144, 8, 720889, 262144, 8, 720890, 262144, 8, 720891, 262144, 8, 720892, 262144, 8, 720893, 262144, 8, 720894, 262144, 8, 720895, 262144, 8, 655360, 262144, 8, 655361, 262144, 8, 655362, 262144, 8, 655363, 262144, 8, 655364, 262144, 8, 655365, 262144, 8, 655366, 262144, 8, 655367, 262144, 8, 655368, 262144, 8, 655369, 262144, 8, 655370, 262144, 8, 655371, 262144, 8, 655372, 262144, 8, 655373, 262144, 8, 655374, 262144, 8, 655375, 262144, 8, 655376, 262144, 8, 655377, 262144, 8, 655378, 262144, 8)
+
+[node name="Collider" type="CollisionShape2D" parent="LAVA"]
+shape = SubResource("WorldBoundaryShape2D_fcu7n")
+
+[node name="Lava Froth" type="AnimatedSprite2D" parent="LAVA"]
+texture_filter = 5
+position = Vector2(0, 5)
+sprite_frames = SubResource("SpriteFrames_liptw")
+autoplay = "default"
+frame_progress = 0.0720958
