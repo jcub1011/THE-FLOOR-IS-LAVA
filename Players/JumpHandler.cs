@@ -42,6 +42,7 @@ public partial class JumpHandler : Node, IDisableableControl
     [Export] float _maxJumpTime;
     [Export] bool _isEnabled = true;
     [Export] float _coyoteTime = 0.05f;
+    [Export] float _jumpBuffer = 0.1f;
     bool _isJumpPressed;
     float _remainingJumpTime;
     CoyoteTimer _coyoteTimer;
@@ -62,7 +63,11 @@ public partial class JumpHandler : Node, IDisableableControl
         _coyoteTimer = new(_coyoteTime);
     }
 
-    public void OnJumpPressed() => _isJumpPressed = true;
+    public void OnJumpPressed()
+    {
+        _isJumpPressed = true;
+        InputBuffer.BufferInput(_body, InputNames.JUMP);
+    }
     public void OnJumpReleased() => _isJumpPressed = false;
 
     public override void _Process(double delta)
@@ -83,6 +88,13 @@ public partial class JumpHandler : Node, IDisableableControl
             {
                 _body.Velocity = new(_body.Velocity.X, -_jumpVelocity);
             }
+        }
+        else if (InputBuffer.IsBuffered(_body, InputNames.JUMP, _jumpBuffer)
+            && _coyoteTimer.IsOnGround())
+        {
+            _coyoteTimer.ConsumeCoyoteTime();
+            InputBuffer.ConsumeBuffer(_body, InputNames.JUMP);
+            _body.Velocity = new(_body.Velocity.X, -_jumpVelocity);
         }
     }
 
