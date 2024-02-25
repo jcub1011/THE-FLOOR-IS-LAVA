@@ -24,8 +24,8 @@ public partial class Hitbox : Area2D, IDisableableControl
 
     public void SetControlState(bool enabled)
     {
-        Monitoring = enabled;
-        Monitorable = enabled;
+        SetDeferred("monitoring", enabled);
+        SetDeferred("monitorable", enabled);
     }
     #endregion
 

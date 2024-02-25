@@ -33,22 +33,37 @@ public partial class ControlDisablerHandler : Node
     [Signal] public delegate void OnMovementEnabledEventHandler();
 
     SceneTreeTimer _curTimer = null;
+    string[] _controlsToReenable;
 
     public void SetControlStates(bool enabled, float undoAfterTime,
         params string[] controls)
     {
-        if (_curTimer != null && _curTimer.TimeLeft > 0f) return;
+        DeleteCurTimer();
 
         foreach(var control in controls)
         {
             SetControlStateByID(control, enabled);
         }
+
         if (!float.IsNaN(undoAfterTime) && undoAfterTime > 0f)
         {
             _curTimer = GetTree().CreateTimer(undoAfterTime, false);
-            _curTimer.Timeout += () => {
-                SetControlStates(!enabled, float.NaN, controls);
-            };
+            _controlsToReenable = controls;
+            _curTimer.Timeout += TimerCallback;
+        }
+    }
+
+    void DeleteCurTimer()
+    {
+        if (_curTimer != null && _curTimer.TimeLeft > 0f)
+        {
+            _curTimer.Timeout -= TimerCallback;
+            foreach (var control in _controlsToReenable)
+            {
+                SetControlStateByID(control, true);
+            }
+            _curTimer = null;
+            _controlsToReenable = null;
         }
     }
 
@@ -64,6 +79,11 @@ public partial class ControlDisablerHandler : Node
                 }
             }
         }
+    }
+
+    void TimerCallback()
+    {
+        SetControlStates(true, float.NaN, _controlsToReenable);
     }
 
     /// <summary>

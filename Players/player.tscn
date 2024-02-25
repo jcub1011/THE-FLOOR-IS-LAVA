@@ -269,11 +269,9 @@ _sprite = NodePath("../Sprite_New")
 _player = NodePath("../AnimationPlayer")
 _walkToRunTransitionThreshold = 100.0
 
-[node name="HealthHandler" type="Node" parent="."]
-
 [node name="KnockbackHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_disabler")]
 script = ExtResource("9_ad621")
-_recoveryTime = 1.0
+_recoveryTime = 0.5
 _body = NodePath("..")
 _disabler = NodePath("../ControlDisablerHandler")
 

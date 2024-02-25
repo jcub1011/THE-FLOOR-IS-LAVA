@@ -48,6 +48,7 @@ public partial class KnockbackHandler : Node, IDisableableControl
         _disabler.SetControlStates(false,
             time,
             ControlIDs.ATTACK_HANDLER,
+            ControlIDs.HITBOX,
             ControlIDs.HURTBOX, 
             ControlIDs.MOVEMENT,
             ControlIDs.AUTO_ANIMATION,
