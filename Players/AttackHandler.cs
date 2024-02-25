@@ -10,6 +10,7 @@ public partial class AttackHandler : Node, IDisableableControl
     [Export] AnimationPlayer _aniPlayer;
     [Export] ControlDisablerHandler _controlDisabler;
     [Export] float _dropkickDrag;
+    [Export] float _actionBufferTime;
 
     [Export] StringName _dropkickAnimation = "dropkick";
     [Export] StringName _punchAnimation = "punch";
@@ -38,6 +39,16 @@ public partial class AttackHandler : Node, IDisableableControl
                 _body.Velocity = newVel;
             }
         }
+        else
+        {
+            if (InputBuffer.IsBuffered(_body, InputNames.ACTION,
+                _actionBufferTime))
+            {
+                GD.Print($"Performing buffered input.");
+                InputBuffer.ConsumeBuffer(_body, InputNames.ACTION);
+                OnAction();
+            }
+        }
     }
 
     public void OnAction()
@@ -46,7 +57,12 @@ public partial class AttackHandler : Node, IDisableableControl
         {
             GD.Print($"{GetParent().Name} unable to perform action, currently " +
                 $"disabled.");
+            InputBuffer.BufferInput(_body, InputNames.ACTION);
             return;
+        }
+        else
+        {
+            InputBuffer.ConsumeBuffer(_body, InputNames.ACTION);
         }
 
         if (_body.IsOnFloor())

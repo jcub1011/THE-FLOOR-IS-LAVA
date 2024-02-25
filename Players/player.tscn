@@ -256,6 +256,7 @@ _body = NodePath("..")
 _aniPlayer = NodePath("../AnimationPlayer")
 _controlDisabler = NodePath("../ControlDisablerHandler")
 _dropkickDrag = 3.0
+_actionBufferTime = 0.3
 
 [node name="DeflectHandler" type="Node" parent="." node_paths=PackedStringArray("_sprite", "_body")]
 script = ExtResource("7_bcpnl")
