@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://cv7g2fnqrxx7s"]
+[gd_scene load_steps=33 format=3 uid="uid://cv7g2fnqrxx7s"]
 
 [ext_resource type="Script" path="res://Players/PlayerController.cs" id="1_bukco"]
 [ext_resource type="Script" path="res://Players/PlayerInputHandler.cs" id="2_bjy2i"]
@@ -16,6 +16,9 @@
 [ext_resource type="Script" path="res://Players/FlipHandler.cs" id="11_t7grp"]
 [ext_resource type="Texture2D" uid="uid://bqsnyl44uidhf" path="res://Players/Sprite Sheets/Male_2_Clothes_1_Long.png" id="14_t54lr"]
 [ext_resource type="Script" path="res://Players/SpriteControls.cs" id="16_cd1ek"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pi3oo"]
+size = Vector2(8, 14)
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_meg5j"]
 radius = 4.0
@@ -208,9 +211,27 @@ tracks/0/keys = {
 "values": [59, 60, 61, 62, 63, 64, 57, 58]
 }
 
+[sub_resource type="Animation" id="Animation_uxa3w"]
+resource_name = "death"
+length = 1.16668
+step = 0.166667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.166667, 0.333333, 0.5, 0.666667, 0.833333, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [12, 13, 14, 15, 16, 17, 18]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_r5udm"]
 _data = {
 "RESET": SubResource("Animation_lkr48"),
+"death": SubResource("Animation_uxa3w"),
 "deflect": SubResource("Animation_lydds"),
 "dropkick": SubResource("Animation_8dm73"),
 "fall": SubResource("Animation_nss8v"),
@@ -226,6 +247,14 @@ collision_layer = 2
 script = ExtResource("1_bukco")
 InputHandler = NodePath("PlayerInputHandler")
 _speedLimit = Vector2(500, 500)
+
+[node name="Lava Collider" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Lava Collider"]
+position = Vector2(0, -7)
+shape = SubResource("RectangleShape2D_pi3oo")
 
 [node name="Collider" type="CollisionShape2D" parent="."]
 position = Vector2(0, -7)
@@ -316,6 +345,7 @@ hframes = 99
 frame = 5
 script = ExtResource("16_cd1ek")
 
+[connection signal="area_entered" from="Lava Collider" to="." method="OnTouchedLava"]
 [connection signal="ActionPressed" from="PlayerInputHandler" to="AttackHandler" method="OnAction"]
 [connection signal="JumpPressed" from="PlayerInputHandler" to="JumpHandler" method="OnJumpPressed"]
 [connection signal="JumpReleased" from="PlayerInputHandler" to="JumpHandler" method="OnJumpReleased"]

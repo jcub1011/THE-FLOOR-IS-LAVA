@@ -26,12 +26,6 @@ public interface IDisableableControl
 
 public partial class ControlDisablerHandler : Node
 {
-    [Signal] public delegate void OnAutoAnimationDisabledEventHandler();
-    [Signal] public delegate void OnAutoAnimationEnabledEventHandler();
-
-    [Signal] public delegate void OnMovementDisabledEventHandler();
-    [Signal] public delegate void OnMovementEnabledEventHandler();
-
     SceneTreeTimer _curTimer = null;
     string[] _controlsToReenable;
 
@@ -49,6 +43,34 @@ public partial class ControlDisablerHandler : Node
         {
             _curTimer = GetTree().CreateTimer(undoAfterTime, false);
             _controlsToReenable = controls;
+            _curTimer.Timeout += TimerCallback;
+        }
+    }
+
+    /// <summary>
+    /// Sets all the availiable controls to the desired state.
+    /// </summary>
+    /// <param name="enabled"></param>
+    /// <param name="undoAfterTime"></param>
+    public void SetControlStates(bool enabled, float undoAfterTime)
+    {
+        DeleteCurTimer();
+        string[] toReenable = new string[GetParent().GetChildren().Count];
+        int index = 0;
+
+        foreach(var child in GetParent().GetChildren())
+        {
+            if (child is IDisableableControl control)
+            {
+                control.SetControlState(enabled);
+                toReenable[index++] = control.ControlID;
+            }
+        }
+
+        if (!float.IsNaN(undoAfterTime) && undoAfterTime > 0f)
+        {
+            _curTimer = GetTree().CreateTimer(undoAfterTime, false);
+            _controlsToReenable = toReenable;
             _curTimer.Timeout += TimerCallback;
         }
     }

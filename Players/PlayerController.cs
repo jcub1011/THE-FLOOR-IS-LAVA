@@ -23,4 +23,28 @@ public partial class PlayerController : CharacterBody2D
         Velocity = limitedVelocity;
         MoveAndSlide();
     }
+
+    public void OnTouchedLava(Area2D area)
+    {
+        GD.Print($"Player {Name} touched lava.");
+
+        ControlDisablerHandler handler = null;
+        foreach(var child in GetChildren())
+        {
+            if (child is ControlDisablerHandler)
+            {
+                handler = (ControlDisablerHandler)child;
+            }
+        }
+
+        if (handler != null)
+        {
+            handler.SetControlStates(false, float.PositiveInfinity);
+
+            var player = GetNode<AnimationPlayer>("AnimationPlayer");
+            player.Play("death");
+
+            float length = player.GetAnimation("death").Length;
+        }
+    }
 }

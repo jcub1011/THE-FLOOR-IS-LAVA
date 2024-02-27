@@ -17,7 +17,7 @@ distance = -154.0
 distance = -154.0
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_5eqt8"]
-distance = -120.0
+distance = -83.0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1iuj7"]
 texture = ExtResource("4_83wch")
@@ -48,9 +48,6 @@ texture_region_size = Vector2i(8, 8)
 tile_size = Vector2i(8, 8)
 sources/0 = SubResource("TileSetAtlasSource_1iuj7")
 
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_fcu7n"]
-distance = -87.0
-
 [sub_resource type="SpriteFrames" id="SpriteFrames_liptw"]
 animations = [{
 "frames": [{
@@ -64,6 +61,9 @@ animations = [{
 "name": &"default",
 "speed": 1.0
 }]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_fcu7n"]
+distance = -82.0
 
 [node name="World" type="Node2D"]
 
@@ -130,12 +130,13 @@ rendering_quadrant_size = 8
 format = 2
 layer_0/tile_data = PackedInt32Array(720877, 262144, 8, 720878, 262144, 8, 720879, 262144, 8, 720880, 262144, 8, 720881, 262144, 8, 720882, 262144, 8, 720883, 262144, 8, 720884, 262144, 8, 720885, 262144, 8, 720886, 262144, 8, 720887, 262144, 8, 720888, 262144, 8, 720889, 262144, 8, 720890, 262144, 8, 720891, 262144, 8, 720892, 262144, 8, 720893, 262144, 8, 720894, 262144, 8, 720895, 262144, 8, 655360, 262144, 8, 655361, 262144, 8, 655362, 262144, 8, 655363, 262144, 8, 655364, 262144, 8, 655365, 262144, 8, 655366, 262144, 8, 655367, 262144, 8, 655368, 262144, 8, 655369, 262144, 8, 655370, 262144, 8, 655371, 262144, 8, 655372, 262144, 8, 655373, 262144, 8, 655374, 262144, 8, 655375, 262144, 8, 655376, 262144, 8, 655377, 262144, 8, 655378, 262144, 8)
 
-[node name="Collider" type="CollisionShape2D" parent="LAVA"]
-shape = SubResource("WorldBoundaryShape2D_fcu7n")
-
 [node name="Lava Froth" type="AnimatedSprite2D" parent="LAVA"]
 texture_filter = 5
 position = Vector2(0, 5)
 sprite_frames = SubResource("SpriteFrames_liptw")
 autoplay = "default"
 frame_progress = 0.0720958
+
+[node name="Collider" type="CollisionShape2D" parent="LAVA"]
+position = Vector2(0, -5)
+shape = SubResource("WorldBoundaryShape2D_fcu7n")
