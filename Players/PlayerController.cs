@@ -1,4 +1,5 @@
 using Godot;
+using System.Threading;
 
 namespace Players;
 
@@ -27,23 +28,24 @@ public partial class PlayerController : CharacterBody2D
     {
         GD.Print($"Player {Name} touched lava.");
 
-        ControlDisablerHandler handler = null;
         foreach (var child in GetChildren())
         {
-            if (child is ControlDisablerHandler)
+            if (child is ControlDisablerHandler handler)
             {
-                handler = (ControlDisablerHandler)child;
+                handler.SetControlStates(false, float.PositiveInfinity);
+
+                var player = GetNode<AnimationPlayer>("AnimationPlayer");
+                player.Play("death");
+
+                float length = player.GetAnimation("death").Length;
+
+                var timer = GetTree().CreateTimer(length, false);
+                timer.Timeout += () => {
+                    GD.Print("Death animation ended.");
+                    Visible = false;
+                };
+                break;
             }
-        }
-
-        if (handler != null)
-        {
-            handler.SetControlStates(false, float.PositiveInfinity);
-
-            var player = GetNode<AnimationPlayer>("AnimationPlayer");
-            player.Play("death");
-
-            float length = player.GetAnimation("death").Length;
         }
     }
 
@@ -51,5 +53,13 @@ public partial class PlayerController : CharacterBody2D
     {
         Visible = true;
 
+        foreach (var child in GetChildren())
+        {
+            if (child is ControlDisablerHandler handler)
+            {
+                handler.SetControlStates(true, float.PositiveInfinity);
+                break;
+            }
+        }
     }
 }
