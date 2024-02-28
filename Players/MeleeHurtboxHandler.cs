@@ -1,6 +1,4 @@
 using Godot;
-using System;
-using System.Collections.Generic;
 
 namespace Players;
 
@@ -27,7 +25,8 @@ public partial class MeleeHurtboxHandler : Area2D, IDisableableControl
 
     public void SetControlState(bool enabled)
     {
-        if (!enabled) {
+        if (!enabled)
+        {
             DisableHitboxes();
         }
     }
@@ -60,7 +59,7 @@ public partial class MeleeHurtboxHandler : Area2D, IDisableableControl
 
     void DisableHitboxes()
     {
-        foreach(var child in GetChildren())
+        foreach (var child in GetChildren())
         {
             if (child is TimedCollider timedCollider)
             {

@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 namespace Players;
 
@@ -49,7 +48,7 @@ public partial class KnockbackHandler : Node, IDisableableControl
             time,
             ControlIDs.ATTACK_HANDLER,
             ControlIDs.HITBOX,
-            ControlIDs.HURTBOX, 
+            ControlIDs.HURTBOX,
             ControlIDs.MOVEMENT,
             ControlIDs.AUTO_ANIMATION,
             ControlIDs.DEFLECT,

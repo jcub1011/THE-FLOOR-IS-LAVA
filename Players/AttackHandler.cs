@@ -1,6 +1,4 @@
 using Godot;
-using Physics;
-using System;
 
 namespace Players;
 
@@ -35,7 +33,7 @@ public partial class AttackHandler : Node, IDisableableControl
             if (_body.IsOnFloor())
             {
                 Vector2 newVel = _body.Velocity;
-                newVel.X *= ( 1 - _dropkickDrag * (float)delta);
+                newVel.X *= (1 - _dropkickDrag * (float)delta);
                 _body.Velocity = newVel;
             }
         }
@@ -71,7 +69,7 @@ public partial class AttackHandler : Node, IDisableableControl
             {
                 // Perform deflect.
                 GD.Print("Performing deflect.");
-                _controlDisabler.SetControlStates(false, 
+                _controlDisabler.SetControlStates(false,
                     _aniPlayer.GetAnimation(_deflectAnimation).Length,
                     ControlIDs.ATTACK_HANDLER,
                     ControlIDs.HURTBOX,
@@ -104,7 +102,7 @@ public partial class AttackHandler : Node, IDisableableControl
                 _aniPlayer.GetAnimation(_dropkickAnimation).Length,
                 ControlIDs.ATTACK_HANDLER,
                 ControlIDs.MOVEMENT,
-                ControlIDs.AUTO_ANIMATION, 
+                ControlIDs.AUTO_ANIMATION,
                 ControlIDs.FLIPPER);
             //DisableHandlers(_aniPlayer.GetAnimation(_dropkickAnimation).Length);
             _aniPlayer.Play(_dropkickAnimation);

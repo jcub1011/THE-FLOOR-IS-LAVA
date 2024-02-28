@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 namespace Players;
 
@@ -29,7 +28,7 @@ public partial class PlayerController : CharacterBody2D
         GD.Print($"Player {Name} touched lava.");
 
         ControlDisablerHandler handler = null;
-        foreach(var child in GetChildren())
+        foreach (var child in GetChildren())
         {
             if (child is ControlDisablerHandler)
             {
@@ -46,5 +45,11 @@ public partial class PlayerController : CharacterBody2D
 
             float length = player.GetAnimation("death").Length;
         }
+    }
+
+    public void OnStart()
+    {
+        Visible = true;
+
     }
 }

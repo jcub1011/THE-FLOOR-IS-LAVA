@@ -1,5 +1,4 @@
 using Godot;
-using System;
 using System.Collections.Generic;
 
 namespace WorldGeneration;
@@ -29,7 +28,7 @@ public partial class LevelGenerator : Node2D
         _worldBottomY = GetWorldBottomY();
         _activeWorldSections = new();
 
-        foreach(var child in GetChildren())
+        foreach (var child in GetChildren())
         {
             if (child is WorldSection section)
             {
@@ -44,7 +43,8 @@ public partial class LevelGenerator : Node2D
 
         while (iterator != null)
         {
-            if (!IsInstanceValid(iterator.Value)) {
+            if (!IsInstanceValid(iterator.Value))
+            {
                 _activeWorldSections.Remove(iterator);
             }
             iterator = iterator.Next;
@@ -76,7 +76,7 @@ public partial class LevelGenerator : Node2D
     void UpdateSectionPositions(double velocity, double delta)
     {
         Vector2 deltaPos = new(0f, (float)(velocity * delta));
-        foreach(var section in _activeWorldSections)
+        foreach (var section in _activeWorldSections)
         {
             if (!IsInstanceValid(section)) continue;
             section.Position += deltaPos;
@@ -86,7 +86,7 @@ public partial class LevelGenerator : Node2D
     StringName GetNextSection()
     {
         var curSection = _activeWorldSections.Last.Value;
-        int index = Mathf.Abs((int)(GD.Randi() - uint.MaxValue / 2)) 
+        int index = Mathf.Abs((int)(GD.Randi() - uint.MaxValue / 2))
             % curSection.PossibleContinuations.Count;
         return curSection.PossibleContinuations[index];
     }

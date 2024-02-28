@@ -1,9 +1,5 @@
 using Godot;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace Players;
 
@@ -47,12 +43,12 @@ public readonly struct InputDevice
         return $"Type: {Type} | ID: {DeviceID}";
     }
 
-    public static bool operator == (InputDevice left, InputDevice right)
+    public static bool operator ==(InputDevice left, InputDevice right)
     {
         return (left.Type == right.Type) && (left.DeviceID == right.DeviceID);
     }
 
-    public static bool operator != (InputDevice left, InputDevice right)
+    public static bool operator !=(InputDevice left, InputDevice right)
     {
         return !(left == right);
     }
@@ -94,7 +90,7 @@ public static class InputDeviceExtensions
 
     public static StringName ConvertInputName(this StringName name, DeviceType type)
     {
-        switch(type)
+        switch (type)
         {
             case DeviceType.KeyboardLeft:
                 return name + InputNames.LEFT_KB_ID;
@@ -133,7 +129,7 @@ public static class InputBuffer
     /// <param name="inputName"></param>
     /// <param name="maxBufferTime"></param>
     /// <returns></returns>
-    public static bool IsBuffered(Node characterBody, string inputName, 
+    public static bool IsBuffered(Node characterBody, string inputName,
         float maxBufferTime)
     {
         ulong curTime = Time.GetTicksMsec();
@@ -168,12 +164,12 @@ public static class InputBuffer
         _lastMapRefereshTime = curTime;
         List<string> toRemove = new();
 
-        foreach(var kvp in _inputTimeMap)
+        foreach (var kvp in _inputTimeMap)
         {
             if (curTime - kvp.Value > MAX_BUFFER_TIME) toRemove.Add(kvp.Key);
         }
 
-        foreach(var key in toRemove)
+        foreach (var key in toRemove)
         {
             _inputTimeMap.Remove(key);
         }
@@ -214,7 +210,7 @@ public partial class PlayerInputHandler : Node, IDisableableControl
         bool hasRightKeyboard = false;
 
         GD.Print(RegisteredDevices);
-        foreach(var device in RegisteredDevices)
+        foreach (var device in RegisteredDevices)
         {
             if (device.Type == DeviceType.KeyboardLeft)
             {
@@ -238,7 +234,7 @@ public partial class PlayerInputHandler : Node, IDisableableControl
         {
             openDevices.Add(new(DeviceType.KeyboardRight, 0));
         }
-        foreach(var id in Input.GetConnectedJoypads())
+        foreach (var id in Input.GetConnectedJoypads())
         {
             if (!takenControllerIds.Contains(id))
             {

@@ -1,6 +1,4 @@
 using Godot;
-using Players;
-using System;
 
 namespace Players;
 
@@ -34,7 +32,7 @@ public partial class ControlDisablerHandler : Node
     {
         DeleteCurTimer();
 
-        foreach(var control in controls)
+        foreach (var control in controls)
         {
             SetControlStateByID(control, enabled);
         }
@@ -58,7 +56,7 @@ public partial class ControlDisablerHandler : Node
         string[] toReenable = new string[GetParent().GetChildren().Count];
         int index = 0;
 
-        foreach(var child in GetParent().GetChildren())
+        foreach (var child in GetParent().GetChildren())
         {
             if (child is IDisableableControl control)
             {
@@ -91,7 +89,7 @@ public partial class ControlDisablerHandler : Node
 
     void SetControlStateByID(string controlID, bool enabled)
     {
-        foreach(var child in GetParent().GetChildren())
+        foreach (var child in GetParent().GetChildren())
         {
             if (child is IDisableableControl control)
             {
@@ -116,7 +114,7 @@ public partial class ControlDisablerHandler : Node
     /// <returns></returns>
     public T GetFirstSiblingOfType<T>() where T : class
     {
-        foreach(var child in GetParent().GetChildren())
+        foreach (var child in GetParent().GetChildren())
         {
             if (child is T target) return target;
         }

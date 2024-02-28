@@ -49,8 +49,8 @@ public static class NodeExtensionMethods
     /// <param name="restartIfAlreadyPlaying"></param>
     /// <returns></returns>
     public static bool PlayIfExists(
-        this AnimationPlayer player, 
-        StringName animation, 
+        this AnimationPlayer player,
+        StringName animation,
         bool restartIfAlreadyPlaying = false)
     {
         if (animation == null
@@ -116,7 +116,7 @@ public static class MathExtensions
         {
             return targetPosition.RelativeTo(currentPosition);
         }
-        
+
         float a = currentSpeed * currentSpeed - targetSpeed * targetSpeed;
         float b = 2 * dirFromTarget.Dot(targetVelocity);
         float c = -(distance * distance);
@@ -149,7 +149,7 @@ public static class MathExtensions
     /// <param name="x1">The negative sqr root.</param>
     /// <param name="x2">The positive sqr root.</param>
     /// <returns></returns>
-    public static bool QuadraticSolver(float a, float b, float c, 
+    public static bool QuadraticSolver(float a, float b, float c,
         out float x1, out float x2)
     {
         float preRoot = b * b - 4 * a * c;
