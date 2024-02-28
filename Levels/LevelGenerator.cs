@@ -1,7 +1,61 @@
 using Godot;
 using System.Collections.Generic;
+using System.Linq;
+using static System.Collections.Specialized.BitVector32;
 
 namespace WorldGeneration;
+
+public static class ListExtensions
+{
+    public static T PickRandom<T>(this IEnumerable<T> list)
+    {
+        int count = list.Count();
+        if (count == 0) return default;
+
+        var rand = new RandomNumberGenerator();
+
+        return list.ElementAt((System.Index)(rand.Randi() % count));
+    }
+
+    public static T PickRandom<T>(this IEnumerable<T> list, RandomNumberGenerator rand)
+    {
+        int count = list.Count();
+        if (count == 0) return default;
+
+        return list.ElementAt((System.Index)(rand.Randi() % count));
+    }
+}
+
+internal class SectionPreloader
+{
+    const string SECTION_PATH = "res://Levels/Sections/";
+
+    string _sectionToLoad;
+
+    public SectionPreloader(string sectionStarter)
+    {
+        StartNextSection(sectionStarter);
+    }
+
+    void StartNextSection(string sectionName)
+    {
+        _sectionToLoad = ToPath(sectionName);
+        ResourceLoader.LoadThreadedRequest(_sectionToLoad);
+    }
+
+    public WorldSection GetNextSection()
+    {
+        var section = ResourceLoader.LoadThreadedGet(_sectionToLoad) as PackedScene;
+        var worldSection = section.Instantiate<WorldSection>();
+        StartNextSection(worldSection.PossibleContinuations.PickRandom());
+        return worldSection;
+    }
+
+    static string ToPath(string name)
+    {
+        return SECTION_PATH + name + ".tscn";
+    }
+}
 
 public partial class LevelGenerator : Node2D
 {
@@ -9,8 +63,10 @@ public partial class LevelGenerator : Node2D
     [Export] Camera2D _camera;
     [Export] double _scrollSpeed = 25f;
 
-    LinkedList<WorldSection> _activeWorldSections;
+    Queue<WorldSection> _activeWorldSections;
     [Export] Godot.Collections.Array<StringName> _templates;
+
+    SectionPreloader _preloader;
 
     public float? _worldBottomY;
     public float WorldBottomY
@@ -28,26 +84,21 @@ public partial class LevelGenerator : Node2D
         _worldBottomY = GetWorldBottomY();
         _activeWorldSections = new();
 
-        foreach (var child in GetChildren())
-        {
-            if (child is WorldSection section)
-            {
-                _activeWorldSections.AddFirst(section);
-            }
-        }
+        _preloader = new("starter_section_1");
+
+        var newSection = _preloader.GetNextSection();
+        newSection.Position = Vector2.Zero;
+        AddChild(newSection);
+        _activeWorldSections.Enqueue(newSection);
     }
 
     void RemoveDeletedScenes()
     {
-        LinkedListNode<WorldSection> iterator = _activeWorldSections.First;
+        List<WorldSection> toDelete = new();
 
-        while (iterator != null)
+        while(!IsInstanceValid(_activeWorldSections.Peek()))
         {
-            if (!IsInstanceValid(iterator.Value))
-            {
-                _activeWorldSections.Remove(iterator);
-            }
-            iterator = iterator.Next;
+            _activeWorldSections.Dequeue();
         }
     }
 
@@ -75,19 +126,24 @@ public partial class LevelGenerator : Node2D
 
     void UpdateSectionPositions(double velocity, double delta)
     {
+        var last = _activeWorldSections.Last();
+        if (last.Position.Y >= 0f)
+        {
+            var newSection = _preloader.GetNextSection();
+            _activeWorldSections.Enqueue(newSection);
+
+            Vector2 newPos = Vector2.Zero;
+            newPos.Y = last.Position.Y + last.UpperBoundary - newSection.LowerBoundary;
+
+            newSection.Position = newPos;
+            AddChild(newSection);
+        }
+
         Vector2 deltaPos = new(0f, (float)(velocity * delta));
         foreach (var section in _activeWorldSections)
         {
             if (!IsInstanceValid(section)) continue;
             section.Position += deltaPos;
         }
-    }
-
-    StringName GetNextSection()
-    {
-        var curSection = _activeWorldSections.Last.Value;
-        int index = Mathf.Abs((int)(GD.Randi() - uint.MaxValue / 2))
-            % curSection.PossibleContinuations.Count;
-        return curSection.PossibleContinuations[index];
     }
 }

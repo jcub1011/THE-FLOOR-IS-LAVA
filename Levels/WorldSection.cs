@@ -8,6 +8,15 @@ public partial class WorldSection : TileMap
     [Export] Marker2D _sectionLowerBound;
     [Export] public Godot.Collections.Array<StringName> PossibleContinuations;
 
+    /// <summary>
+    /// Relative to section center.
+    /// </summary>
+    public float UpperBoundary { get => _sectionUpperBound.Position.Y; }
+    /// <summary>
+    /// Relative to section center.
+    /// </summary>
+    public float LowerBoundary { get => _sectionLowerBound.Position.Y; }
+
     public override void _Ready()
     {
         base._Ready();
