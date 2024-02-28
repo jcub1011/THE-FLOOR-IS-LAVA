@@ -244,6 +244,11 @@ public partial class PlayerInputHandler : Node, IDisableableControl
 
         return openDevices;
     }
+
+    public static int GetOpenDeviceCount()
+    {
+        return GetOpenDevices().Count;
+    }
     #endregion
 
     /// <summary>

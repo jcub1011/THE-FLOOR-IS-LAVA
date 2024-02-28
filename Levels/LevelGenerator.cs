@@ -1,4 +1,5 @@
 using Godot;
+using Players;
 using System.Collections.Generic;
 using System.Linq;
 using static System.Collections.Specialized.BitVector32;
@@ -62,6 +63,7 @@ public partial class LevelGenerator : Node2D
     [Export] float _startDelay = 5f;
     [Export] Camera2D _camera;
     [Export] double _scrollSpeed = 25f;
+    [Export] StringName PlayerTemplatePath;
 
     Queue<WorldSection> _activeWorldSections;
     [Export] Godot.Collections.Array<StringName> _templates;
@@ -81,6 +83,7 @@ public partial class LevelGenerator : Node2D
     public override void _Ready()
     {
         base._Ready();
+        ResourceLoader.LoadThreadedRequest(PlayerTemplatePath);
         _worldBottomY = GetWorldBottomY();
         _activeWorldSections = new();
 
@@ -89,7 +92,28 @@ public partial class LevelGenerator : Node2D
         var newSection = _preloader.GetNextSection();
         newSection.Position = Vector2.Zero;
         AddChild(newSection);
+        newSection.Position = new(0f, WorldBottomY - newSection.LowerBoundary);
         _activeWorldSections.Enqueue(newSection);
+
+        List<Vector2> spawnLocs = newSection.GetSpawnLocations();
+
+        GetParent().Ready += () =>
+        {
+            SpawnPlayers(spawnLocs);
+        };
+    }
+
+    void SpawnPlayers(List<Vector2> spawnLocs)
+    {
+        int playerCount = PlayerInputHandler.GetOpenDeviceCount();
+        var player = ResourceLoader.LoadThreadedGet(PlayerTemplatePath) as PackedScene;
+
+        for (int i = 0; i < playerCount; i++)
+        {
+            var temp = player.Instantiate() as Node2D;
+            temp.GlobalPosition = spawnLocs[i % spawnLocs.Count];
+            AddSibling(temp);
+        }
     }
 
     void RemoveDeletedScenes()

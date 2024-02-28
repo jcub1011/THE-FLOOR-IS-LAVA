@@ -1,4 +1,5 @@
 using Godot;
+using System.Collections.Generic;
 
 namespace WorldGeneration;
 
@@ -40,5 +41,30 @@ public partial class WorldSection : TileMap
     public bool IsVisible()
     {
         return _sectionUpperBound.GlobalPosition.Y < GetWorldBottomY();
+    }
+
+    public List<Vector2> GetSpawnLocations()
+    {
+        var locationParent = GetNode("SpawnLocations");
+
+        var locs = new List<Vector2>();
+        if (locationParent != null)
+        {
+            foreach(var child in locationParent.GetChildren())
+            {
+                if (child is Marker2D marker)
+                {
+                    locs.Add(marker.GlobalPosition);
+                }
+            }
+        }
+
+        if (locs.Count < 4)
+        {
+            GD.PushWarning($"Section {Name} does not contain " +
+                $"enought player spawn locations.");
+        }
+
+        return locs;
     }
 }
