@@ -8,6 +8,8 @@ public partial class PlayerController : CharacterBody2D
     [Export] PlayerInputHandler InputHandler;
     [Export] Vector2 _speedLimit = new(1000, 1000);
 
+    bool _isAlive = true;
+
     public override void _Ready()
     {
         base._Ready();
@@ -21,12 +23,13 @@ public partial class PlayerController : CharacterBody2D
         limitedVelocity.X = Mathf.Clamp(Velocity.X, -_speedLimit.X, _speedLimit.X);
         limitedVelocity.Y = Mathf.Clamp(Velocity.Y, -_speedLimit.Y, _speedLimit.Y);
         Velocity = limitedVelocity;
-        MoveAndSlide();
+        if (_isAlive) MoveAndSlide();
     }
 
     public void OnTouchedLava(Area2D area)
     {
         GD.Print($"Player {Name} touched lava.");
+        _isAlive = false;
 
         foreach (var child in GetChildren())
         {
@@ -52,6 +55,7 @@ public partial class PlayerController : CharacterBody2D
     public void OnStart()
     {
         Visible = true;
+        _isAlive = true;
 
         foreach (var child in GetChildren())
         {
