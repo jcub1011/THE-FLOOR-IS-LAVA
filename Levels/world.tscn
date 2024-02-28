@@ -5,18 +5,6 @@
 [ext_resource type="Texture2D" uid="uid://c4odmib8ofaak" path="res://Levels/Tilemaps/Lava_Frames/AnimatedFloorLava_1.png" id="5_h5y7s"]
 [ext_resource type="Texture2D" uid="uid://b1qjldpvjx1k0" path="res://Levels/Tilemaps/Lava_Frames/AnimatedFloorLava_2.png" id="6_52op3"]
 
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_xfy5v"]
-distance = -110.0
-
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_jhsoa"]
-distance = -154.0
-
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_453lm"]
-distance = -154.0
-
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_5eqt8"]
-distance = -83.0
-
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1iuj7"]
 texture = ExtResource("4_83wch")
 texture_region_size = Vector2i(8, 8)
@@ -63,6 +51,18 @@ animations = [{
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_fcu7n"]
 distance = -82.0
 
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_xfy5v"]
+distance = -125.0
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_jhsoa"]
+distance = -200.0
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_453lm"]
+distance = -200.0
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_5eqt8"]
+distance = -110.0
+
 [node name="World" type="Node2D"]
 
 [node name="Level Generator" type="Node2D" parent="." node_paths=PackedStringArray("_camera")]
@@ -75,41 +75,22 @@ _templates = Array[StringName]([&"res://Levels/Test Type/starter_section_1.tscn"
 [node name="Section Bounds" type="Node2D" parent="."]
 
 [node name="Upper_L" type="Marker2D" parent="Section Bounds"]
-position = Vector2(-150, -85)
+position = Vector2(-300, -170)
 
 [node name="Upper_R" type="Marker2D" parent="Section Bounds"]
-position = Vector2(150, -85)
+position = Vector2(300, -170)
 
 [node name="Lower_L" type="Marker2D" parent="Section Bounds"]
-position = Vector2(-150, 85)
+position = Vector2(-300, 170)
 
 [node name="Lower_R" type="Marker2D" parent="Section Bounds"]
-position = Vector2(150, 85)
+position = Vector2(300, 170)
 
 [node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(4, 4)
-
-[node name="World Bounds" type="StaticBody2D" parent="."]
-collision_mask = 0
-metadata/_edit_group_ = true
-metadata/_edit_lock_ = true
-
-[node name="Top" type="CollisionShape2D" parent="World Bounds"]
-rotation = 3.14159
-shape = SubResource("WorldBoundaryShape2D_xfy5v")
-
-[node name="Left" type="CollisionShape2D" parent="World Bounds"]
-rotation = 1.5708
-shape = SubResource("WorldBoundaryShape2D_jhsoa")
-
-[node name="Right" type="CollisionShape2D" parent="World Bounds"]
-rotation = -1.5708
-shape = SubResource("WorldBoundaryShape2D_453lm")
-
-[node name="Bottom" type="CollisionShape2D" parent="World Bounds"]
-shape = SubResource("WorldBoundaryShape2D_5eqt8")
+zoom = Vector2(3, 3)
 
 [node name="LAVA" type="Area2D" parent="."]
+position = Vector2(0, 26)
 collision_layer = 4
 collision_mask = 0
 metadata/_edit_lock_ = true
@@ -130,5 +111,25 @@ autoplay = "default"
 frame_progress = 0.0720958
 
 [node name="Collider" type="CollisionShape2D" parent="LAVA"]
-position = Vector2(0, -5)
+position = Vector2(0, -4)
 shape = SubResource("WorldBoundaryShape2D_fcu7n")
+
+[node name="World Bounds" type="StaticBody2D" parent="."]
+collision_mask = 0
+metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
+
+[node name="Top" type="CollisionShape2D" parent="World Bounds"]
+rotation = 3.14159
+shape = SubResource("WorldBoundaryShape2D_xfy5v")
+
+[node name="Left" type="CollisionShape2D" parent="World Bounds"]
+rotation = 1.5708
+shape = SubResource("WorldBoundaryShape2D_jhsoa")
+
+[node name="Right" type="CollisionShape2D" parent="World Bounds"]
+rotation = -1.5708
+shape = SubResource("WorldBoundaryShape2D_453lm")
+
+[node name="Bottom" type="CollisionShape2D" parent="World Bounds"]
+shape = SubResource("WorldBoundaryShape2D_5eqt8")

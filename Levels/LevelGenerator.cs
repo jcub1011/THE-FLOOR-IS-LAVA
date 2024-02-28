@@ -150,10 +150,20 @@ public partial class LevelGenerator : Node2D
         return returnVal;
     }
 
+    float GetWorldTopY()
+    {
+        float cameraPos = _camera.GetScreenCenterPosition().Y;
+        var cameraRect =
+            GetCanvasTransform().AffineInverse().BasisXform(GetViewportRect().Size);
+        float returnVal = cameraPos - cameraRect.Y / 2;
+        //GD.Print($"World top = {returnVal}");
+        return returnVal;
+    }
+
     void UpdateSectionPositions(double velocity, double delta)
     {
         var last = _activeWorldSections.Last();
-        if (last.Position.Y >= 0f)
+        if (last.Position.Y + last.UpperBoundary >= GetWorldTopY())
         {
             var newSection = _preloader.GetNextSection();
             _activeWorldSections.Enqueue(newSection);
