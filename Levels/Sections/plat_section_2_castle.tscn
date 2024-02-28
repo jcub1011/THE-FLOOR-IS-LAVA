@@ -15,10 +15,10 @@ _sectionLowerBound = NodePath("True_Lower_Bound")
 PossibleContinuations = Array[StringName]([&"plat_section_2_castle"])
 
 [node name="True_Upper_Bound" type="Marker2D" parent="."]
-position = Vector2(0, -88)
+position = Vector2(0, -120)
 
 [node name="True_Lower_Bound" type="Marker2D" parent="."]
-position = Vector2(0, 88)
+position = Vector2(0, 120)
 
 [node name="Section Bounds" type="Node2D" parent="."]
 

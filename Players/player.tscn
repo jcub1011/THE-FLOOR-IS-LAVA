@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://cv7g2fnqrxx7s"]
+[gd_scene load_steps=36 format=3 uid="uid://cv7g2fnqrxx7s"]
 
 [ext_resource type="Script" path="res://Players/PlayerController.cs" id="1_bukco"]
 [ext_resource type="Script" path="res://Players/PlayerInputHandler.cs" id="2_bjy2i"]
@@ -16,13 +16,16 @@
 [ext_resource type="Script" path="res://Players/FlipHandler.cs" id="11_t7grp"]
 [ext_resource type="Texture2D" uid="uid://bqsnyl44uidhf" path="res://Players/Sprite Sheets/Male_2_Clothes_1_Long.png" id="14_t54lr"]
 [ext_resource type="Script" path="res://Players/SpriteControls.cs" id="16_cd1ek"]
+[ext_resource type="Texture2D" uid="uid://cp4kxuftp2ik6" path="res://Players/Sprite Sheets/Female_1_Clothes_3_Long.png" id="17_1wgbn"]
+[ext_resource type="Texture2D" uid="uid://feifgovvip3l" path="res://Players/Sprite Sheets/Female_3_Clothes_1_Long.png" id="18_52q7l"]
+[ext_resource type="Texture2D" uid="uid://bj5fj4a0br3tp" path="res://Players/Sprite Sheets/Male_1_Clothes_1_Long.png" id="19_ue6qw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pi3oo"]
 size = Vector2(8, 14)
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_meg5j"]
 radius = 4.0
-height = 16.0
+height = 14.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_f5o2s"]
 size = Vector2(8, 16)
@@ -257,7 +260,7 @@ position = Vector2(0, -7)
 shape = SubResource("RectangleShape2D_pi3oo")
 
 [node name="Collider" type="CollisionShape2D" parent="."]
-position = Vector2(0, -8)
+position = Vector2(0, -7)
 shape = SubResource("CapsuleShape2D_meg5j")
 
 [node name="PlayerInputHandler" type="Node" parent="."]
@@ -344,6 +347,7 @@ texture = ExtResource("14_t54lr")
 hframes = 99
 frame = 5
 script = ExtResource("16_cd1ek")
+PossibleSprites = Array[Texture2D]([ExtResource("19_ue6qw"), ExtResource("17_1wgbn"), ExtResource("18_52q7l"), ExtResource("14_t54lr")])
 
 [connection signal="area_entered" from="Lava Collider" to="." method="OnTouchedLava"]
 [connection signal="ActionPressed" from="PlayerInputHandler" to="AttackHandler" method="OnAction"]
