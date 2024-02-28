@@ -83,6 +83,7 @@ public partial class LevelGenerator : Node2D
     public override void _Ready()
     {
         base._Ready();
+        Engine.TimeScale = 0f;
         ResourceLoader.LoadThreadedRequest(PlayerTemplatePath);
         _worldBottomY = GetWorldBottomY();
         _activeWorldSections = new();
@@ -100,6 +101,7 @@ public partial class LevelGenerator : Node2D
         GetParent().Ready += () =>
         {
             SpawnPlayers(spawnLocs);
+            Engine.TimeScale = 1f;
         };
     }
 
