@@ -1,17 +1,74 @@
 using Godot;
-using System;
+using Players;
 using System.Collections.Generic;
+using System.Linq;
+using static System.Collections.Specialized.BitVector32;
 
 namespace WorldGeneration;
+
+public static class ListExtensions
+{
+    public static T PickRandom<T>(this IEnumerable<T> list)
+    {
+        int count = list.Count();
+        if (count == 0) return default;
+
+        var rand = new RandomNumberGenerator();
+
+        return list.ElementAt((System.Index)(rand.Randi() % count));
+    }
+
+    public static T PickRandom<T>(this IEnumerable<T> list, RandomNumberGenerator rand)
+    {
+        int count = list.Count();
+        if (count == 0) return default;
+
+        return list.ElementAt((System.Index)(rand.Randi() % count));
+    }
+}
+
+internal class SectionPreloader
+{
+    const string SECTION_PATH = "res://Levels/Sections/";
+
+    string _sectionToLoad;
+
+    public SectionPreloader(string sectionStarter)
+    {
+        StartNextSection(sectionStarter);
+    }
+
+    void StartNextSection(string sectionName)
+    {
+        _sectionToLoad = ToPath(sectionName);
+        ResourceLoader.LoadThreadedRequest(_sectionToLoad);
+    }
+
+    public WorldSection GetNextSection()
+    {
+        var section = ResourceLoader.LoadThreadedGet(_sectionToLoad) as PackedScene;
+        var worldSection = section.Instantiate<WorldSection>();
+        StartNextSection(worldSection.PossibleContinuations.PickRandom());
+        return worldSection;
+    }
+
+    static string ToPath(string name)
+    {
+        return SECTION_PATH + name + ".tscn";
+    }
+}
 
 public partial class LevelGenerator : Node2D
 {
     [Export] float _startDelay = 5f;
     [Export] Camera2D _camera;
-    [Export] float _scrollSpeed = 25f;
+    [Export] double _scrollSpeed = 25f;
+    [Export] StringName PlayerTemplatePath;
 
-    LinkedList<WorldSection> _activeWorldSections;
+    Queue<WorldSection> _activeWorldSections;
     [Export] Godot.Collections.Array<StringName> _templates;
+
+    SectionPreloader _preloader;
 
     public float? _worldBottomY;
     public float WorldBottomY
@@ -26,29 +83,48 @@ public partial class LevelGenerator : Node2D
     public override void _Ready()
     {
         base._Ready();
+        Engine.TimeScale = 0f;
+        ResourceLoader.LoadThreadedRequest(PlayerTemplatePath);
         _worldBottomY = GetWorldBottomY();
         _activeWorldSections = new();
 
-        foreach(var child in GetChildren())
-        {
-            if (child is WorldSection section)
-            {
-                _activeWorldSections.AddFirst(section);
-            }
-        }
+        _preloader = new("starter_section_1");
 
-        SetSectionsScrollVelocity(_scrollSpeed);
+        var newSection = _preloader.GetNextSection();
+        newSection.Position = Vector2.Zero;
+        AddChild(newSection);
+        newSection.Position = new(0f, WorldBottomY - newSection.LowerBoundary);
+        _activeWorldSections.Enqueue(newSection);
+
+        List<Vector2> spawnLocs = newSection.GetSpawnLocations();
+
+        GetParent().Ready += () =>
+        {
+            SpawnPlayers(spawnLocs);
+            Engine.TimeScale = 1f;
+        };
+    }
+
+    void SpawnPlayers(List<Vector2> spawnLocs)
+    {
+        int playerCount = PlayerInputHandler.GetOpenDeviceCount();
+        var player = ResourceLoader.LoadThreadedGet(PlayerTemplatePath) as PackedScene;
+
+        for (int i = 0; i < playerCount; i++)
+        {
+            var temp = player.Instantiate() as Node2D;
+            temp.GlobalPosition = spawnLocs[i % spawnLocs.Count];
+            AddSibling(temp);
+        }
     }
 
     void RemoveDeletedScenes()
     {
-        foreach (var scene in _activeWorldSections)
+        List<WorldSection> toDelete = new();
+
+        while(!IsInstanceValid(_activeWorldSections.Peek()))
         {
-            if (IsInstanceValid(scene)) continue;
-            else
-            {
-                _activeWorldSections.Remove(scene);
-            }
+            _activeWorldSections.Dequeue();
         }
     }
 
@@ -56,6 +132,12 @@ public partial class LevelGenerator : Node2D
     {
         base._PhysicsProcess(delta);
         RemoveDeletedScenes();
+    }
+
+    public override void _Process(double delta)
+    {
+        base._Process(delta);
+        UpdateSectionPositions(_scrollSpeed, delta);
     }
 
     float GetWorldBottomY()
@@ -68,19 +150,26 @@ public partial class LevelGenerator : Node2D
         return returnVal;
     }
 
-    void SetSectionsScrollVelocity(float velocity)
+    void UpdateSectionPositions(double velocity, double delta)
     {
-        foreach(var section in _activeWorldSections)
+        var last = _activeWorldSections.Last();
+        if (last.Position.Y >= 0f)
         {
-            section.Velocity = new(0f, velocity);
-        }
-    }
+            var newSection = _preloader.GetNextSection();
+            _activeWorldSections.Enqueue(newSection);
 
-    StringName GetNextSection()
-    {
-        var curSection = _activeWorldSections.Last.Value;
-        int index = Mathf.Abs((int)(GD.Randi() - uint.MaxValue / 2)) 
-            % curSection.PossibleContinuations.Count;
-        return curSection.PossibleContinuations[index];
+            Vector2 newPos = Vector2.Zero;
+            newPos.Y = last.Position.Y + last.UpperBoundary - newSection.LowerBoundary;
+
+            newSection.Position = newPos;
+            AddChild(newSection);
+        }
+
+        Vector2 deltaPos = new(0f, (float)(velocity * delta));
+        foreach (var section in _activeWorldSections)
+        {
+            if (!IsInstanceValid(section)) continue;
+            section.Position += deltaPos;
+        }
     }
 }

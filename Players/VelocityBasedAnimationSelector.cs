@@ -2,7 +2,7 @@ using Godot;
 
 namespace Players;
 
-public partial class VelocityBasedAnimationSelector : Node
+public partial class VelocityBasedAnimationSelector : Node, IDisableableControl
 {
     [Export] public bool IsEnabled { get; set; } = true;
     [Export] CharacterBody2D _body;
@@ -15,6 +15,15 @@ public partial class VelocityBasedAnimationSelector : Node
     [Export] StringName _runAnimation = "run";
     [Export] StringName _fallAnimation = "fall";
     [Export] StringName _riseAnimation = "rise";
+
+    #region Interface Implementation
+    public string ControlID { get => ControlIDs.AUTO_ANIMATION; }
+
+    public void SetControlState(bool enabled)
+    {
+        SetIfEnabled(enabled);
+    }
+    #endregion
 
     public override void _PhysicsProcess(double delta)
     {

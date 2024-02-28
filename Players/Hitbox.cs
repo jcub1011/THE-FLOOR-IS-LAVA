@@ -1,6 +1,4 @@
 using Godot;
-using System;
-using System.Collections.Specialized;
 
 namespace Players;
 
@@ -10,7 +8,7 @@ public partial class OnHitArgs : GodotObject
     public bool ReturnKnockback = false;
 }
 
-public partial class Hitbox : Area2D
+public partial class Hitbox : Area2D, IDisableableControl
 {
     [Signal] public delegate void OnReceivedHitEventHandler(OnHitArgs args);
     [Signal] public delegate void OnReceivedDamageEventHandler(float knockback, Node2D source);
@@ -18,6 +16,16 @@ public partial class Hitbox : Area2D
     {
         get => GetParent<CharacterBody2D>();
     }
+
+    #region Interface Implementation
+    public string ControlID { get => ControlIDs.HITBOX; }
+
+    public void SetControlState(bool enabled)
+    {
+        SetDeferred("monitoring", enabled);
+        SetDeferred("monitorable", enabled);
+    }
+    #endregion
 
     public override void _Ready()
     {

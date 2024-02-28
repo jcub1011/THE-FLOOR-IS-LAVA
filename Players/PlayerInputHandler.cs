@@ -1,9 +1,5 @@
 using Godot;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace Players;
 
@@ -47,12 +43,12 @@ public readonly struct InputDevice
         return $"Type: {Type} | ID: {DeviceID}";
     }
 
-    public static bool operator == (InputDevice left, InputDevice right)
+    public static bool operator ==(InputDevice left, InputDevice right)
     {
         return (left.Type == right.Type) && (left.DeviceID == right.DeviceID);
     }
 
-    public static bool operator != (InputDevice left, InputDevice right)
+    public static bool operator !=(InputDevice left, InputDevice right)
     {
         return !(left == right);
     }
@@ -94,7 +90,7 @@ public static class InputDeviceExtensions
 
     public static StringName ConvertInputName(this StringName name, DeviceType type)
     {
-        switch(type)
+        switch (type)
         {
             case DeviceType.KeyboardLeft:
                 return name + InputNames.LEFT_KB_ID;
@@ -106,7 +102,81 @@ public static class InputDeviceExtensions
     }
 }
 
-public partial class PlayerInputHandler : Node
+public static class InputBuffer
+{
+    static readonly Dictionary<string, ulong> _inputTimeMap = new();
+    const ulong MAX_BUFFER_TIME = 1000;
+    const ulong TIME_BETWEEN_MAP_REFRESHES = 1000;
+    static ulong _lastMapRefereshTime = 0;
+
+    /// <summary>
+    /// Buffers the provided input.
+    /// </summary>
+    /// <param name="characterBody"></param>
+    /// <param name="inputName"></param>
+    public static void BufferInput(Node characterBody, string inputName)
+    {
+        if (!_inputTimeMap.TryAdd(characterBody.Name + inputName, Time.GetTicksMsec()))
+        {
+            _inputTimeMap[characterBody.Name + inputName] = Time.GetTicksMsec();
+        }
+    }
+
+    /// <summary>
+    /// Checks if there exists a buffered input within the provided buffer time.
+    /// </summary>
+    /// <param name="characterBody"></param>
+    /// <param name="inputName"></param>
+    /// <param name="maxBufferTime"></param>
+    /// <returns></returns>
+    public static bool IsBuffered(Node characterBody, string inputName,
+        float maxBufferTime)
+    {
+        ulong curTime = Time.GetTicksMsec();
+        if (curTime - _lastMapRefereshTime > TIME_BETWEEN_MAP_REFRESHES)
+        {
+            RemoveExpiredBuffers();
+        }
+
+        if (_inputTimeMap.TryGetValue(characterBody.Name + inputName, out var value))
+        {
+            return curTime - value <= (ulong)(maxBufferTime * 1000);
+        }
+        else return false;
+    }
+
+    /// <summary>
+    /// Clears the buffer for the provided input.
+    /// </summary>
+    /// <param name="characterBody"></param>
+    /// <param name="inputName"></param>
+    public static void ConsumeBuffer(Node characterBody, string inputName)
+    {
+        _inputTimeMap.Remove(characterBody.Name + inputName);
+    }
+
+    /// <summary>
+    /// Deletes any buffered inputs past max buffer time.
+    /// </summary>
+    static void RemoveExpiredBuffers()
+    {
+        ulong curTime = Time.GetTicksMsec();
+        _lastMapRefereshTime = curTime;
+        List<string> toRemove = new();
+
+        foreach (var kvp in _inputTimeMap)
+        {
+            if (curTime - kvp.Value > MAX_BUFFER_TIME) toRemove.Add(kvp.Key);
+        }
+
+        foreach (var key in toRemove)
+        {
+            _inputTimeMap.Remove(key);
+        }
+    }
+}
+
+public partial class PlayerInputHandler : Node, IDisableableControl
 {
     #region Static
     static readonly List<InputDevice> RegisteredDevices = new();
@@ -140,7 +210,7 @@ public partial class PlayerInputHandler : Node
         bool hasRightKeyboard = false;
 
         GD.Print(RegisteredDevices);
-        foreach(var device in RegisteredDevices)
+        foreach (var device in RegisteredDevices)
         {
             if (device.Type == DeviceType.KeyboardLeft)
             {
@@ -164,7 +234,7 @@ public partial class PlayerInputHandler : Node
         {
             openDevices.Add(new(DeviceType.KeyboardRight, 0));
         }
-        foreach(var id in Input.GetConnectedJoypads())
+        foreach (var id in Input.GetConnectedJoypads())
         {
             if (!takenControllerIds.Contains(id))
             {
@@ -174,12 +244,18 @@ public partial class PlayerInputHandler : Node
 
         return openDevices;
     }
+
+    public static int GetOpenDeviceCount()
+    {
+        return GetOpenDevices().Count;
+    }
     #endregion
 
     /// <summary>
     /// Use the static methods to change device.
     /// </summary>
     InputDevice _device;
+    bool _isEnabled = true;
 
     #region Signals
     [Signal] public delegate void MoveLeftPressedEventHandler();
@@ -194,6 +270,15 @@ public partial class PlayerInputHandler : Node
 
     //Dictionary<StringName, bool> _previousStateMap;
 
+    #region Interface Implementation
+    public string ControlID { get => ControlIDs.INPUT; }
+
+    public void SetControlState(bool enabled)
+    {
+        _isEnabled = enabled;
+    }
+    #endregion
+
     public override void _Ready()
     {
         base._Ready();
@@ -204,6 +289,7 @@ public partial class PlayerInputHandler : Node
     public override void _Input(InputEvent @event)
     {
         base._Input(@event);
+        if (!_isEnabled) return;
         if (!_device.IsEventForDevice(@event)) return;
 
         if (@event.IsActionPressed(InputNames.LEFT.ConvertInputName(_device.Type)))

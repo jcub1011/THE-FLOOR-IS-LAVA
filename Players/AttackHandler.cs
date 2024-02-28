@@ -1,65 +1,52 @@
 using Godot;
-using Physics;
-using System;
 
 namespace Players;
 
-public partial class AttackHandler : Node
+public partial class AttackHandler : Node, IDisableableControl
 {
     [Export] CharacterBody2D _body;
     [Export] AnimationPlayer _aniPlayer;
+    [Export] ControlDisablerHandler _controlDisabler;
     [Export] float _dropkickDrag;
+    [Export] float _actionBufferTime;
 
     [Export] StringName _dropkickAnimation = "dropkick";
     [Export] StringName _punchAnimation = "punch";
     [Export] StringName _deflectAnimation = "deflect";
 
-    [Signal] public delegate void OnDisableMovementControlEventHandler();
-    [Signal] public delegate void OnEnableMovementControlEventHandler();
-
-    float _remainingDisableTime;
-    float _previousRemainingDisableTime;
-
     bool _isDisabled;
+
+    #region Interface Implementation
+    public string ControlID { get => ControlIDs.ATTACK_HANDLER; }
+
+    public void SetControlState(bool enabled)
+    {
+        _isDisabled = !enabled;
+    }
+    #endregion
 
     public override void _PhysicsProcess(double delta)
     {
         base._PhysicsProcess(delta);
-        _previousRemainingDisableTime = _remainingDisableTime;
-        _remainingDisableTime -= (float)delta;
-
-        if (_remainingDisableTime > 0f)
+        if (_isDisabled)
         {
             if (_body.IsOnFloor())
             {
                 Vector2 newVel = _body.Velocity;
-                newVel.X *= ( 1 - _dropkickDrag * (float)delta);
+                newVel.X *= (1 - _dropkickDrag * (float)delta);
                 _body.Velocity = newVel;
             }
         }
-
-        if (JustEnabled())
+        else
         {
-            EnableHandlers();
+            if (InputBuffer.IsBuffered(_body, InputNames.ACTION,
+                _actionBufferTime))
+            {
+                GD.Print($"Performing buffered input.");
+                InputBuffer.ConsumeBuffer(_body, InputNames.ACTION);
+                OnAction();
+            }
         }
-    }
-
-    void EnableHandlers()
-    {
-        GD.Print("Re-enabling handlers.");
-        EmitSignal(SignalName.OnEnableMovementControl);
-    }
-
-    void DisableHandlers(float time)
-    {
-        _remainingDisableTime = time;
-        GD.Print($"Disabling handlers for {_remainingDisableTime}s.");
-        EmitSignal(SignalName.OnDisableMovementControl);
-    }
-
-    bool JustEnabled()
-    {
-        return _previousRemainingDisableTime > 0f && _remainingDisableTime <= 0f;
     }
 
     public void OnAction()
@@ -68,15 +55,12 @@ public partial class AttackHandler : Node
         {
             GD.Print($"{GetParent().Name} unable to perform action, currently " +
                 $"disabled.");
-            _remainingDisableTime = 0f;
-            _previousRemainingDisableTime = 0f;
+            InputBuffer.BufferInput(_body, InputNames.ACTION);
             return;
         }
-        if (_remainingDisableTime > 0f)
+        else
         {
-            GD.Print($"{GetParent().Name} unable to perform action, currently " +
-                $"in action.");
-            return;
+            InputBuffer.ConsumeBuffer(_body, InputNames.ACTION);
         }
 
         if (_body.IsOnFloor())
@@ -85,14 +69,27 @@ public partial class AttackHandler : Node
             {
                 // Perform deflect.
                 GD.Print("Performing deflect.");
-                DisableHandlers(_aniPlayer.GetAnimation(_deflectAnimation).Length);
+                _controlDisabler.SetControlStates(false,
+                    _aniPlayer.GetAnimation(_deflectAnimation).Length,
+                    ControlIDs.ATTACK_HANDLER,
+                    ControlIDs.HURTBOX,
+                    ControlIDs.MOVEMENT,
+                    ControlIDs.AUTO_ANIMATION,
+                    ControlIDs.FLIPPER);
+                //DisableHandlers(_aniPlayer.GetAnimation(_deflectAnimation).Length);
                 _aniPlayer.Play(_deflectAnimation);
             }
             else
             {
                 // Perform punch.
                 GD.Print("Performing punch.");
-                DisableHandlers(_aniPlayer.GetAnimation(_punchAnimation).Length);
+                _controlDisabler.SetControlStates(false,
+                    _aniPlayer.GetAnimation(_punchAnimation).Length,
+                    ControlIDs.ATTACK_HANDLER,
+                    ControlIDs.MOVEMENT,
+                    ControlIDs.AUTO_ANIMATION,
+                    ControlIDs.FLIPPER);
+                //DisableHandlers(_aniPlayer.GetAnimation(_punchAnimation).Length);
                 _body.Velocity = new(0f, _body.Velocity.Y);
                 _aniPlayer.Play(_punchAnimation);
             }
@@ -101,11 +98,14 @@ public partial class AttackHandler : Node
         {
             // Perform dropkick.
             GD.Print("Performing dropkick.");
-            DisableHandlers(_aniPlayer.GetAnimation(_dropkickAnimation).Length);
+            _controlDisabler.SetControlStates(false,
+                _aniPlayer.GetAnimation(_dropkickAnimation).Length,
+                ControlIDs.ATTACK_HANDLER,
+                ControlIDs.MOVEMENT,
+                ControlIDs.AUTO_ANIMATION,
+                ControlIDs.FLIPPER);
+            //DisableHandlers(_aniPlayer.GetAnimation(_dropkickAnimation).Length);
             _aniPlayer.Play(_dropkickAnimation);
         }
     }
-
-    public void OnEnable() => _isDisabled = false;
-    public void OnDisable() => _isDisabled = true;
 }

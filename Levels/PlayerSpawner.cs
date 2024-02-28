@@ -1,5 +1,4 @@
 using Godot;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,7 +19,7 @@ public partial class PlayerSpawner : Node2D
         base._Ready();
         var spawnLocs = new List<Vector2>();
 
-        foreach(var child in GetChildren())
+        foreach (var child in GetChildren())
         {
             if (spawnLocs.Count == 4) break;
             else if (child is Marker2D marker)
