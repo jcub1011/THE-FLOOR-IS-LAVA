@@ -276,7 +276,7 @@ Gravity = 750.0
 [node name="JumpHandler" type="Node" parent="." node_paths=PackedStringArray("_body")]
 script = ExtResource("5_mw2vm")
 _body = NodePath("..")
-_jumpVelocity = 150.0
+_jumpVelocity = 142.0
 _maxJumpTime = 0.2
 
 [node name="AttackHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_aniPlayer", "_controlDisabler")]

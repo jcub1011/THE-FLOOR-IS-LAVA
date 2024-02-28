@@ -80,9 +80,12 @@ public partial class LevelGenerator : Node2D
         }
     }
 
+    List<Node2D> _players;
+
     public override void _Ready()
     {
         base._Ready();
+        _players = new();
         Engine.TimeScale = 0f;
         ResourceLoader.LoadThreadedRequest(PlayerTemplatePath);
         _worldBottomY = GetWorldBottomY();
@@ -115,6 +118,7 @@ public partial class LevelGenerator : Node2D
             var temp = player.Instantiate() as Node2D;
             temp.GlobalPosition = spawnLocs[i % spawnLocs.Count];
             AddSibling(temp);
+            _players.Add(temp);
         }
     }
 
@@ -180,6 +184,12 @@ public partial class LevelGenerator : Node2D
         {
             if (!IsInstanceValid(section)) continue;
             section.Position += deltaPos;
+        }
+
+        foreach(var player in _players)
+        {
+            if (!IsInstanceValid(player)) continue;
+            player.Position += deltaPos;
         }
     }
 }

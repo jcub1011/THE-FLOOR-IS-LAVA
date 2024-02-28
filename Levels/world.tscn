@@ -75,22 +75,23 @@ _templates = Array[StringName]([&"res://Levels/Test Type/starter_section_1.tscn"
 [node name="Section Bounds" type="Node2D" parent="."]
 
 [node name="Upper_L" type="Marker2D" parent="Section Bounds"]
-position = Vector2(-300, -170)
+position = Vector2(-200, -115)
 
 [node name="Upper_R" type="Marker2D" parent="Section Bounds"]
-position = Vector2(300, -170)
+position = Vector2(200, -115)
 
 [node name="Lower_L" type="Marker2D" parent="Section Bounds"]
-position = Vector2(-300, 170)
+position = Vector2(-200, 115)
 
 [node name="Lower_R" type="Marker2D" parent="Section Bounds"]
-position = Vector2(300, 170)
+position = Vector2(200, 115)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(3, 3)
 
 [node name="LAVA" type="Area2D" parent="."]
 position = Vector2(0, 26)
+scale = Vector2(1.32, 1)
 collision_layer = 4
 collision_mask = 0
 metadata/_edit_lock_ = true
