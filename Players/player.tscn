@@ -112,7 +112,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0.2),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [&"DropkickHurtbox", 0.333, 400.0],
+"args": [&"DropkickHurtbox", 0.333, 130.0],
 "method": &"EnableHitbox"
 }]
 }
@@ -180,7 +180,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0.333333),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [&"PunchHurtbox", 0.08, 250.0],
+"args": [&"PunchHurtbox", 0.08, 100.0],
 "method": &"EnableHitbox"
 }]
 }
