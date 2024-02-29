@@ -1,0 +1,47 @@
+[gd_scene load_steps=4 format=3 uid="uid://bo5qmavr2vpky"]
+
+[ext_resource type="Texture2D" uid="uid://c135io11ugxpv" path="res://UI/Title Screen.png" id="1_toabj"]
+[ext_resource type="FontFile" uid="uid://bml2tndx7ouf6" path="res://UI/Fonts/Ldfcomicsans-jj7l.ttf" id="2_wylnk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mwajs"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+
+[node name="Control" type="Control"]
+texture_filter = 5
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer"]
+texture_filter = 5
+layout_mode = 2
+texture = ExtResource("1_toabj")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="Button" type="Button" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("2_wylnk")
+theme_override_font_sizes/font_size = 56
+theme_override_styles/normal = SubResource("StyleBoxEmpty_mwajs")
+text = "Start Playing"
