@@ -166,6 +166,12 @@ public partial class LevelGenerator : Node2D
 
     void UpdateSectionPositions(double velocity, double delta)
     {
+        if (_startDelay > 0f)
+        {
+            _startDelay -= (float)delta;
+            return;
+        }
+
         var last = _activeWorldSections.Last();
         if (last.Position.Y + last.UpperBoundary >= GetWorldTopY())
         {
