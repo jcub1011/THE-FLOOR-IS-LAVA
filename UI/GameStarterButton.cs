@@ -5,7 +5,7 @@ namespace WorldGeneration;
 
 public partial class GameStarterButton : Button
 {
-    [Signal] public delegate void OnStartGameEventHandler();
+    [Signal] public delegate void OnPressedWithTimerEventHandler();
 
     [Export] float _timeBetweenClicks = 1f;
     float _remainingTimeUntilNextClick;
@@ -13,7 +13,8 @@ public partial class GameStarterButton : Button
     void OnClick()
     {
         if (_remainingTimeUntilNextClick > 0f) return;
-        EmitSignal(SignalName.OnStartGame);
+        EmitSignal(SignalName.OnPressedWithTimer);
+        _remainingTimeUntilNextClick = _timeBetweenClicks;
     }
 
     public override void _PhysicsProcess(double delta)

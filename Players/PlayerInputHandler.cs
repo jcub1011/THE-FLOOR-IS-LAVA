@@ -333,4 +333,9 @@ public partial class PlayerInputHandler : Node, IDisableableControl
             EmitSignal(SignalName.ActionReleased);
         }
     }
+
+    public void ReleaseInput()
+    {
+        ReleaseDevice(this);
+    }
 }

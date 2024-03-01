@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://c8kmg6tapbydx"]
+[gd_scene load_steps=3 format=3 uid="uid://c8kmg6tapbydx"]
 
 [ext_resource type="FontFile" uid="uid://bml2tndx7ouf6" path="res://UI/Fonts/Ldfcomicsans-jj7l.ttf" id="1_c4ead"]
+[ext_resource type="Script" path="res://UI/GameStarterButton.cs" id="2_trhht"]
 
 [node name="RetryScreen" type="Control"]
 layout_mode = 3
@@ -37,3 +38,6 @@ theme_override_fonts/font = ExtResource("1_c4ead")
 theme_override_font_sizes/font_size = 40
 text = "Restart
 "
+script = ExtResource("2_trhht")
+
+[connection signal="pressed" from="CenterContainer/VBoxContainer/Button" to="CenterContainer/VBoxContainer/Button" method="OnClick"]

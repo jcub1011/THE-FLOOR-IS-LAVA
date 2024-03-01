@@ -61,3 +61,5 @@ theme_override_font_sizes/font_size = 56
 theme_override_styles/normal = SubResource("StyleBoxEmpty_mwajs")
 text = "Start Playing"
 script = ExtResource("4_v8tso")
+
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/Button" to="HBoxContainer/VBoxContainer/Button" method="OnClick"]

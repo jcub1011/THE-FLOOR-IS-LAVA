@@ -66,4 +66,10 @@ public partial class PlayerController : CharacterBody2D
             }
         }
     }
+
+    public override void _ExitTree()
+    {
+        base._ExitTree();
+        InputHandler.ReleaseInput();
+    }
 }

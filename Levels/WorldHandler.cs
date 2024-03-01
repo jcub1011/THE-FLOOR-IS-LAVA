@@ -5,6 +5,8 @@ namespace WorldGeneration;
 
 public partial class WorldHandler : Node2D
 {
+    [Export] CanvasItem _retryScreen;
+    [Export] CanvasItem _mainMenu;
     [Export] PackedScene _world;
     Node2D _existingWorld;
 
@@ -31,19 +33,19 @@ public partial class WorldHandler : Node2D
             return;
         }
 
-        _existingWorld.QueueFree();
+        _existingWorld.Free();
         _existingWorld = null;
     }
 
     public void OnStartGameHandler()
     {
-        GetNode<CanvasItem>("MainMenu").Visible = false;
+        _mainMenu.Visible = false;
         ReplaceWorld();
     }
 
     public void OnRestartHandler()
     {
-        GetNode<CanvasItem>("RetryScreen").Visible = false;
+        _retryScreen.Visible = false;
         RemoveChild( _existingWorld );
         ReplaceWorld();
     }
