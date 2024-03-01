@@ -2,7 +2,7 @@
 
 [ext_resource type="FontFile" uid="uid://bml2tndx7ouf6" path="res://UI/Fonts/Ldfcomicsans-jj7l.ttf" id="1_c4ead"]
 
-[node name="Control" type="Control"]
+[node name="RetryScreen" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

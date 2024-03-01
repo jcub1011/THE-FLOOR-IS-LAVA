@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://bo5qmavr2vpky"]
+[gd_scene load_steps=6 format=3 uid="uid://bo5qmavr2vpky"]
 
 [ext_resource type="Texture2D" uid="uid://qit2ota3qdf0" path="res://Levels/Tilemaps/cavesofgallet.png" id="1_jpea5"]
 [ext_resource type="Texture2D" uid="uid://c135io11ugxpv" path="res://UI/Title Screen.png" id="1_toabj"]
 [ext_resource type="FontFile" uid="uid://bml2tndx7ouf6" path="res://UI/Fonts/Ldfcomicsans-jj7l.ttf" id="2_wylnk"]
+[ext_resource type="Script" path="res://UI/GameStarterButton.cs" id="4_v8tso"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mwajs"]
 content_margin_left = 10.0
@@ -10,7 +11,7 @@ content_margin_top = 10.0
 content_margin_right = 10.0
 content_margin_bottom = 10.0
 
-[node name="Control" type="Control"]
+[node name="MainMenu" type="Control"]
 texture_filter = 2
 layout_mode = 3
 anchors_preset = 15
@@ -59,3 +60,4 @@ theme_override_fonts/font = ExtResource("2_wylnk")
 theme_override_font_sizes/font_size = 56
 theme_override_styles/normal = SubResource("StyleBoxEmpty_mwajs")
 text = "Start Playing"
+script = ExtResource("4_v8tso")
