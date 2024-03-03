@@ -89,6 +89,13 @@ public static class NodeExtensionMethods
     {
         return godotPath.Split('/').Last();
     }
+
+    public static Vector2 GetViewportSize()
+    {
+        return new Vector2(
+            (float)ProjectSettings.GetSetting("display/window/size/viewport_width"),
+            (float)ProjectSettings.GetSetting("display/window/size/viewport_height"));
+    }
 }
 
 public static class MathExtensions

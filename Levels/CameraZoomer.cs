@@ -1,0 +1,38 @@
+using Godot;
+using Players;
+using System;
+
+namespace WorldGeneration;
+
+public partial class CameraZoomer : Camera2D
+{
+    Vector2 _targetSize;
+    Vector2 _initialZoom;
+    [Export] bool _keepAspect = true;
+
+    public override void _Ready()
+    {
+        base._Ready();
+        _targetSize = NodeExtensionMethods.GetViewportSize();
+        _initialZoom = Zoom;
+
+        GD.Print(_targetSize);
+        AdjustZoom();
+    }
+
+    public override void _Process(double delta)
+    {
+        base._Process(delta);
+        AdjustZoom();
+    }
+
+    void AdjustZoom()
+    {
+        Vector2 display = DisplayServer.WindowGetSize();
+        float scaleX = display.X / _targetSize.X;
+        float scaleY = display.Y / _targetSize.Y;
+
+        Zoom = new((_keepAspect ? scaleY : scaleX) * _initialZoom.X, 
+            scaleY * _initialZoom.Y);
+    }
+}

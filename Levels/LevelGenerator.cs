@@ -94,9 +94,8 @@ public partial class LevelGenerator : Node2D
         _preloader = new("starter_section_1");
 
         var newSection = _preloader.GetNextSection();
-        newSection.Position = Vector2.Zero;
         AddChild(newSection);
-        newSection.Position = new(0f, WorldBottomY - newSection.LowerBoundary);
+        newSection.Position = new(0f, - newSection.LowerBoundary + WorldBottomY);
         _activeWorldSections.Enqueue(newSection);
 
         List<Vector2> spawnLocs = newSection.GetSpawnLocations();
@@ -147,9 +146,14 @@ public partial class LevelGenerator : Node2D
     float GetWorldBottomY()
     {
         float cameraPos = _camera.GetScreenCenterPosition().Y;
-        var cameraRect =
-            GetCanvasTransform().AffineInverse().BasisXform(GetViewportRect().Size);
-        float returnVal = cameraPos + cameraRect.Y / 2;
+        //var cameraRect =
+        //    GetCanvasTransform().AffineInverse().BasisXform(GetViewportRect().Size);
+
+        //Vector2 winSize = DisplayServer.WindowGetSize();
+        //float yHeight = NodeExtensionMethods.GetViewportSize().Y;
+        float yHeight = NodeExtensionMethods.GetViewportSize().Y / _camera.Zoom.Y / 2f;
+        //float returnVal = cameraPos + cameraRect.Y / 2f;
+        float returnVal = cameraPos + yHeight;
         GD.Print($"World bottom = {returnVal}");
         return returnVal;
     }
