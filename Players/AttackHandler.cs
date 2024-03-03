@@ -13,7 +13,7 @@ public partial class AttackHandler : Node, IDisableableControl
     [Export] StringName _dropkickAnimation = "dropkick";
     [Export] StringName _punchAnimation = "punch";
     [Export] StringName _deflectAnimation = "deflect";
-    [Export] StringName _crouchedDeflectAnimation = "deflect";
+    [Export] StringName _crouchedDeflectAnimation = "crouched_deflect";
 
     bool _isDisabled;
 
