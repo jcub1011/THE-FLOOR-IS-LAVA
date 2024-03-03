@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://cv7g2fnqrxx7s"]
+[gd_scene load_steps=37 format=3 uid="uid://cv7g2fnqrxx7s"]
 
 [ext_resource type="Script" path="res://Players/PlayerController.cs" id="1_bukco"]
 [ext_resource type="Script" path="res://Players/PlayerInputHandler.cs" id="2_bjy2i"]
@@ -31,10 +31,10 @@ height = 14.0
 size = Vector2(8, 16)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lqg1u"]
-size = Vector2(16, 16)
+size = Vector2(16, 10)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sg5v1"]
-size = Vector2(15.9375, 4.875)
+size = Vector2(15.9375, 7.875)
 
 [sub_resource type="Animation" id="Animation_lkr48"]
 length = 0.001
@@ -231,6 +231,11 @@ tracks/0/keys = {
 "values": [59, 60, 61, 62, 63, 64, 57, 58]
 }
 
+[sub_resource type="Animation" id="Animation_0bdqp"]
+resource_name = "kick"
+length = 1.00001
+step = 0.0833333
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_r5udm"]
 _data = {
 "RESET": SubResource("Animation_lkr48"),
@@ -239,6 +244,7 @@ _data = {
 "dropkick": SubResource("Animation_8dm73"),
 "fall": SubResource("Animation_nss8v"),
 "idle": SubResource("Animation_rbf0t"),
+"kick": SubResource("Animation_0bdqp"),
 "on_deflect_landed": SubResource("Animation_m8p3t"),
 "punch": SubResource("Animation_qvcop"),
 "rise": SubResource("Animation_i5v2i"),
@@ -325,12 +331,12 @@ shape = SubResource("RectangleShape2D_f5o2s")
 script = ExtResource("6_rgnv7")
 
 [node name="PunchHurtbox" type="CollisionShape2D" parent="MeleeHurtboxHandler"]
-position = Vector2(12, -8)
+position = Vector2(12, -11)
 shape = SubResource("RectangleShape2D_lqg1u")
 script = ExtResource("7_xohju")
 
 [node name="DropkickHurtbox" type="CollisionShape2D" parent="MeleeHurtboxHandler"]
-position = Vector2(12.0313, -2.5625)
+position = Vector2(12.0313, -4.0625)
 shape = SubResource("RectangleShape2D_sg5v1")
 script = ExtResource("7_xohju")
 
