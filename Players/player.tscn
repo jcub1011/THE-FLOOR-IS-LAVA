@@ -375,12 +375,13 @@ script = ExtResource("7_bcpnl")
 _sprite = NodePath("../Sprite_New")
 _body = NodePath("..")
 
-[node name="VelocityBasedAniSelector" type="Node" parent="." node_paths=PackedStringArray("_body", "_sprite", "_player", "_crouchHandler")]
+[node name="VelocityBasedAniSelector" type="Node" parent="." node_paths=PackedStringArray("_body", "_sprite", "_player", "_crouchHandler", "_flipHandler")]
 script = ExtResource("9_igj33")
 _body = NodePath("..")
 _sprite = NodePath("../Sprite_New")
 _player = NodePath("../AnimationPlayer")
 _crouchHandler = NodePath("../CrouchHandler")
+_flipHandler = NodePath("../FlipHandler")
 _walkToRunTransitionThreshold = 100.0
 
 [node name="KnockbackHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_disabler")]

@@ -86,7 +86,4 @@ public partial class MeleeHurtboxHandler : Area2D, IDisableableControl
         GD.Print($"{HurtboxOwner.Name} emitting attack deflected.");
         EmitSignal(SignalName.OnHurtboxDeflected, deflector, knockback);
     }
-
-    public void OnLeftPressed() => SetFlipState(true);
-    public void OnRightPressed() => SetFlipState(false);
 }
