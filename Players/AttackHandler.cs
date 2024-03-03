@@ -8,7 +8,8 @@ public partial class AttackHandler : Node, IDisableableControl
     [Export] AnimationPlayer _aniPlayer;
     [Export] ControlDisablerHandler _controlDisabler;
     [Export] float _dropkickDrag;
-    [Export] float _actionBufferTime;
+    [Export] float _actionBufferTime = 0.5f;
+    [Export] float _blockBufferTime = 0.5f;
 
     [Export] StringName _dropkickAnimation = "dropkick";
     [Export] StringName _punchAnimation = "punch";
@@ -43,9 +44,16 @@ public partial class AttackHandler : Node, IDisableableControl
             if (InputBuffer.IsBuffered(_body, InputNames.ACTION,
                 _actionBufferTime))
             {
-                GD.Print($"Performing buffered input.");
+                GD.Print($"Performing buffered attack input.");
                 InputBuffer.ConsumeBuffer(_body, InputNames.ACTION);
                 OnAttack();
+            }
+            else if (InputBuffer.IsBuffered(_body, InputNames.BLOCK,
+                _blockBufferTime))
+            {
+                GD.Print($"Performing buffered block input.");
+                InputBuffer.ConsumeBuffer(_body, InputNames.ACTION);
+                OnDeflect();
             }
         }
     }
@@ -69,7 +77,7 @@ public partial class AttackHandler : Node, IDisableableControl
 
         GD.Print($"Performing {animationToUse}.");
         _controlDisabler.SetControlStates(false,
-            _aniPlayer.GetAnimation(animationToUse).Length,
+            _aniPlayer.GetAnimation(animationToUse).Length + 0.05f,
                 ControlIDs.ATTACK_HANDLER,
                 ControlIDs.HURTBOX,
                 ControlIDs.MOVEMENT,
@@ -98,7 +106,7 @@ public partial class AttackHandler : Node, IDisableableControl
 
         GD.Print($"Performing {animationToUse}.");
         _controlDisabler.SetControlStates(false,
-            _aniPlayer.GetAnimation(animationToUse).Length,
+            _aniPlayer.GetAnimation(animationToUse).Length + 0.05f,
             ControlIDs.ATTACK_HANDLER,
             ControlIDs.MOVEMENT,
             ControlIDs.AUTO_ANIMATION,

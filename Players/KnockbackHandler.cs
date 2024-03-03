@@ -41,18 +41,6 @@ public partial class KnockbackHandler : Node, IDisableableControl
         _body.Velocity = newVel;
     }
 
-    //public void OnApplyDeflectedKnockback(CharacterBody2D deflector, float knockback)
-    //{
-    //    knockback *= _inStaggerState ? _staggeredKnockbackMultiplier : 1f;
-    //    Vector2 newVel = deflector.GlobalPosition.RelativeTo(_body.GlobalPosition)
-    //        .Normalized() * knockback;
-
-    //    DisableHandlers(_recoveryTime);
-    //    if (_body.IsOnFloor()) newVel.Y = -knockback;
-    //    _body.Velocity = newVel;
-    //    _remainingStagger = 0f;
-    //}
-
     void DisableHandlers(float time)
     {
         //EmitSignal(SignalName.OnDisableMovementControl);
