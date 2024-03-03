@@ -1,10 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://c6vxsfrvbssc6"]
+[gd_scene load_steps=15 format=3 uid="uid://c6vxsfrvbssc6"]
 
 [ext_resource type="Script" path="res://Levels/CameraZoomer.cs" id="2_7kig3"]
 [ext_resource type="Script" path="res://Levels/LevelGenerator.cs" id="2_lriob"]
 [ext_resource type="Texture2D" uid="uid://tj7yfsiuowo0" path="res://Levels/Tilemaps/cavesofgallet_tiles.png" id="4_83wch"]
 [ext_resource type="Texture2D" uid="uid://c4odmib8ofaak" path="res://Levels/Tilemaps/Lava_Frames/AnimatedFloorLava_1.png" id="5_h5y7s"]
 [ext_resource type="Texture2D" uid="uid://b1qjldpvjx1k0" path="res://Levels/Tilemaps/Lava_Frames/AnimatedFloorLava_2.png" id="6_52op3"]
+[ext_resource type="Texture2D" uid="uid://ba2hidy511r65" path="res://Levels/Border.png" id="6_l6d0l"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1iuj7"]
 texture = ExtResource("4_83wch")
@@ -137,3 +138,25 @@ shape = SubResource("WorldBoundaryShape2D_453lm")
 
 [node name="Bottom" type="CollisionShape2D" parent="World Bounds"]
 shape = SubResource("WorldBoundaryShape2D_5eqt8")
+
+[node name="Borders" type="Node2D" parent="."]
+
+[node name="Left" type="Sprite2D" parent="Borders"]
+position = Vector2(-4674, 30.5)
+scale = Vector2(55.925, 40.2556)
+texture = ExtResource("6_l6d0l")
+
+[node name="Right" type="Sprite2D" parent="Borders"]
+position = Vector2(4709.5, 74)
+scale = Vector2(56.3688, 40.2556)
+texture = ExtResource("6_l6d0l")
+
+[node name="Top" type="Sprite2D" parent="Borders"]
+position = Vector2(342.5, -3289.67)
+scale = Vector2(108.919, 70.6073)
+texture = ExtResource("6_l6d0l")
+
+[node name="Bottom" type="Sprite2D" parent="Borders"]
+position = Vector2(831.5, 2506.67)
+scale = Vector2(77.7313, 53.1629)
+texture = ExtResource("6_l6d0l")

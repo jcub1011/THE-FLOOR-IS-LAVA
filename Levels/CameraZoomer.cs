@@ -32,7 +32,15 @@ public partial class CameraZoomer : Camera2D
         float scaleX = display.X / _targetSize.X;
         float scaleY = display.Y / _targetSize.Y;
 
-        Zoom = new((_keepAspect ? scaleY : scaleX) * _initialZoom.X, 
-            scaleY * _initialZoom.Y);
+        if (_keepAspect)
+        {
+            float targetScale = Math.Min(scaleX, scaleY);
+            Zoom = new(_initialZoom.X * targetScale,
+                _initialZoom.Y * targetScale);
+        }
+        else
+        {
+            Zoom = new(_initialZoom.X * scaleX, _initialZoom.Y * scaleY);
+        }
     }
 }
