@@ -140,6 +140,7 @@ shape = SubResource("WorldBoundaryShape2D_453lm")
 shape = SubResource("WorldBoundaryShape2D_5eqt8")
 
 [node name="Borders" type="Node2D" parent="."]
+metadata/_edit_group_ = true
 
 [node name="Left" type="Sprite2D" parent="Borders"]
 position = Vector2(-4674, 30.5)
