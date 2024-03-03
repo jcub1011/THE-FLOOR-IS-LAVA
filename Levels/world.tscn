@@ -71,7 +71,6 @@ distance = -110.0
 script = ExtResource("2_lriob")
 _startDelay = 3.0
 _camera = NodePath("../Camera2D")
-_scrollSpeed = 0.0
 PlayerTemplatePath = &"res://Players/player.tscn"
 _templates = Array[StringName]([&"res://Levels/Test Type/starter_section_1.tscn"])
 
@@ -141,6 +140,7 @@ shape = SubResource("WorldBoundaryShape2D_5eqt8")
 
 [node name="Borders" type="Node2D" parent="."]
 metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
 
 [node name="Left" type="Sprite2D" parent="Borders"]
 position = Vector2(-4674, 30.5)

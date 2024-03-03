@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Players;
 
@@ -193,6 +194,7 @@ public static class InputBuffer
 public partial class PlayerInputHandler : Node, IDisableableControl
 {
     #region Static
+    static readonly List<InputDevice> DevicesToUse = new();
     static readonly List<InputDevice> RegisteredDevices = new();
 
     static InputDevice GetNextOpenDevice()
@@ -272,6 +274,17 @@ public partial class PlayerInputHandler : Node, IDisableableControl
     {
         return GetOpenDevices().Count;
     }
+
+    public static void SetDevicesToUse(List<InputDevice> devices)
+    {
+        DevicesToUse.Clear();
+        DevicesToUse.AddRange(devices);
+    }
+
+    public static List<InputDevice> GetDevicesToUse()
+    {
+        return DevicesToUse.ToList();
+    }
     #endregion
 
     /// <summary>
@@ -305,8 +318,8 @@ public partial class PlayerInputHandler : Node, IDisableableControl
     public override void _Ready()
     {
         base._Ready();
-        SetDevice(this, GetNextOpenDevice());
-        GD.Print(_device);
+        //SetDevice(this, GetNextOpenDevice());
+        //GD.Print(_device);
     }
 
     public override void _Input(InputEvent @event)

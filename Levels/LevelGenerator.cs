@@ -62,7 +62,7 @@ public partial class LevelGenerator : Node2D
 {
     [Export] float _startDelay = 5f;
     [Export] Camera2D _camera;
-    [Export] double _scrollSpeed = 25f;
+    [Export] public double ScrollSpeed { get; set; } = 25f;
     [Export] StringName PlayerTemplatePath;
 
     Queue<WorldSection> _activeWorldSections;
@@ -80,6 +80,7 @@ public partial class LevelGenerator : Node2D
         }
     }
 
+    List<Vector2> _spawnLocs;
     List<Node2D> _players;
 
     public override void _Ready()
@@ -98,33 +99,33 @@ public partial class LevelGenerator : Node2D
         newSection.Position = new(0f, - newSection.LowerBoundary + WorldBottomY);
         _activeWorldSections.Enqueue(newSection);
 
-        List<Vector2> spawnLocs = newSection.GetSpawnLocations();
+        _spawnLocs = newSection.GetSpawnLocations();
 
         GetParent().Ready += () =>
         {
-            SpawnPlayers(spawnLocs);
-            Engine.TimeScale = 1f;
+            SpawnPlayers(_spawnLocs);
         };
     }
 
     void SpawnPlayers(List<Vector2> spawnLocs)
     {
-        int playerCount = PlayerInputHandler.GetOpenDeviceCount();
         var player = ResourceLoader.LoadThreadedGet(PlayerTemplatePath) as PackedScene;
 
-        for (int i = 0; i < playerCount; i++)
+        var devices = PlayerInputHandler.GetDevicesToUse();
+        for (int i = 0; i < devices.Count; i++)
         {
             var temp = player.Instantiate() as Node2D;
             temp.GlobalPosition = spawnLocs[i % spawnLocs.Count];
+            PlayerInputHandler.SetDevice(temp.GetChildren<PlayerInputHandler>().First(), devices[i]);
             AddSibling(temp);
             _players.Add(temp);
         }
+
+        Engine.TimeScale = 1f;
     }
 
     void RemoveDeletedScenes()
     {
-        List<WorldSection> toDelete = new();
-
         while(!IsInstanceValid(_activeWorldSections.Peek()))
         {
             _activeWorldSections.Dequeue();
@@ -140,7 +141,7 @@ public partial class LevelGenerator : Node2D
     public override void _Process(double delta)
     {
         base._Process(delta);
-        UpdateSectionPositions(_scrollSpeed, delta);
+        UpdateSectionPositions(ScrollSpeed, delta);
     }
 
     float GetWorldBottomY()
