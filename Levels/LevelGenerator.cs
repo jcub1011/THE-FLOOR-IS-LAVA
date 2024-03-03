@@ -64,6 +64,10 @@ public partial class LevelGenerator : Node2D
     [Export] Camera2D _camera;
     [Export] public double ScrollSpeed { get; set; } = 25f;
     [Export] StringName PlayerTemplatePath;
+    [Export] string _speedRegionName = "SpeedRegion";
+    [Export] string _slowRegionName = "SlowRegion";
+    [Export] double _speedupFactor = 0.3;
+    [Export] double _slowdownFactor = 0.2;
 
     Queue<WorldSection> _activeWorldSections;
     [Export] Godot.Collections.Array<StringName> _templates;
@@ -176,6 +180,7 @@ public partial class LevelGenerator : Node2D
             _startDelay -= (float)delta;
             return;
         }
+        velocity = GetModifiedVelocity(velocity);
 
         var last = _activeWorldSections.Last();
         if (last.Position.Y + last.UpperBoundary >= GetWorldTopY())
@@ -202,5 +207,29 @@ public partial class LevelGenerator : Node2D
             if (!IsInstanceValid(player)) continue;
             player.Position += deltaPos;
         }
+    }
+
+    double GetModifiedVelocity(double baseVel)
+    {
+        var upperRegion = GetNode<Area2D>(_speedRegionName);
+        var lowerRegion = GetNode<Area2D>(_slowRegionName);
+        List<Node2D> livingPlayers = _players.Where(x => x.Visible).ToList();
+        double modifiedVel = baseVel;
+        double speedup = baseVel * _speedupFactor * 1 / livingPlayers.Count;
+        double slowdown = baseVel * _slowdownFactor * 1 / livingPlayers.Count;
+
+        foreach(var player in livingPlayers)
+        {
+            if (upperRegion.OverlapsBody(player))
+            {
+                modifiedVel += speedup * (1 - upperRegion.GetNormalizedDistFromTop(player));
+            }
+            else if (lowerRegion.OverlapsBody(player))
+            {
+                modifiedVel -= slowdown * lowerRegion.GetNormalizedDistFromTop(player);
+            }
+        }
+
+        return modifiedVel;
     }
 }

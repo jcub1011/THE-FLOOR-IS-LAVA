@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://c6vxsfrvbssc6"]
+[gd_scene load_steps=17 format=3 uid="uid://c6vxsfrvbssc6"]
 
 [ext_resource type="Script" path="res://Levels/CameraZoomer.cs" id="2_7kig3"]
 [ext_resource type="Script" path="res://Levels/LevelGenerator.cs" id="2_lriob"]
@@ -6,6 +6,12 @@
 [ext_resource type="Texture2D" uid="uid://c4odmib8ofaak" path="res://Levels/Tilemaps/Lava_Frames/AnimatedFloorLava_1.png" id="5_h5y7s"]
 [ext_resource type="Texture2D" uid="uid://b1qjldpvjx1k0" path="res://Levels/Tilemaps/Lava_Frames/AnimatedFloorLava_2.png" id="6_52op3"]
 [ext_resource type="Texture2D" uid="uid://ba2hidy511r65" path="res://Levels/Border.png" id="6_l6d0l"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ayxn6"]
+size = Vector2(399, 76)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_omdls"]
+size = Vector2(400, 84)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1iuj7"]
 texture = ExtResource("4_83wch")
@@ -71,8 +77,29 @@ distance = -110.0
 script = ExtResource("2_lriob")
 _startDelay = 3.0
 _camera = NodePath("../Camera2D")
+ScrollSpeed = 15.0
 PlayerTemplatePath = &"res://Players/player.tscn"
+_speedupFactor = 1.0
+_slowdownFactor = 0.9
 _templates = Array[StringName]([&"res://Levels/Test Type/starter_section_1.tscn"])
+
+[node name="SlowRegion" type="Area2D" parent="Level Generator"]
+z_index = 9
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level Generator/SlowRegion"]
+position = Vector2(-0.5, 76)
+shape = SubResource("RectangleShape2D_ayxn6")
+
+[node name="SpeedRegion" type="Area2D" parent="Level Generator"]
+z_index = 9
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Level Generator/SpeedRegion"]
+position = Vector2(0, -71)
+shape = SubResource("RectangleShape2D_omdls")
 
 [node name="Section Bounds" type="Node2D" parent="."]
 

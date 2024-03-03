@@ -1,4 +1,5 @@
 ﻿using Godot;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -117,6 +118,35 @@ public static class NodeExtensionMethods
 
         return targets;
     }
+
+    /// <summary>
+    /// Gets the distance of node other from the top of the area 2D boundary. 
+    /// This distance is calculated from the position of other, not its collider.
+    /// </summary>
+    /// <param name="node"></param>
+    /// <param name="other"></param>
+    /// <returns>From 0 to 1 where lower is closer.</returns>
+    public static float GetNormalizedDistFromTop(this Area2D node, Node2D other)
+    {
+        var rectangle = node.GetChildren<CollisionShape2D>().FirstOrDefault();
+        if (rectangle is default(CollisionShape2D)) return 1f;
+
+        var shape = rectangle.Shape as RectangleShape2D;
+        shape.GetRect();
+        Vector2 boundary = new(
+            shape.GetRect().Position.Y + rectangle.GlobalPosition.Y, 
+            shape.GetRect().End.Y + rectangle.GlobalPosition.Y);
+        //GD.Print(boundary);
+        Vector2 pos = other.GlobalPosition;
+
+        if (boundary.MaxVal() < pos.Y) return 1f;
+        else
+        {
+            float dist = Mathf.Abs(boundary.MaxVal() - pos.Y);
+            float height = Mathf.Abs(boundary.MaxVal() - boundary.MinVal());
+            return Mathf.Clamp(1f - dist / height, 0f, 1f);
+        }
+    }
 }
 
 public static class MathExtensions
@@ -197,4 +227,29 @@ public static class MathExtensions
             return true;
         }
     }
+
+    public static float MinVal(this Vector2 vect)
+    {
+        return Mathf.Min(vect.X, vect.Y);
+    }
+
+    public static float MaxVal(this Vector2 vect)
+    {
+        return Mathf.Max(vect.X, vect.Y);
+    }
+}
+
+public static class ListExtensions
+{
+    //public static int Count<T>(this IEnumerable<T> list, Predicate<T> predicate)
+    //{
+    //    int count = 0;
+
+    //    foreach(var item in list)
+    //    {
+    //        if (predicate(item)) count++;
+    //    }
+
+    //    return count;
+    //}
 }
