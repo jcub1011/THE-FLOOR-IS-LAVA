@@ -27,6 +27,7 @@ public partial class PlayerControllerSelector : HBoxContainer
         base._Ready();
         var dropdown = GetDropdown();
         PopulateList();
+        SetInitialPick();
         dropdown.MouseEntered += UpdateDisabledOptions;
         dropdown.FocusEntered += UpdateDisabledOptions;
         dropdown.ItemSelected += OnItemSelected;
@@ -103,5 +104,20 @@ public partial class PlayerControllerSelector : HBoxContainer
                 dropdown.SetItemDisabled(i, _selectedDevices.Contains(_deviceList[i]));
             }
         }
+    }
+
+    void SetInitialPick()
+    {
+        for (int i = 1; i < _deviceList.Count; i++)
+        {
+            if (!_selectedDevices.Contains(_deviceList[i]))
+            {
+                GetDropdown().Select(i);
+                OnItemSelected(i);
+                UpdateDisabledOptions();
+                return;
+            }
+        }
+        GetDropdown().Select(0);
     }
 }
