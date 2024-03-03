@@ -19,6 +19,12 @@ layer = 10
 [node name="MainMenu" parent="CanvasLayer" instance=ExtResource("1_61eq2")]
 layout_direction = 2
 
+[node name="TextureRect" parent="CanvasLayer/MainMenu" index="0"]
+offset_left = -20153.0
+offset_top = -6038.0
+offset_right = 10005.0
+offset_bottom = 12531.8
+
 [connection signal="OnPressedWithTimer" from="CanvasLayer/RetryScreen/CenterContainer/VBoxContainer/Button" to="." method="OnRestartHandler"]
 [connection signal="OnPressedWithTimer" from="CanvasLayer/MainMenu/HBoxContainer/VBoxContainer/Button" to="." method="OnStartGameHandler"]
 

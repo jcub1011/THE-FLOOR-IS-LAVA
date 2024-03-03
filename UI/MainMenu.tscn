@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://bo5qmavr2vpky"]
+[gd_scene load_steps=7 format=3 uid="uid://bo5qmavr2vpky"]
 
 [ext_resource type="Texture2D" uid="uid://qit2ota3qdf0" path="res://Levels/Tilemaps/cavesofgallet.png" id="1_jpea5"]
 [ext_resource type="Texture2D" uid="uid://c135io11ugxpv" path="res://UI/Title Screen.png" id="1_toabj"]
 [ext_resource type="FontFile" uid="uid://bml2tndx7ouf6" path="res://UI/Fonts/Ldfcomicsans-jj7l.ttf" id="2_wylnk"]
+[ext_resource type="Script" path="res://UI/PlayerControllerSelector.cs" id="4_tth4g"]
 [ext_resource type="Script" path="res://UI/GameStarterButton.cs" id="4_v8tso"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mwajs"]
@@ -40,6 +41,7 @@ offset_left = -0.700012
 offset_right = 0.699829
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 15
 
 [node name="TextureRect" type="TextureRect" parent="HBoxContainer"]
 texture_filter = 5
@@ -52,6 +54,98 @@ stretch_mode = 4
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
+
+[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_wylnk")
+theme_override_font_sizes/normal_font_size = 60
+text = "Players"
+fit_content = true
+autowrap_mode = 0
+
+[node name="Player_1" type="HBoxContainer" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+script = ExtResource("4_tth4g")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer/VBoxContainer/Player_1"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_wylnk")
+theme_override_font_sizes/normal_font_size = 25
+text = "Player 1"
+fit_content = true
+autowrap_mode = 0
+
+[node name="OptionButton" type="OptionButton" parent="HBoxContainer/VBoxContainer/Player_1"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_wylnk")
+theme_override_font_sizes/font_size = 30
+item_count = 1
+popup/item_0/text = "First"
+popup/item_0/id = 0
+
+[node name="Player_2" type="HBoxContainer" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+script = ExtResource("4_tth4g")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer/VBoxContainer/Player_2"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_wylnk")
+theme_override_font_sizes/normal_font_size = 25
+text = "Player 2"
+fit_content = true
+autowrap_mode = 0
+
+[node name="OptionButton" type="OptionButton" parent="HBoxContainer/VBoxContainer/Player_2"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_wylnk")
+theme_override_font_sizes/font_size = 30
+item_count = 1
+popup/item_0/text = "First"
+popup/item_0/id = 0
+
+[node name="Player_3" type="HBoxContainer" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+script = ExtResource("4_tth4g")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer/VBoxContainer/Player_3"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_wylnk")
+theme_override_font_sizes/normal_font_size = 25
+text = "Player 3"
+fit_content = true
+autowrap_mode = 0
+
+[node name="OptionButton" type="OptionButton" parent="HBoxContainer/VBoxContainer/Player_3"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_wylnk")
+theme_override_font_sizes/font_size = 30
+item_count = 1
+popup/item_0/text = "First"
+popup/item_0/id = 0
+
+[node name="Player_4" type="HBoxContainer" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+script = ExtResource("4_tth4g")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer/VBoxContainer/Player_4"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_wylnk")
+theme_override_font_sizes/normal_font_size = 25
+text = "Player 4"
+fit_content = true
+autowrap_mode = 0
+
+[node name="OptionButton" type="OptionButton" parent="HBoxContainer/VBoxContainer/Player_4"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_wylnk")
+theme_override_font_sizes/font_size = 30
+item_count = 1
+popup/item_0/text = "First"
+popup/item_0/id = 0
 
 [node name="Button" type="Button" parent="HBoxContainer/VBoxContainer"]
 layout_mode = 2

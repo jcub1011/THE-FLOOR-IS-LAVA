@@ -40,7 +40,21 @@ public readonly struct InputDevice
 
     public override string ToString()
     {
-        return $"Type: {Type} | ID: {DeviceID}";
+        if (Type == DeviceType.Gamepad)
+        {
+            return $"{DeviceID + 1} : {Input.GetJoyName(DeviceID)}";
+        }
+        else
+        {
+            if (Type == DeviceType.KeyboardLeft)
+            {
+                return $"Keyboard Left";
+            }
+            else
+            {
+                return $"Keyboard Right";
+            }
+        }
     }
 
     public static bool operator ==(InputDevice left, InputDevice right)
@@ -194,15 +208,24 @@ public partial class PlayerInputHandler : Node, IDisableableControl
         handler._device = default;
     }
 
-    static void SetDevice(PlayerInputHandler handler, InputDevice newDevice)
+    /// <summary>
+    /// Returns true if successful. No changes are made if supplied device 
+    /// is not available.
+    /// </summary>
+    /// <param name="handler"></param>
+    /// <param name="newDevice"></param>
+    /// <returns></returns>
+    public static bool SetDevice(PlayerInputHandler handler, InputDevice newDevice)
     {
+        if (RegisteredDevices.Contains(newDevice)) return false;
         ReleaseDevice(handler);
         handler._device = newDevice;
         RegisteredDevices.Add(handler._device);
         GD.Print($"Changed {handler.Name} to new device {newDevice}.");
+        return true;
     }
 
-    static List<InputDevice> GetOpenDevices()
+    public static List<InputDevice> GetOpenDevices()
     {
         List<InputDevice> openDevices = new();
         List<int> takenControllerIds = new();
@@ -332,6 +355,12 @@ public partial class PlayerInputHandler : Node, IDisableableControl
             GD.Print($"{_device}: Stopped Action Input");
             EmitSignal(SignalName.ActionReleased);
         }
+    }
+
+    public override void _ExitTree()
+    {
+        base._ExitTree();
+        ReleaseDevice(this);
     }
 
     public void ReleaseInput()
