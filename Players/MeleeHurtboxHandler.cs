@@ -2,6 +2,12 @@ using Godot;
 
 namespace Players;
 
+public enum AttackHeight
+{
+    Standing,
+    Crouched
+}
+
 public partial class MeleeHurtboxHandler : Area2D, IDisableableControl
 {
     [Signal] public delegate void OnHurtboxDeflectedEventHandler(CharacterBody2D deflector, float knockback);
@@ -19,6 +25,7 @@ public partial class MeleeHurtboxHandler : Area2D, IDisableableControl
         get => GetParent<CharacterBody2D>();
     }
     public float Knockback { get; private set; }
+    public AttackHeight AttackHeight { get; private set; }
 
     #region Interface Implementation
     public string ControlID { get => ControlIDs.HURTBOX; }
@@ -38,7 +45,7 @@ public partial class MeleeHurtboxHandler : Area2D, IDisableableControl
         DisableHitboxes();
     }
 
-    public void EnableHitbox(StringName hitboxName, float duration, float knockback)
+    public void EnableHitbox(StringName hitboxName, float duration, float knockback, AttackHeight height)
     {
         Knockback = knockback;
         foreach (var child in GetChildren())
@@ -55,6 +62,7 @@ public partial class MeleeHurtboxHandler : Area2D, IDisableableControl
                 }
             }
         }
+        AttackHeight = height;
     }
 
     void DisableHitboxes()
