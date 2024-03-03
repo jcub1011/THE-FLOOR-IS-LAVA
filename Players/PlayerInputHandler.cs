@@ -10,6 +10,8 @@ public readonly struct InputNames
     public readonly static StringName LEFT = "left";
     public readonly static StringName RIGHT = "right";
     public readonly static StringName ACTION = "action";
+    public readonly static StringName BLOCK = "block";
+    public readonly static StringName CROUCH = "crouch";
     public readonly static StringName LEFT_KB_ID = "_kb_l";
     public readonly static StringName RIGHT_KB_ID = "_kb_r";
 }
@@ -99,21 +101,20 @@ public static class InputDeviceExtensions
         return (key.IsAction(InputNames.LEFT + InputNames.LEFT_KB_ID)
                 || key.IsAction(InputNames.RIGHT + InputNames.LEFT_KB_ID)
                 || key.IsAction(InputNames.JUMP + InputNames.LEFT_KB_ID)
-                || key.IsAction(InputNames.ACTION + InputNames.LEFT_KB_ID))
+                || key.IsAction(InputNames.ACTION + InputNames.LEFT_KB_ID)
+                || key.IsAction(InputNames.BLOCK + InputNames.LEFT_KB_ID)
+                || key.IsAction(InputNames.CROUCH + InputNames.LEFT_KB_ID))
                 ? DeviceType.KeyboardLeft : DeviceType.KeyboardRight;
     }
 
     public static StringName ConvertInputName(this StringName name, DeviceType type)
     {
-        switch (type)
+        return type switch
         {
-            case DeviceType.KeyboardLeft:
-                return name + InputNames.LEFT_KB_ID;
-            case DeviceType.KeyboardRight:
-                return name + InputNames.RIGHT_KB_ID;
-            default:
-                return name;
-        }
+            DeviceType.KeyboardLeft => (StringName)(name + InputNames.LEFT_KB_ID),
+            DeviceType.KeyboardRight => (StringName)(name + InputNames.RIGHT_KB_ID),
+            _ => name,
+        };
     }
 }
 
@@ -302,6 +303,10 @@ public partial class PlayerInputHandler : Node, IDisableableControl
     [Signal] public delegate void JumpReleasedEventHandler();
     [Signal] public delegate void ActionPressedEventHandler();
     [Signal] public delegate void ActionReleasedEventHandler();
+    [Signal] public delegate void BlockPressedEventHandler();
+    [Signal] public delegate void BlockReleasedEventHandler();
+    [Signal] public delegate void CrouchPressedEventHandler();
+    [Signal] public delegate void CrouchReleasedEventHandler();
     #endregion
 
     //Dictionary<StringName, bool> _previousStateMap;
@@ -367,6 +372,26 @@ public partial class PlayerInputHandler : Node, IDisableableControl
         {
             GD.Print($"{_device}: Stopped Action Input");
             EmitSignal(SignalName.ActionReleased);
+        }
+        if (@event.IsActionPressed(InputNames.BLOCK.ConvertInputName(_device.Type)))
+        {
+            GD.Print($"{_device}: Block Input");
+            EmitSignal(SignalName.BlockPressed);
+        }
+        if (@event.IsActionReleased(InputNames.BLOCK.ConvertInputName(_device.Type)))
+        {
+            GD.Print($"{_device}: Stopped Block Input");
+            EmitSignal(SignalName.BlockReleased);
+        }
+        if (@event.IsActionPressed(InputNames.CROUCH.ConvertInputName(_device.Type)))
+        {
+            GD.Print($"{_device}: Crouch Input");
+            EmitSignal(SignalName.CrouchPressed);
+        }
+        if (@event.IsActionReleased(InputNames.CROUCH.ConvertInputName(_device.Type)))
+        {
+            GD.Print($"{_device}: Stopped Crouch Input");
+            EmitSignal(SignalName.CrouchReleased);
         }
     }
 
