@@ -96,6 +96,27 @@ public static class NodeExtensionMethods
             (float)ProjectSettings.GetSetting("display/window/size/viewport_width"),
             (float)ProjectSettings.GetSetting("display/window/size/viewport_height"));
     }
+
+    /// <summary>
+    /// Gets all children of the given type via depth first search. 
+    /// Note: This function does not check children of a node that 
+    /// is the target type.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="node"></param>
+    /// <returns></returns>
+    public static List<T> GetChildren<T>(this Node node)
+    {
+        List<T> targets = new();
+
+        foreach (var child in node.GetChildren())
+        {
+            if (child is T target) targets.Add(target);
+            else targets.AddRange(child.GetChildren<T>());
+        }
+
+        return targets;
+    }
 }
 
 public static class MathExtensions
@@ -175,26 +196,5 @@ public static class MathExtensions
             x2 = (root - b) / (2f * a);
             return true;
         }
-    }
-
-    /// <summary>
-    /// Gets all children of the given type via depth first search. 
-    /// Note: This function does not check children of a node that 
-    /// is the target type.
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="node"></param>
-    /// <returns></returns>
-    public static List<T> GetChildren<T>(this Node node)
-    {
-        List<T> targets = new();
-
-        foreach(var child in node.GetChildren())
-        {
-            if (child is T target) targets.Add(target);
-            else targets.AddRange(node.GetChildren<T>());
-        }
-
-        return targets;
     }
 }

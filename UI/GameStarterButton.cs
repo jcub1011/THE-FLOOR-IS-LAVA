@@ -1,5 +1,7 @@
 using Godot;
+using Players;
 using System;
+using System.Collections.Generic;
 
 namespace WorldGeneration;
 
@@ -13,6 +15,22 @@ public partial class GameStarterButton : Button
     void OnClick()
     {
         if (_remainingTimeUntilNextClick > 0f) return;
+
+        var inputs = GetParent().GetChildren<PlayerControllerSelector>();
+        if (inputs.Count != 0)
+        {
+            List<InputDevice> devices = new();
+            foreach (var selector in inputs)
+            {
+                if (selector.SelectedDevice.Type != DeviceType.None)
+                {
+                    devices.Add(selector.SelectedDevice);
+                }
+            }
+
+            PlayerInputHandler.SetDevicesToUse(devices);
+        }
+
         EmitSignal(SignalName.OnPressedWithTimer);
         _remainingTimeUntilNextClick = _timeBetweenClicks;
     }
