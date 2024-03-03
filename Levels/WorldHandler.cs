@@ -48,7 +48,7 @@ public partial class WorldHandler : Node2D
 
     public void OnRestartHandler()
     {
-        _retryScreen.Visible = false;
+        //_retryScreen.Visible = false;
         RemoveChild( _existingWorld );
         ReplaceWorld();
     }

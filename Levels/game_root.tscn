@@ -15,7 +15,6 @@ _world = ExtResource("2_3l788")
 layer = 10
 
 [node name="RetryScreen" parent="CanvasLayer" instance=ExtResource("1_yo80m")]
-visible = false
 
 [node name="MainMenu" parent="CanvasLayer" instance=ExtResource("1_61eq2")]
 layout_direction = 2
