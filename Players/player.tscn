@@ -365,6 +365,8 @@ script = ExtResource("10_t2a0i")
 [node name="FlipHandler" type="Node" parent="."]
 script = ExtResource("11_t7grp")
 
+[node name="CrouchHandler" type="Node" parent="."]
+
 [node name="Hitbox" type="Area2D" parent="."]
 script = ExtResource("9_4xjwb")
 
