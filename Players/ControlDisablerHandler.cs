@@ -14,6 +14,7 @@ public readonly struct ControlIDs
     public const string KNOCKBACK = "Knockback";
     public const string DEFLECT = "Deflect";
     public const string FLIPPER = "Flipper";
+    public const string CROUCHER = "Croucher";
 }
 
 public interface IDisableableControl

@@ -74,7 +74,8 @@ public partial class AttackHandler : Node, IDisableableControl
                 ControlIDs.HURTBOX,
                 ControlIDs.MOVEMENT,
                 ControlIDs.AUTO_ANIMATION,
-                ControlIDs.FLIPPER);
+                ControlIDs.FLIPPER,
+                ControlIDs.CROUCHER);
         _aniPlayer.Play(animationToUse);
     }
 
@@ -101,7 +102,8 @@ public partial class AttackHandler : Node, IDisableableControl
             ControlIDs.ATTACK_HANDLER,
             ControlIDs.MOVEMENT,
             ControlIDs.AUTO_ANIMATION,
-            ControlIDs.FLIPPER);
+            ControlIDs.FLIPPER,
+            ControlIDs.CROUCHER);
         _body.Velocity = new(0f, _body.Velocity.Y);
         _aniPlayer.Play(animationToUse);
     }

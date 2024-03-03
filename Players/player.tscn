@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://cv7g2fnqrxx7s"]
+[gd_scene load_steps=37 format=3 uid="uid://cv7g2fnqrxx7s"]
 
 [ext_resource type="Script" path="res://Players/PlayerController.cs" id="1_bukco"]
 [ext_resource type="Script" path="res://Players/PlayerInputHandler.cs" id="2_bjy2i"]
@@ -15,12 +15,8 @@
 [ext_resource type="Script" path="res://Players/ControlDisablerHandler.cs" id="10_t2a0i"]
 [ext_resource type="Script" path="res://Players/FlipHandler.cs" id="11_t7grp"]
 [ext_resource type="Script" path="res://Players/CrouchHandler.cs" id="12_5v8f2"]
-[ext_resource type="Texture2D" uid="uid://bqsnyl44uidhf" path="res://Players/Sprite Sheets/Male_2_Clothes_1_Long.png" id="14_t54lr"]
 [ext_resource type="Texture2D" uid="uid://ni70xkxh2nk0" path="res://Players/Sprite Sheets/Male_1_Clothes_1_Long_New_Animations.png" id="15_rkq5e"]
 [ext_resource type="Script" path="res://Players/SpriteControls.cs" id="16_cd1ek"]
-[ext_resource type="Texture2D" uid="uid://cp4kxuftp2ik6" path="res://Players/Sprite Sheets/Female_1_Clothes_3_Long.png" id="17_1wgbn"]
-[ext_resource type="Texture2D" uid="uid://feifgovvip3l" path="res://Players/Sprite Sheets/Female_3_Clothes_1_Long.png" id="18_52q7l"]
-[ext_resource type="Texture2D" uid="uid://bj5fj4a0br3tp" path="res://Players/Sprite Sheets/Male_1_Clothes_1_Long.png" id="19_ue6qw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pi3oo"]
 size = Vector2(8, 14)
@@ -379,11 +375,12 @@ script = ExtResource("7_bcpnl")
 _sprite = NodePath("../Sprite_New")
 _body = NodePath("..")
 
-[node name="VelocityBasedAniSelector" type="Node" parent="." node_paths=PackedStringArray("_body", "_sprite", "_player")]
+[node name="VelocityBasedAniSelector" type="Node" parent="." node_paths=PackedStringArray("_body", "_sprite", "_player", "_crouchHandler")]
 script = ExtResource("9_igj33")
 _body = NodePath("..")
 _sprite = NodePath("../Sprite_New")
 _player = NodePath("../AnimationPlayer")
+_crouchHandler = NodePath("../CrouchHandler")
 _walkToRunTransitionThreshold = 100.0
 
 [node name="KnockbackHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_disabler")]
@@ -434,10 +431,13 @@ texture = ExtResource("15_rkq5e")
 hframes = 99
 frame = 5
 script = ExtResource("16_cd1ek")
-PossibleSprites = Array[Texture2D]([ExtResource("19_ue6qw"), ExtResource("17_1wgbn"), ExtResource("18_52q7l"), ExtResource("14_t54lr")])
+PossibleSprites = Array[Texture2D]([ExtResource("15_rkq5e")])
 
 [connection signal="area_entered" from="Lava Collider" to="." method="OnTouchedLava"]
 [connection signal="ActionPressed" from="PlayerInputHandler" to="AttackHandler" method="OnAction"]
+[connection signal="BlockPressed" from="PlayerInputHandler" to="AttackHandler" method="OnDeflect"]
+[connection signal="CrouchPressed" from="PlayerInputHandler" to="CrouchHandler" method="OnCrouchStart"]
+[connection signal="CrouchReleased" from="PlayerInputHandler" to="CrouchHandler" method="OnCrouchEnd"]
 [connection signal="JumpPressed" from="PlayerInputHandler" to="JumpHandler" method="OnJumpPressed"]
 [connection signal="JumpReleased" from="PlayerInputHandler" to="JumpHandler" method="OnJumpReleased"]
 [connection signal="MoveLeftPressed" from="PlayerInputHandler" to="HorizontalMovementHandler" method="OnLeftPressed"]

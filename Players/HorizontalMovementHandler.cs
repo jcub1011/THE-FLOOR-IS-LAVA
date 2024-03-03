@@ -36,6 +36,13 @@ public partial class HorizontalMovementHandler : Node, IDisableableControl
         if (!_isEnabled) return;
         Vector2 newVel = new(0, _body.Velocity.Y);
 
+        if (GetParent().GetChild<CrouchHandler>().IsCrouched)
+        {
+            if (_body.IsOnFloor())
+                _body.Velocity = newVel;
+            return;
+        }
+
         if (_isLeftButtonDown)
         {
             newVel.X += -_moveSpeed;
