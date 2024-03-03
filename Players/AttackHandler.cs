@@ -45,7 +45,7 @@ public partial class AttackHandler : Node, IDisableableControl
             {
                 GD.Print($"Performing buffered input.");
                 InputBuffer.ConsumeBuffer(_body, InputNames.ACTION);
-                OnAction();
+                OnAttack();
             }
         }
     }
@@ -104,67 +104,7 @@ public partial class AttackHandler : Node, IDisableableControl
             ControlIDs.AUTO_ANIMATION,
             ControlIDs.FLIPPER,
             ControlIDs.CROUCHER);
-        _body.Velocity = new(0f, _body.Velocity.Y);
+        //_body.Velocity = new(0f, _body.Velocity.Y);
         _aniPlayer.Play(animationToUse);
-    }
-
-    public void OnAction()
-    {
-        //if (_isDisabled)
-        //{
-        //    GD.Print($"{GetParent().Name} unable to perform action, currently " +
-        //        $"disabled.");
-        //    InputBuffer.BufferInput(_body, InputNames.ACTION);
-        //    return;
-        //}
-        //else
-        //{
-        //    InputBuffer.ConsumeBuffer(_body, InputNames.ACTION);
-        //}
-
-        //if (_body.IsOnFloor())
-        //{
-        //    if (_body.Velocity.X == 0f)
-        //    {
-        //        // Perform deflect.
-        //        GD.Print("Performing deflect.");
-        //        _controlDisabler.SetControlStates(false,
-        //            _aniPlayer.GetAnimation(_deflectAnimation).Length,
-        //            ControlIDs.ATTACK_HANDLER,
-        //            ControlIDs.HURTBOX,
-        //            ControlIDs.MOVEMENT,
-        //            ControlIDs.AUTO_ANIMATION,
-        //            ControlIDs.FLIPPER);
-        //        //DisableHandlers(_aniPlayer.GetAnimation(_deflectAnimation).Length);
-        //        _aniPlayer.Play(_deflectAnimation);
-        //    }
-        //    else
-        //    {
-        //        // Perform punch.
-        //        GD.Print("Performing punch.");
-        //        _controlDisabler.SetControlStates(false,
-        //            _aniPlayer.GetAnimation(_punchAnimation).Length,
-        //            ControlIDs.ATTACK_HANDLER,
-        //            ControlIDs.MOVEMENT,
-        //            ControlIDs.AUTO_ANIMATION,
-        //            ControlIDs.FLIPPER);
-        //        //DisableHandlers(_aniPlayer.GetAnimation(_punchAnimation).Length);
-        //        _body.Velocity = new(0f, _body.Velocity.Y);
-        //        _aniPlayer.Play(_punchAnimation);
-        //    }
-        //}
-        //else if (_body.Velocity.X != 0f)
-        //{
-        //    // Perform dropkick.
-        //    GD.Print("Performing dropkick.");
-        //    _controlDisabler.SetControlStates(false,
-        //        _aniPlayer.GetAnimation(_dropkickAnimation).Length,
-        //        ControlIDs.ATTACK_HANDLER,
-        //        ControlIDs.MOVEMENT,
-        //        ControlIDs.AUTO_ANIMATION,
-        //        ControlIDs.FLIPPER);
-        //    //DisableHandlers(_aniPlayer.GetAnimation(_dropkickAnimation).Length);
-        //    _aniPlayer.Play(_dropkickAnimation);
-        //}
     }
 }

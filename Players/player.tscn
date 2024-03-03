@@ -434,7 +434,7 @@ script = ExtResource("16_cd1ek")
 PossibleSprites = Array[Texture2D]([ExtResource("15_rkq5e")])
 
 [connection signal="area_entered" from="Lava Collider" to="." method="OnTouchedLava"]
-[connection signal="ActionPressed" from="PlayerInputHandler" to="AttackHandler" method="OnAction"]
+[connection signal="ActionPressed" from="PlayerInputHandler" to="AttackHandler" method="OnAttack"]
 [connection signal="BlockPressed" from="PlayerInputHandler" to="AttackHandler" method="OnDeflect"]
 [connection signal="CrouchPressed" from="PlayerInputHandler" to="CrouchHandler" method="OnCrouchStart"]
 [connection signal="CrouchReleased" from="PlayerInputHandler" to="CrouchHandler" method="OnCrouchEnd"]
