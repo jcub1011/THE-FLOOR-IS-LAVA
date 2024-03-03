@@ -49,7 +49,7 @@ public partial class Hitbox : Area2D, IDisableableControl
             {
                 GD.Print($"{_body.Name} deflected " +
                     $"{collider.HurtboxOwner.Name}.");
-                args.HitBy.HandleAttackDeflected(_body, collider.Knockback);
+                args.HitBy.HandleAttackDeflected();
             }
             else
             {
