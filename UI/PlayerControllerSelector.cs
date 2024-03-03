@@ -10,6 +10,15 @@ public partial class PlayerControllerSelector : HBoxContainer
 
     public const string EMPTY_CONTROLLER = "None";
 
+    public InputDevice SelectedDevice
+    {
+        get
+        {
+            if (_currentSelection == -1) return default;
+            else return _deviceList[_currentSelection];
+        }
+    }
+
     List<InputDevice> _deviceList = new();
     int _currentSelection = -1;
 
@@ -18,8 +27,8 @@ public partial class PlayerControllerSelector : HBoxContainer
         base._Ready();
         var dropdown = GetDropdown();
         PopulateList();
-        dropdown.MouseEntered += OnHover;
-        dropdown.FocusEntered += OnHover;
+        dropdown.MouseEntered += UpdateDisabledOptions;
+        dropdown.FocusEntered += UpdateDisabledOptions;
         dropdown.ItemSelected += OnItemSelected;
     }
 
@@ -27,19 +36,12 @@ public partial class PlayerControllerSelector : HBoxContainer
     {
         base._ExitTree();
         var dropdown = GetDropdown();
-        dropdown.MouseEntered -= OnHover;
-        dropdown.FocusEntered -= OnHover;
+        dropdown.MouseEntered -= UpdateDisabledOptions;
+        dropdown.FocusEntered -= UpdateDisabledOptions;
         dropdown.ItemSelected -= OnItemSelected;
     }
 
-    private void OnHover()
-    {
-        //throw new NotImplementedException();
-        GD.Print("Hovered");
-        UpdateDisabledOptions();
-    }
-
-    private void OnItemSelected(long index)
+    void OnItemSelected(long index)
     {
         //throw new NotImplementedException();
         GD.Print("Selected " + index.ToString());
