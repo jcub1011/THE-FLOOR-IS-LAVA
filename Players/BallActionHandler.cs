@@ -10,6 +10,7 @@ public partial class BallActionHandler : Node, IDisableableControl
     [Export] ControlDisablerHandler _controlDisabler;
     [Export] StringName _blockAnimation;
     [Export] StringName _dashAnimation;
+    [Export] DashHandler _dashHandler;
     bool _enabled = true;
 
     public string ControlID => ControlIDs.ACTION_HANDLER;
@@ -37,9 +38,14 @@ public partial class BallActionHandler : Node, IDisableableControl
     void PerformDash()
     {
         GD.Print("Performing Dash.");
-        _aniPlayer.Play(_dashAnimation);
-        _controlDisabler.SetControlStatesExcept(
-            false, _aniPlayer.GetAnimation(_dashAnimation).Length);
+        if (_dashHandler.PerformDash(_body.Velocity))
+        {
+            _aniPlayer.Play(_dashAnimation);
+            _controlDisabler.SetControlStatesExcept(
+                false, _aniPlayer.GetAnimation(_dashAnimation).Length,
+                ControlIDs.INPUT);
+        }
+        else GD.Print("Insufficient dash charges.");
     }
 
     void PerformBlock()
@@ -48,6 +54,7 @@ public partial class BallActionHandler : Node, IDisableableControl
         _aniPlayer.Play(_blockAnimation);
         _controlDisabler.SetControlStatesExcept(
             false, _aniPlayer.GetAnimation(_blockAnimation).Length,
-            ControlIDs.GRAVITY);
+            ControlIDs.GRAVITY,
+            ControlIDs.INPUT);
     }
 }

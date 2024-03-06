@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://cv7g2fnqrxx7s"]
+[gd_scene load_steps=42 format=3 uid="uid://cv7g2fnqrxx7s"]
 
 [ext_resource type="Script" path="res://Players/PlayerController.cs" id="1_bukco"]
 [ext_resource type="Script" path="res://Players/BallActionHandler.cs" id="2_8sxkk"]
@@ -14,6 +14,7 @@
 [ext_resource type="Script" path="res://Players/VelocityBasedAnimationSelector.cs" id="9_igj33"]
 [ext_resource type="Script" path="res://Players/ControlDisablerHandler.cs" id="10_t2a0i"]
 [ext_resource type="Script" path="res://Players/FlipHandler.cs" id="11_t7grp"]
+[ext_resource type="Script" path="res://Players/DashHandler.cs" id="13_c0kft"]
 [ext_resource type="Script" path="res://Players/SpriteControls.cs" id="16_cd1ek"]
 [ext_resource type="Texture2D" uid="uid://cxdam2ge4nrff" path="res://Players/Sprite Sheets/Ball Sprites/Ball_Sheets.png" id="18_ngx1i"]
 
@@ -442,13 +443,14 @@ shape = SubResource("RectangleShape2D_pi3oo")
 position = Vector2(0, -4)
 shape = SubResource("CapsuleShape2D_meg5j")
 
-[node name="BallActionHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_aniPlayer", "_controlDisabler")]
+[node name="BallActionHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_aniPlayer", "_controlDisabler", "_dashHandler")]
 script = ExtResource("2_8sxkk")
 _body = NodePath("..")
 _aniPlayer = NodePath("../AnimationPlayer")
 _controlDisabler = NodePath("../ControlDisablerHandler")
 _blockAnimation = &"ball_block"
 _dashAnimation = &"ball_dash"
+_dashHandler = NodePath("../DashHandler")
 
 [node name="BallHorizontalMovement" type="Node" parent="." node_paths=PackedStringArray("_body")]
 script = ExtResource("3_vn5cb")
@@ -457,6 +459,11 @@ _body = NodePath("..")
 [node name="BallJumpHandler" type="Node" parent="." node_paths=PackedStringArray("_body")]
 script = ExtResource("4_kdm3q")
 _body = NodePath("..")
+
+[node name="DashHandler" type="Node" parent="." node_paths=PackedStringArray("_body")]
+script = ExtResource("13_c0kft")
+_body = NodePath("..")
+_dashSpeed = 100.0
 
 [node name="PlayerInputHandler" type="Node" parent="."]
 script = ExtResource("2_bjy2i")
@@ -471,12 +478,11 @@ script = ExtResource("7_bcpnl")
 _sprite = NodePath("../Sprite_New")
 _body = NodePath("..")
 
-[node name="VelocityBasedAniSelector" type="Node" parent="." node_paths=PackedStringArray("_body", "_sprite", "_player", "_crouchHandler", "_flipHandler")]
+[node name="VelocityBasedAniSelector" type="Node" parent="." node_paths=PackedStringArray("_body", "_sprite", "_player", "_flipHandler")]
 script = ExtResource("9_igj33")
 _body = NodePath("..")
 _sprite = NodePath("../Sprite_New")
 _player = NodePath("../AnimationPlayer")
-_crouchHandler = NodePath("")
 _flipHandler = NodePath("../FlipHandler")
 _walkToRunTransitionThreshold = 100.0
 
@@ -536,6 +542,7 @@ PossibleSprites = Array[Texture2D]([ExtResource("18_ngx1i")])
 [connection signal="InputRecieved" from="PlayerInputHandler" to="BallActionHandler" method="InputEventHandler"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="BallHorizontalMovement" method="InputEventHandler"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="BallJumpHandler" method="InputEventHandler"]
+[connection signal="InputRecieved" from="PlayerInputHandler" to="DashHandler" method="InputEventHandler"]
 [connection signal="MoveLeftPressed" from="PlayerInputHandler" to="FlipHandler" method="OnFaceLeft"]
 [connection signal="MoveRightPressed" from="PlayerInputHandler" to="FlipHandler" method="OnFaceRight"]
 [connection signal="OnFlip" from="FlipHandler" to="MeleeHurtboxHandler" method="SetFlipState"]

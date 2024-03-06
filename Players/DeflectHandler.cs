@@ -27,6 +27,11 @@ public partial class DeflectHandler : Node, IDisableableControl
     {
         base._PhysicsProcess(delta);
         _remainingDeflectTime -= (float)delta;
+
+        if (_body.IsOnFloor() && _remainingDeflectTime > 0f)
+        {
+            _body.Velocity = new(_body.Velocity.X / 2f, _body.Velocity.Y);
+        }
     }
 
     public void OnReceivedHitHandler(OnHitArgs args)

@@ -18,11 +18,6 @@ public partial class BallHorizontalMovementHandler : Node, IDisableableControl
     public void SetControlState(bool enabled)
     {
         _isEnabled = enabled;
-        if (!enabled)
-        {
-            _isLeftButtonDown = false;
-            _isRightButtonDown = false;
-        }
     }
 
     public void InputEventHandler(StringName input, bool pressed)
