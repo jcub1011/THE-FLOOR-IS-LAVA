@@ -76,14 +76,12 @@ public partial class AttackHandler : Node, IDisableableControl
             ? _crouchedDeflectAnimation : _deflectAnimation;
 
         GD.Print($"Performing {animationToUse}.");
-        _controlDisabler.SetControlStates(false,
+        _controlDisabler.SetControlStatesExcept(false,
             _aniPlayer.GetAnimation(animationToUse).Length + 0.05f,
-                ControlIDs.ATTACK_HANDLER,
-                ControlIDs.HURTBOX,
-                ControlIDs.MOVEMENT,
-                ControlIDs.AUTO_ANIMATION,
-                ControlIDs.FLIPPER,
-                ControlIDs.CROUCHER);
+                ControlIDs.GRAVITY,
+                ControlIDs.INPUT,
+                ControlIDs.HITBOX,
+                ControlIDs.DEFLECT);
         _aniPlayer.Play(animationToUse);
     }
 
@@ -105,13 +103,12 @@ public partial class AttackHandler : Node, IDisableableControl
             ? _dropkickAnimation : _punchAnimation;
 
         GD.Print($"Performing {animationToUse}.");
-        _controlDisabler.SetControlStates(false,
+        _controlDisabler.SetControlStatesExcept(false,
             _aniPlayer.GetAnimation(animationToUse).Length + 0.05f,
-            ControlIDs.ATTACK_HANDLER,
-            ControlIDs.MOVEMENT,
-            ControlIDs.AUTO_ANIMATION,
-            ControlIDs.FLIPPER,
-            ControlIDs.CROUCHER);
+                ControlIDs.GRAVITY,
+                ControlIDs.INPUT,
+                ControlIDs.HITBOX,
+                ControlIDs.HURTBOX);
         //_body.Velocity = new(0f, _body.Velocity.Y);
         _aniPlayer.Play(animationToUse);
     }

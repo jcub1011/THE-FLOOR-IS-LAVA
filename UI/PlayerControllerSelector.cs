@@ -123,6 +123,7 @@ public partial class PlayerControllerSelector : HBoxContainer
         foreach (var item in PlayerInputHandler.GetOpenDevices())
         {
             dropdown.AddItem(item.ToString());
+            //GD.Print(item.ToString());
             _deviceList.Add(item);
         }
     }

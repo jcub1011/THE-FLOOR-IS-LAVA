@@ -196,7 +196,6 @@ public static class InputBuffer
 public partial class PlayerInputHandler : Node, IDisableableControl
 {
     #region Static
-    static bool _onJoypadConnectedCallbackSet = false;
     static readonly List<InputDevice> DevicesToUse = new();
     static readonly List<InputDevice> RegisteredDevices = new();
 
@@ -288,11 +287,6 @@ public partial class PlayerInputHandler : Node, IDisableableControl
     {
         return DevicesToUse.ToList();
     }
-
-    static void HandleJoypadConnectionChanged(long device, bool connected)
-    {
-
-    }
     #endregion
 
     /// <summary>
@@ -314,6 +308,7 @@ public partial class PlayerInputHandler : Node, IDisableableControl
     [Signal] public delegate void BlockReleasedEventHandler();
     [Signal] public delegate void CrouchPressedEventHandler();
     [Signal] public delegate void CrouchReleasedEventHandler();
+    [Signal] public delegate void InputRecievedEventHandler(StringName input, bool pressed);
     #endregion
 
     //Dictionary<StringName, bool> _previousStateMap;
@@ -330,13 +325,6 @@ public partial class PlayerInputHandler : Node, IDisableableControl
     public override void _Ready()
     {
         base._Ready();
-        //SetDevice(this, GetNextOpenDevice());
-        //GD.Print(_device);
-        if (!_onJoypadConnectedCallbackSet)
-        {
-            _onJoypadConnectedCallbackSet = true;
-            Input.JoyConnectionChanged += HandleJoypadConnectionChanged;
-        }
     }
 
     public override void _Input(InputEvent @event)
@@ -349,61 +337,73 @@ public partial class PlayerInputHandler : Node, IDisableableControl
         {
             GD.Print($"{_device}: Left Input");
             EmitSignal(SignalName.MoveLeftPressed);
+            EmitSignal(SignalName.InputRecieved, InputNames.LEFT, true);
         }
         if (@event.IsActionReleased(InputNames.LEFT.ConvertInputName(_device.Type)))
         {
             GD.Print($"{_device}: Stopped Left Input");
             EmitSignal(SignalName.MoveLeftReleased);
+            EmitSignal(SignalName.InputRecieved, InputNames.LEFT, false);
         }
         if (@event.IsActionPressed(InputNames.RIGHT.ConvertInputName(_device.Type)))
         {
             GD.Print($"{_device}: Right Input");
             EmitSignal(SignalName.MoveRightPressed);
+            EmitSignal(SignalName.InputRecieved, InputNames.RIGHT, true);
         }
         if (@event.IsActionReleased(InputNames.RIGHT.ConvertInputName(_device.Type)))
         {
             GD.Print($"{_device}: Stopped Right Input");
             EmitSignal(SignalName.MoveRightReleased);
+            EmitSignal(SignalName.InputRecieved, InputNames.RIGHT, false);
         }
         if (@event.IsActionPressed(InputNames.JUMP.ConvertInputName(_device.Type)))
         {
             GD.Print($"{_device}: Jump Input");
             EmitSignal(SignalName.JumpPressed);
+            EmitSignal(SignalName.InputRecieved, InputNames.JUMP, true);
         }
         if (@event.IsActionReleased(InputNames.JUMP.ConvertInputName(_device.Type)))
         {
             GD.Print($"{_device}: Stopped Jump Input");
             EmitSignal(SignalName.JumpReleased);
+            EmitSignal(SignalName.InputRecieved, InputNames.JUMP, false);
         }
         if (@event.IsActionPressed(InputNames.ACTION.ConvertInputName(_device.Type)))
         {
             GD.Print($"{_device}: Action Input");
             EmitSignal(SignalName.ActionPressed);
+            EmitSignal(SignalName.InputRecieved, InputNames.ACTION, true);
         }
         if (@event.IsActionReleased(InputNames.ACTION.ConvertInputName(_device.Type)))
         {
             GD.Print($"{_device}: Stopped Action Input");
             EmitSignal(SignalName.ActionReleased);
+            EmitSignal(SignalName.InputRecieved, InputNames.ACTION, false);
         }
         if (@event.IsActionPressed(InputNames.BLOCK.ConvertInputName(_device.Type)))
         {
             GD.Print($"{_device}: Block Input");
             EmitSignal(SignalName.BlockPressed);
+            EmitSignal(SignalName.InputRecieved, InputNames.BLOCK, true);
         }
         if (@event.IsActionReleased(InputNames.BLOCK.ConvertInputName(_device.Type)))
         {
             GD.Print($"{_device}: Stopped Block Input");
             EmitSignal(SignalName.BlockReleased);
+            EmitSignal(SignalName.InputRecieved, InputNames.BLOCK, false);
         }
         if (@event.IsActionPressed(InputNames.CROUCH.ConvertInputName(_device.Type)))
         {
             GD.Print($"{_device}: Crouch Input");
             EmitSignal(SignalName.CrouchPressed);
+            EmitSignal(SignalName.InputRecieved, InputNames.CROUCH, true);
         }
         if (@event.IsActionReleased(InputNames.CROUCH.ConvertInputName(_device.Type)))
         {
             GD.Print($"{_device}: Stopped Crouch Input");
             EmitSignal(SignalName.CrouchReleased);
+            EmitSignal(SignalName.InputRecieved, InputNames.CROUCH, false);
         }
     }
 

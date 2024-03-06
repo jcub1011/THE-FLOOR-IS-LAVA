@@ -1,4 +1,6 @@
 using Godot;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Players;
 
@@ -44,6 +46,20 @@ public partial class ControlDisablerHandler : Node
             _controlsToReenable = controls;
             _curTimer.Timeout += TimerCallback;
         }
+    }
+
+    public void SetControlStatesExcept(bool enabled, float undoAfterTime,
+        params string[] controls)
+    {
+        List<string> toSet = new();
+        foreach(var child in GetParent().GetChildren())
+        {
+            if (child is IDisableableControl control)
+            {
+                if (!controls.Contains(control.ControlID)) toSet.Add(control.ControlID);
+            }
+        }
+        SetControlStates(enabled, undoAfterTime, toSet.ToArray());
     }
 
     /// <summary>
