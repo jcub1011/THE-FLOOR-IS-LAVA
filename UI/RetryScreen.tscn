@@ -31,6 +31,15 @@ text = "Everybody Died"
 fit_content = true
 autowrap_mode = 0
 
+[node name="Home" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("1_c4ead")
+theme_override_font_sizes/font_size = 40
+text = "Main Menu
+"
+script = ExtResource("2_trhht")
+
 [node name="Button" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
@@ -40,4 +49,5 @@ text = "Restart
 "
 script = ExtResource("2_trhht")
 
+[connection signal="pressed" from="VBoxContainer/Home" to="VBoxContainer/Home" method="OnClick"]
 [connection signal="pressed" from="VBoxContainer/Button" to="VBoxContainer/Button" method="OnClick"]

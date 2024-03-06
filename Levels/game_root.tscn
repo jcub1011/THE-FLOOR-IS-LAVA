@@ -15,6 +15,7 @@ _world = ExtResource("2_3l788")
 layer = 10
 
 [node name="RetryScreen" parent="CanvasLayer" instance=ExtResource("1_yo80m")]
+visible = false
 
 [node name="MainMenu" parent="CanvasLayer" instance=ExtResource("1_61eq2")]
 layout_direction = 2
@@ -25,8 +26,10 @@ offset_top = -6038.0
 offset_right = 10005.0
 offset_bottom = 12531.8
 
+[connection signal="OnPressedWithTimer" from="CanvasLayer/RetryScreen/VBoxContainer/Home" to="." method="OnGoToMainMenu"]
 [connection signal="OnPressedWithTimer" from="CanvasLayer/RetryScreen/VBoxContainer/Button" to="." method="OnRestartHandler"]
 [connection signal="OnPressedWithTimer" from="CanvasLayer/MainMenu/HBoxContainer/VBoxContainer/Button" to="." method="OnStartGameHandler"]
 
 [editable path="CanvasLayer/RetryScreen"]
 [editable path="CanvasLayer/MainMenu"]
+[editable path="CanvasLayer/MainMenu/Tutorial"]
