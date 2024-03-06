@@ -5,8 +5,10 @@ namespace Players;
 public partial class HorizontalMovementHandler : Node, IDisableableControl
 {
     [Export] CharacterBody2D _body;
-    [Export] float _moveSpeed;
+    [Export] float _moveSpeed = 80;
     [Export] bool _isEnabled = true;
+    [Export] float _groundAcceleration = 1200f;
+    [Export] float _airAcceleration = 900f;
     bool _isLeftButtonDown;
     bool _isRightButtonDown;
 
@@ -34,17 +36,54 @@ public partial class HorizontalMovementHandler : Node, IDisableableControl
     {
         base._Process(delta);
         if (!_isEnabled) return;
-        Vector2 newVel = new(0, _body.Velocity.Y);
+        Vector2 newVel = _body.Velocity;
+        float speedLim = (_body as PlayerController).SpeedLimit.X;
 
-        if (_isLeftButtonDown)
+        float deltaX = _body.IsOnFloor() ?
+            _groundAcceleration : _airAcceleration;
+        deltaX *= (float)delta;
+
+        if (_isLeftButtonDown == _isRightButtonDown
+            || (GetParent().GetChild<CrouchHandler>().IsCrouched
+            && _body.IsOnFloor()))
         {
-            newVel.X += -_moveSpeed;
+            if (deltaX > Mathf.Abs(_body.Velocity.X))
+            {
+                newVel.X = 0f;
+            }
+            else
+            {
+                newVel.X += _body.Velocity.X < 0f ? deltaX : -deltaX;
+            }
         }
-        if (_isRightButtonDown)
+        else if (_isLeftButtonDown)
         {
-            newVel.X += _moveSpeed;
+            if (newVel.X > -_moveSpeed)
+            {
+                newVel.X = Mathf.Clamp(newVel.X - deltaX,
+                    -_moveSpeed, _moveSpeed);
+            }
+            else
+            {
+                newVel.X = Mathf.Clamp(newVel.X + deltaX,
+                    float.NegativeInfinity, _moveSpeed);
+            }
+        }
+        else
+        {
+            if (newVel.X < _moveSpeed)
+            {
+                newVel.X = Mathf.Clamp(newVel.X + deltaX,
+                    -_moveSpeed, _moveSpeed);
+            }
+            else
+            {
+                newVel.X = Mathf.Clamp(newVel.X - deltaX,
+                    -_moveSpeed, float.PositiveInfinity);
+            }
         }
 
+        newVel.X = Mathf.Clamp(newVel.X, -speedLim, speedLim);
         _body.Velocity = newVel;
     }
 

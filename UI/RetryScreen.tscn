@@ -11,19 +11,19 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 1
+anchor_left = 1.0
 anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
-layout_mode = 2
+offset_left = -280.0
+offset_top = 40.0
+offset_bottom = 159.0
+grow_horizontal = 0
 theme_override_constants/separation = 15
 
-[node name="RichTextLabel" type="RichTextLabel" parent="CenterContainer/VBoxContainer"]
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_override_fonts/normal_font = ExtResource("1_c4ead")
 theme_override_font_sizes/normal_font_size = 40
@@ -31,7 +31,16 @@ text = "Everybody Died"
 fit_content = true
 autowrap_mode = 0
 
-[node name="Button" type="Button" parent="CenterContainer/VBoxContainer"]
+[node name="Home" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("1_c4ead")
+theme_override_font_sizes/font_size = 40
+text = "Main Menu
+"
+script = ExtResource("2_trhht")
+
+[node name="Button" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_fonts/font = ExtResource("1_c4ead")
@@ -40,4 +49,5 @@ text = "Restart
 "
 script = ExtResource("2_trhht")
 
-[connection signal="pressed" from="CenterContainer/VBoxContainer/Button" to="CenterContainer/VBoxContainer/Button" method="OnClick"]
+[connection signal="pressed" from="VBoxContainer/Home" to="VBoxContainer/Home" method="OnClick"]
+[connection signal="pressed" from="VBoxContainer/Button" to="VBoxContainer/Button" method="OnClick"]

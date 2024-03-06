@@ -6,7 +6,7 @@ namespace Players;
 public partial class PlayerController : CharacterBody2D
 {
     [Export] PlayerInputHandler InputHandler;
-    [Export] Vector2 _speedLimit = new(1000, 1000);
+    [Export] public Vector2 SpeedLimit { get; private set; } = new(400, 400);
 
     bool _isAlive = true;
 
@@ -20,8 +20,8 @@ public partial class PlayerController : CharacterBody2D
     {
         base._Process(delta);
         Vector2 limitedVelocity = Velocity;
-        limitedVelocity.X = Mathf.Clamp(Velocity.X, -_speedLimit.X, _speedLimit.X);
-        limitedVelocity.Y = Mathf.Clamp(Velocity.Y, -_speedLimit.Y, _speedLimit.Y);
+        limitedVelocity.X = Mathf.Clamp(Velocity.X, -SpeedLimit.X, SpeedLimit.X);
+        limitedVelocity.Y = Mathf.Clamp(Velocity.Y, -SpeedLimit.Y, SpeedLimit.Y);
         Velocity = limitedVelocity;
         if (_isAlive) MoveAndSlide();
     }

@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://cv7g2fnqrxx7s"]
+[gd_scene load_steps=38 format=3 uid="uid://cv7g2fnqrxx7s"]
 
 [ext_resource type="Script" path="res://Players/PlayerController.cs" id="1_bukco"]
 [ext_resource type="Script" path="res://Players/PlayerInputHandler.cs" id="2_bjy2i"]
@@ -14,11 +14,9 @@
 [ext_resource type="Script" path="res://Players/VelocityBasedAnimationSelector.cs" id="9_igj33"]
 [ext_resource type="Script" path="res://Players/ControlDisablerHandler.cs" id="10_t2a0i"]
 [ext_resource type="Script" path="res://Players/FlipHandler.cs" id="11_t7grp"]
-[ext_resource type="Texture2D" uid="uid://bqsnyl44uidhf" path="res://Players/Sprite Sheets/Male_2_Clothes_1_Long.png" id="14_t54lr"]
+[ext_resource type="Script" path="res://Players/CrouchHandler.cs" id="12_5v8f2"]
+[ext_resource type="Texture2D" uid="uid://ni70xkxh2nk0" path="res://Players/Sprite Sheets/Male_1_Clothes_1_Long_New_Animations.png" id="15_rkq5e"]
 [ext_resource type="Script" path="res://Players/SpriteControls.cs" id="16_cd1ek"]
-[ext_resource type="Texture2D" uid="uid://cp4kxuftp2ik6" path="res://Players/Sprite Sheets/Female_1_Clothes_3_Long.png" id="17_1wgbn"]
-[ext_resource type="Texture2D" uid="uid://feifgovvip3l" path="res://Players/Sprite Sheets/Female_3_Clothes_1_Long.png" id="18_52q7l"]
-[ext_resource type="Texture2D" uid="uid://bj5fj4a0br3tp" path="res://Players/Sprite Sheets/Male_1_Clothes_1_Long.png" id="19_ue6qw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pi3oo"]
 size = Vector2(8, 14)
@@ -31,10 +29,10 @@ height = 14.0
 size = Vector2(8, 16)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lqg1u"]
-size = Vector2(16, 10)
+size = Vector2(20, 10)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sg5v1"]
-size = Vector2(15.9375, 7.875)
+size = Vector2(20, 7.875)
 
 [sub_resource type="Animation" id="Animation_lkr48"]
 length = 0.001
@@ -49,6 +47,54 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [5]
+}
+
+[sub_resource type="Animation" id="Animation_ei81v"]
+resource_name = "crouch"
+length = 0.6667
+step = 0.333333
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.333333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [65, 66]
+}
+
+[sub_resource type="Animation" id="Animation_nrlqh"]
+resource_name = "crouched_deflect"
+length = 0.666675
+step = 0.0833333
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0833333, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [66, 67, 65]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("DeflectHandler")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0833333),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [0.41],
+"method": &"EnableDeflect"
+}]
 }
 
 [sub_resource type="Animation" id="Animation_uxa3w"]
@@ -70,7 +116,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_lydds"]
 resource_name = "deflect"
-length = 0.833342
+length = 0.666675
 step = 0.0833333
 tracks/0/type = "method"
 tracks/0/imported = false
@@ -82,7 +128,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0.0833333),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [0.5],
+"args": [0.41],
 "method": &"EnableDeflect"
 }]
 }
@@ -93,7 +139,7 @@ tracks/1/path = NodePath("Sprite_New:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.0833333, 0.583333),
+"times": PackedFloat32Array(0, 0.0833333, 0.5),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [35, 54, 34]
@@ -112,7 +158,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0.2),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [&"DropkickHurtbox", 0.333, 130.0],
+"args": [&"DropkickHurtbox", 0.333, 130.0, 1],
 "method": &"EnableHitbox"
 }]
 }
@@ -163,6 +209,37 @@ tracks/0/keys = {
 "values": [21, 22, 23, 24, 25, 26, 27, 28]
 }
 
+[sub_resource type="Animation" id="Animation_0bdqp"]
+resource_name = "kick"
+length = 0.666675
+step = 0.0833333
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.166667, 0.333333, 0.583333),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [68, 70, 69, 68]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("MeleeHurtboxHandler")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.333333),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [&"DropkickHurtbox", 0.08, 100.0],
+"method": &"EnableHitbox"
+}]
+}
+
 [sub_resource type="Animation" id="Animation_m8p3t"]
 resource_name = "on_deflect_landed"
 
@@ -180,7 +257,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0.333333),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [&"PunchHurtbox", 0.08, 100.0],
+"args": [&"PunchHurtbox", 0.08, 100.0, 0],
 "method": &"EnableHitbox"
 }]
 }
@@ -231,14 +308,28 @@ tracks/0/keys = {
 "values": [59, 60, 61, 62, 63, 64, 57, 58]
 }
 
-[sub_resource type="Animation" id="Animation_0bdqp"]
-resource_name = "kick"
-length = 1.00001
-step = 0.0833333
+[sub_resource type="Animation" id="Animation_s8rat"]
+resource_name = "stagger"
+length = 0.83335
+step = 0.166667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.166667, 0.333333, 0.5, 0.666667),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [10, 11, 10, 11, 10]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_r5udm"]
 _data = {
 "RESET": SubResource("Animation_lkr48"),
+"crouch": SubResource("Animation_ei81v"),
+"crouched_deflect": SubResource("Animation_nrlqh"),
 "death": SubResource("Animation_uxa3w"),
 "deflect": SubResource("Animation_lydds"),
 "dropkick": SubResource("Animation_8dm73"),
@@ -248,14 +339,15 @@ _data = {
 "on_deflect_landed": SubResource("Animation_m8p3t"),
 "punch": SubResource("Animation_qvcop"),
 "rise": SubResource("Animation_i5v2i"),
-"run": SubResource("Animation_qxqf1")
+"run": SubResource("Animation_qxqf1"),
+"stagger": SubResource("Animation_s8rat")
 }
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("InputHandler")]
 collision_layer = 2
+slide_on_ceiling = false
 script = ExtResource("1_bukco")
 InputHandler = NodePath("PlayerInputHandler")
-_speedLimit = Vector2(400, 400)
 
 [node name="Lava Collider" type="Area2D" parent="."]
 collision_layer = 0
@@ -275,7 +367,6 @@ script = ExtResource("2_bjy2i")
 [node name="HorizontalMovementHandler" type="Node" parent="." node_paths=PackedStringArray("_body")]
 script = ExtResource("3_8cg7j")
 _body = NodePath("..")
-_moveSpeed = 80.0
 
 [node name="GravityApplicator" type="Node" parent="." node_paths=PackedStringArray("_body")]
 script = ExtResource("4_46gxe")
@@ -293,32 +384,39 @@ script = ExtResource("6_wkqlm")
 _body = NodePath("..")
 _aniPlayer = NodePath("../AnimationPlayer")
 _controlDisabler = NodePath("../ControlDisablerHandler")
-_dropkickDrag = 3.0
+_dropkickDrag = 10.0
 _actionBufferTime = 0.3
 
-[node name="DeflectHandler" type="Node" parent="." node_paths=PackedStringArray("_sprite", "_body")]
+[node name="DeflectHandler" type="Node" parent="." node_paths=PackedStringArray("_sprite", "_body", "_crouchHandler")]
 script = ExtResource("7_bcpnl")
 _sprite = NodePath("../Sprite_New")
 _body = NodePath("..")
+_crouchHandler = NodePath("../CrouchHandler")
 
-[node name="VelocityBasedAniSelector" type="Node" parent="." node_paths=PackedStringArray("_body", "_sprite", "_player")]
+[node name="VelocityBasedAniSelector" type="Node" parent="." node_paths=PackedStringArray("_body", "_sprite", "_player", "_crouchHandler", "_flipHandler")]
 script = ExtResource("9_igj33")
 _body = NodePath("..")
 _sprite = NodePath("../Sprite_New")
 _player = NodePath("../AnimationPlayer")
+_crouchHandler = NodePath("../CrouchHandler")
+_flipHandler = NodePath("../FlipHandler")
 _walkToRunTransitionThreshold = 100.0
 
-[node name="KnockbackHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_disabler")]
+[node name="KnockbackHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_disabler", "_aniPlayer")]
 script = ExtResource("9_ad621")
 _recoveryTime = 0.5
 _body = NodePath("..")
 _disabler = NodePath("../ControlDisablerHandler")
+_aniPlayer = NodePath("../AnimationPlayer")
 
 [node name="ControlDisablerHandler" type="Node" parent="."]
 script = ExtResource("10_t2a0i")
 
 [node name="FlipHandler" type="Node" parent="."]
 script = ExtResource("11_t7grp")
+
+[node name="CrouchHandler" type="Node" parent="."]
+script = ExtResource("12_5v8f2")
 
 [node name="Hitbox" type="Area2D" parent="."]
 script = ExtResource("9_4xjwb")
@@ -331,12 +429,12 @@ shape = SubResource("RectangleShape2D_f5o2s")
 script = ExtResource("6_rgnv7")
 
 [node name="PunchHurtbox" type="CollisionShape2D" parent="MeleeHurtboxHandler"]
-position = Vector2(12, -11)
+position = Vector2(10, -11)
 shape = SubResource("RectangleShape2D_lqg1u")
 script = ExtResource("7_xohju")
 
 [node name="DropkickHurtbox" type="CollisionShape2D" parent="MeleeHurtboxHandler"]
-position = Vector2(12.0313, -4.0625)
+position = Vector2(10, -4.0625)
 shape = SubResource("RectangleShape2D_sg5v1")
 script = ExtResource("7_xohju")
 
@@ -349,14 +447,17 @@ libraries = {
 texture_filter = 5
 position = Vector2(0, -8)
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("14_t54lr")
+texture = ExtResource("15_rkq5e")
 hframes = 99
 frame = 5
 script = ExtResource("16_cd1ek")
-PossibleSprites = Array[Texture2D]([ExtResource("19_ue6qw"), ExtResource("17_1wgbn"), ExtResource("18_52q7l"), ExtResource("14_t54lr")])
+PossibleSprites = Array[Texture2D]([ExtResource("15_rkq5e")])
 
 [connection signal="area_entered" from="Lava Collider" to="." method="OnTouchedLava"]
-[connection signal="ActionPressed" from="PlayerInputHandler" to="AttackHandler" method="OnAction"]
+[connection signal="ActionPressed" from="PlayerInputHandler" to="AttackHandler" method="OnAttack"]
+[connection signal="BlockPressed" from="PlayerInputHandler" to="AttackHandler" method="OnDeflect"]
+[connection signal="CrouchPressed" from="PlayerInputHandler" to="CrouchHandler" method="OnCrouchStart"]
+[connection signal="CrouchReleased" from="PlayerInputHandler" to="CrouchHandler" method="OnCrouchEnd"]
 [connection signal="JumpPressed" from="PlayerInputHandler" to="JumpHandler" method="OnJumpPressed"]
 [connection signal="JumpReleased" from="PlayerInputHandler" to="JumpHandler" method="OnJumpReleased"]
 [connection signal="MoveLeftPressed" from="PlayerInputHandler" to="HorizontalMovementHandler" method="OnLeftPressed"]
@@ -369,4 +470,4 @@ PossibleSprites = Array[Texture2D]([ExtResource("19_ue6qw"), ExtResource("17_1wg
 [connection signal="OnFlip" from="FlipHandler" to="Sprite_New" method="SetFlipH"]
 [connection signal="OnReceivedDamage" from="Hitbox" to="KnockbackHandler" method="OnApplyKnockback"]
 [connection signal="OnReceivedHit" from="Hitbox" to="DeflectHandler" method="OnReceivedHitHandler"]
-[connection signal="OnHurtboxDeflected" from="MeleeHurtboxHandler" to="KnockbackHandler" method="OnApplyDeflectedKnockback"]
+[connection signal="OnHurtboxDeflected" from="MeleeHurtboxHandler" to="KnockbackHandler" method="SetInStaggerState"]

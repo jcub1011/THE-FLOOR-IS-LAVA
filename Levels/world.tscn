@@ -77,10 +77,10 @@ distance = -110.0
 script = ExtResource("2_lriob")
 _startDelay = 3.0
 _camera = NodePath("../Camera2D")
-ScrollSpeed = 0.0
+ScrollSpeed = 20.0
 PlayerTemplatePath = &"res://Players/player.tscn"
-_speedupFactor = 1.0
-_slowdownFactor = 0.9
+_speedupFactor = 0.4
+_slowdownFactor = 0.3
 _templates = Array[StringName]([&"res://Levels/Test Type/starter_section_1.tscn"])
 
 [node name="SlowRegion" type="Area2D" parent="Level Generator"]
@@ -166,6 +166,7 @@ shape = SubResource("WorldBoundaryShape2D_453lm")
 shape = SubResource("WorldBoundaryShape2D_5eqt8")
 
 [node name="Borders" type="Node2D" parent="."]
+visible = false
 metadata/_edit_group_ = true
 metadata/_edit_lock_ = true
 

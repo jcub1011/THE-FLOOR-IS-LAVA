@@ -1,0 +1,450 @@
+[gd_scene load_steps=23 format=3 uid="uid://dwer2a4rvtn5a"]
+
+[ext_resource type="Theme" uid="uid://bp1bagmcfevk7" path="res://UI/Styles/MenuTheme.tres" id="1_4fro4"]
+[ext_resource type="Script" path="res://UI/Tutorial.cs" id="1_oy248"]
+[ext_resource type="StyleBox" uid="uid://d4d13421t76qv" path="res://UI/Styles/Blank_BG_Panel.tres" id="1_w2rby"]
+[ext_resource type="Texture2D" uid="uid://cu3twjf5jdixy" path="res://UI/Keyboard & Mouse/Dark/A_Key_Dark.png" id="1_wv7ed"]
+[ext_resource type="Texture2D" uid="uid://ca3abgsk2ocid" path="res://UI/Keyboard & Mouse/Dark/W_Key_Dark.png" id="2_d3m5u"]
+[ext_resource type="PackedScene" uid="uid://cv7g2fnqrxx7s" path="res://Players/player.tscn" id="2_ydao1"]
+[ext_resource type="Texture2D" uid="uid://clw51jug1la3s" path="res://UI/Keyboard & Mouse/Dark/D_Key_Dark.png" id="3_tfhsm"]
+[ext_resource type="Texture2D" uid="uid://q2ghby37am7" path="res://UI/Keyboard & Mouse/Dark/Arrow_Left_Key_Dark.png" id="4_lke67"]
+[ext_resource type="Texture2D" uid="uid://v1a1tibbbkmd" path="res://UI/Keyboard & Mouse/Dark/Arrow_Up_Key_Dark.png" id="5_yuov4"]
+[ext_resource type="Texture2D" uid="uid://b8bgffsq4h5hl" path="res://UI/Keyboard & Mouse/Dark/Arrow_Right_Key_Dark.png" id="6_fnp5k"]
+[ext_resource type="Texture2D" uid="uid://crtjkpemyi5u2" path="res://UI/Keyboard & Mouse/Dark/Arrow_Down_Key_Dark.png" id="7_r6oxd"]
+[ext_resource type="Texture2D" uid="uid://yx2wssodnimh" path="res://UI/Xbox Series/XboxSeriesX_Dpad.png" id="8_uitug"]
+[ext_resource type="Texture2D" uid="uid://b1dgohswyb531" path="res://UI/Keyboard & Mouse/Dark/C_Key_Dark.png" id="9_l5kyk"]
+[ext_resource type="Texture2D" uid="uid://bqcilts8jim2t" path="res://UI/Others/Positional Prompts/Positional_Prompts_Up.png" id="9_u2afw"]
+[ext_resource type="Texture2D" uid="uid://piiy6fcacukk" path="res://UI/Keyboard & Mouse/Dark/V_Key_Dark.png" id="10_ct5i6"]
+[ext_resource type="Texture2D" uid="uid://7g60od7rnqci" path="res://UI/Keyboard & Mouse/Dark/Mark_Right_Key_Dark.png" id="11_2yoe5"]
+[ext_resource type="Texture2D" uid="uid://bgbo6wb3r5gkb" path="res://UI/Keyboard & Mouse/Dark/Slash_Key_Dark.png" id="12_10tnk"]
+[ext_resource type="Texture2D" uid="uid://bkclmvafvg821" path="res://UI/Others/Positional Prompts/Positional_Prompts_Left.png" id="13_r2xa3"]
+[ext_resource type="Texture2D" uid="uid://e3gfqa7qejg8" path="res://UI/Others/Positional Prompts/Positional_Prompts_Down.png" id="14_2hpin"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_475ow"]
+distance = -889.0
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_p5b3x"]
+normal = Vector2(1, 0)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_r4ya8"]
+normal = Vector2(-1, 0)
+
+[node name="Tutorial" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_4fro4")
+script = ExtResource("1_oy248")
+_player = ExtResource("2_ydao1")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+metadata/_edit_group_ = true
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer"]
+layout_mode = 2
+columns = 3
+
+[node name="Kyb L" type="RichTextLabel" parent="MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_font_sizes/normal_font_size = 50
+bbcode_enabled = true
+text = "[center]Keyboard Left"
+fit_content = true
+
+[node name="Kyb R" type="RichTextLabel" parent="MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_font_sizes/normal_font_size = 50
+bbcode_enabled = true
+text = "[center]Keyboard Right"
+fit_content = true
+
+[node name="Controller" type="RichTextLabel" parent="MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_font_sizes/normal_font_size = 50
+bbcode_enabled = true
+text = "[center]Controller"
+fit_content = true
+
+[node name="KYB L Controls" type="Panel" parent="MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/GridContainer/KYB L Controls"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 20.0
+offset_bottom = 520.0
+grow_horizontal = 2
+
+[node name="Movement KYB L" type="RichTextLabel" parent="MarginContainer/GridContainer/KYB L Controls/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 25
+bbcode_enabled = true
+text = "[center]Movement"
+fit_content = true
+
+[node name="Panel" type="Panel" parent="MarginContainer/GridContainer/KYB L Controls/VBoxContainer"]
+custom_minimum_size = Vector2(0, 180)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("1_w2rby")
+
+[node name="Left" type="TextureRect" parent="MarginContainer/GridContainer/KYB L Controls/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -132.0
+offset_top = 80.0
+offset_right = -32.0
+offset_bottom = 180.0
+grow_horizontal = 2
+texture = ExtResource("1_wv7ed")
+
+[node name="Up" type="TextureRect" parent="MarginContainer/GridContainer/KYB L Controls/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -50.0
+offset_right = 50.0
+offset_bottom = 100.0
+grow_horizontal = 2
+texture = ExtResource("2_d3m5u")
+
+[node name="Right" type="TextureRect" parent="MarginContainer/GridContainer/KYB L Controls/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 33.0
+offset_top = 80.0
+offset_right = 133.0
+offset_bottom = 180.0
+grow_horizontal = 2
+texture = ExtResource("3_tfhsm")
+
+[node name="Down" type="TextureRect" parent="MarginContainer/GridContainer/KYB L Controls/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -50.0
+offset_top = 80.0
+offset_right = 50.0
+offset_bottom = 180.0
+grow_horizontal = 2
+texture = ExtResource("3_tfhsm")
+
+[node name="Movement KYB L2" type="RichTextLabel" parent="MarginContainer/GridContainer/KYB L Controls/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/normal_font_size = 25
+bbcode_enabled = true
+text = "[center]Attack        Block"
+fit_content = true
+
+[node name="Controls_Attk_4" type="Panel" parent="MarginContainer/GridContainer/KYB L Controls/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("1_w2rby")
+
+[node name="Attack" type="TextureRect" parent="MarginContainer/GridContainer/KYB L Controls/VBoxContainer/Controls_Attk_4"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -112.0
+offset_right = -12.0
+offset_bottom = 100.0
+grow_horizontal = 2
+texture = ExtResource("9_l5kyk")
+
+[node name="Block" type="TextureRect" parent="MarginContainer/GridContainer/KYB L Controls/VBoxContainer/Controls_Attk_4"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 13.0
+offset_right = 113.0
+offset_bottom = 100.0
+grow_horizontal = 2
+texture = ExtResource("10_ct5i6")
+
+[node name="KYB R Controls" type="Panel" parent="MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/GridContainer/KYB R Controls"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 20.0
+offset_bottom = 520.0
+grow_horizontal = 2
+
+[node name="Movement KYB L" type="RichTextLabel" parent="MarginContainer/GridContainer/KYB R Controls/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 25
+bbcode_enabled = true
+text = "[center]Movement"
+fit_content = true
+
+[node name="Panel" type="Panel" parent="MarginContainer/GridContainer/KYB R Controls/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("1_w2rby")
+
+[node name="Left" type="TextureRect" parent="MarginContainer/GridContainer/KYB R Controls/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -132.0
+offset_top = 80.0
+offset_right = -32.0
+offset_bottom = 180.0
+grow_horizontal = 2
+texture = ExtResource("4_lke67")
+
+[node name="Up" type="TextureRect" parent="MarginContainer/GridContainer/KYB R Controls/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -50.0
+offset_right = 50.0
+offset_bottom = 100.0
+grow_horizontal = 2
+texture = ExtResource("5_yuov4")
+
+[node name="Right" type="TextureRect" parent="MarginContainer/GridContainer/KYB R Controls/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 33.0
+offset_top = 80.0
+offset_right = 133.0
+offset_bottom = 180.0
+grow_horizontal = 2
+texture = ExtResource("6_fnp5k")
+
+[node name="Down" type="TextureRect" parent="MarginContainer/GridContainer/KYB R Controls/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -50.0
+offset_top = 80.0
+offset_right = 50.0
+offset_bottom = 180.0
+grow_horizontal = 2
+texture = ExtResource("7_r6oxd")
+
+[node name="Movement KYB L2" type="RichTextLabel" parent="MarginContainer/GridContainer/KYB R Controls/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 25
+bbcode_enabled = true
+text = "[center]Attack        Block"
+fit_content = true
+
+[node name="Controls_Attk_4" type="Panel" parent="MarginContainer/GridContainer/KYB R Controls/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("1_w2rby")
+
+[node name="Attack" type="TextureRect" parent="MarginContainer/GridContainer/KYB R Controls/VBoxContainer/Controls_Attk_4"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -112.0
+offset_right = -12.0
+offset_bottom = 100.0
+grow_horizontal = 2
+texture = ExtResource("12_10tnk")
+flip_h = true
+
+[node name="Block" type="TextureRect" parent="MarginContainer/GridContainer/KYB R Controls/VBoxContainer/Controls_Attk_4"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 13.0
+offset_right = 113.0
+offset_bottom = 100.0
+grow_horizontal = 2
+texture = ExtResource("11_2yoe5")
+
+[node name="CONTROLLER Controls" type="Panel" parent="MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/GridContainer/CONTROLLER Controls"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 20.0
+offset_bottom = 520.0
+grow_horizontal = 2
+
+[node name="Controls_3" type="Panel" parent="MarginContainer/GridContainer/CONTROLLER Controls/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("1_w2rby")
+
+[node name="Movement KYB L" type="RichTextLabel" parent="MarginContainer/GridContainer/CONTROLLER Controls/VBoxContainer/Controls_3"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -262.0
+offset_right = 262.0
+offset_bottom = 35.0
+grow_horizontal = 2
+theme_override_font_sizes/normal_font_size = 25
+bbcode_enabled = true
+text = "[center]Movement"
+fit_content = true
+
+[node name="Directional" type="TextureRect" parent="MarginContainer/GridContainer/CONTROLLER Controls/VBoxContainer/Controls_3"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -112.0
+offset_top = 85.0
+offset_right = -12.0
+offset_bottom = 185.0
+grow_horizontal = 2
+texture = ExtResource("8_uitug")
+
+[node name="Directional2" type="TextureRect" parent="MarginContainer/GridContainer/CONTROLLER Controls/VBoxContainer/Controls_3"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 13.0
+offset_top = 85.0
+offset_right = 113.0
+offset_bottom = 185.0
+grow_horizontal = 2
+texture = ExtResource("9_u2afw")
+
+[node name="Controls_Attk_6" type="Panel" parent="MarginContainer/GridContainer/CONTROLLER Controls/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("1_w2rby")
+
+[node name="Movement KYB L" type="RichTextLabel" parent="MarginContainer/GridContainer/CONTROLLER Controls/VBoxContainer/Controls_Attk_6"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -262.0
+offset_right = 262.0
+offset_bottom = 35.0
+grow_horizontal = 2
+theme_override_font_sizes/normal_font_size = 25
+bbcode_enabled = true
+text = "[center]Attack        Block"
+fit_content = true
+
+[node name="Attack" type="TextureRect" parent="MarginContainer/GridContainer/CONTROLLER Controls/VBoxContainer/Controls_Attk_6"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -112.0
+offset_top = 50.0
+offset_right = -12.0
+offset_bottom = 150.0
+grow_horizontal = 2
+texture = ExtResource("13_r2xa3")
+
+[node name="Block" type="TextureRect" parent="MarginContainer/GridContainer/CONTROLLER Controls/VBoxContainer/Controls_Attk_6"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 13.0
+offset_top = 50.0
+offset_right = 113.0
+offset_bottom = 150.0
+grow_horizontal = 2
+texture = ExtResource("14_2hpin")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 550.0
+offset_bottom = 676.0
+grow_horizontal = 2
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]Blocking an attack causes the attacker to stagger.
+Attacking a staggered foe increases the knockback.
+Crouching allows you to attack and block low.
+Standing attacks can't be blocked by low blocks and vice versa."
+fit_content = true
+
+[node name="Node2D" type="Node2D" parent="."]
+position = Vector2(781, 619)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Node2D"]
+position = Vector2(-780, -616)
+collision_layer = 0
+collision_mask = 0
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Node2D/StaticBody2D"]
+shape = SubResource("WorldBoundaryShape2D_475ow")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Node2D/StaticBody2D"]
+shape = SubResource("WorldBoundaryShape2D_p5b3x")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Node2D/StaticBody2D"]
+position = Vector2(1600, 0)
+shape = SubResource("WorldBoundaryShape2D_r4ya8")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -130.0
+offset_top = 11.0
+offset_right = -10.0
+offset_bottom = 68.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 36
+text = "Close"

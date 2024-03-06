@@ -43,6 +43,7 @@ public partial class WorldHandler : Node2D
     public void OnStartGameHandler()
     {
         _mainMenu.Visible = false;
+        _retryScreen.Visible = true;
         ReplaceWorld();
     }
 
@@ -51,5 +52,12 @@ public partial class WorldHandler : Node2D
         //_retryScreen.Visible = false;
         RemoveChild( _existingWorld );
         ReplaceWorld();
+    }
+
+    public void OnGoToMainMenu()
+    {
+        DeleteExistingWorld();
+        _mainMenu.Visible = true;
+        _retryScreen.Visible = false;
     }
 }

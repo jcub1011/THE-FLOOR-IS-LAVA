@@ -27,9 +27,41 @@ public partial class PlayerControllerSelector : HBoxContainer
         base._Ready();
         var dropdown = GetDropdown();
         PopulateList();
+        SetInitialPick();
         dropdown.MouseEntered += UpdateDisabledOptions;
         dropdown.FocusEntered += UpdateDisabledOptions;
         dropdown.ItemSelected += OnItemSelected;
+        Input.JoyConnectionChanged += HandleJoypadConnectionChanged;
+    }
+
+    void HandleJoypadConnectionChanged(long device, bool connected)
+    {
+        var dropdown = GetDropdown();
+        if (_currentSelection == -1)
+        {
+            ClearCurrentSelection();
+            PopulateList();
+            dropdown.Select(0);
+            OnItemSelected(0);
+            return;
+        }
+
+        var currentDevice = _deviceList[_currentSelection];
+        ClearCurrentSelection();
+        if (currentDevice.Type == DeviceType.Gamepad
+            && currentDevice.DeviceID == device
+            && connected == false)
+        {
+            PopulateList();
+            dropdown.Select(0);
+            OnItemSelected(0);
+            return;
+        }
+
+        PopulateList();
+        int index = _deviceList.IndexOf(currentDevice);
+        dropdown.Select(index);
+        OnItemSelected(index);
     }
 
     public override void _ExitTree()
@@ -46,12 +78,18 @@ public partial class PlayerControllerSelector : HBoxContainer
         //throw new NotImplementedException();
         GD.Print("Selected " + index.ToString());
 
-        if (_currentSelection != -1)
-        {
-            _selectedDevices.Remove(_deviceList[_currentSelection]);
-        }
+        ClearCurrentSelection();
         _selectedDevices.Add(_deviceList[(int)index]);
         _currentSelection = (int)index;
+    }
+
+    void ClearCurrentSelection()
+    {
+        if (_currentSelection != -1)
+        {
+            _selectedDevices.Remove(SelectedDevice);
+        }
+        _currentSelection = -1;
     }
 
     /// <summary>
@@ -85,6 +123,7 @@ public partial class PlayerControllerSelector : HBoxContainer
         foreach (var item in PlayerInputHandler.GetOpenDevices())
         {
             dropdown.AddItem(item.ToString());
+            //GD.Print(item.ToString());
             _deviceList.Add(item);
         }
     }
@@ -103,5 +142,21 @@ public partial class PlayerControllerSelector : HBoxContainer
                 dropdown.SetItemDisabled(i, _selectedDevices.Contains(_deviceList[i]));
             }
         }
+    }
+
+    void SetInitialPick()
+    {
+        for (int i = 1; i < _deviceList.Count; i++)
+        {
+            if (!_selectedDevices.Contains(_deviceList[i]))
+            {
+                GetDropdown().Select(i);
+                OnItemSelected(i);
+                UpdateDisabledOptions();
+                return;
+            }
+        }
+        GetDropdown().Select(0);
+        OnItemSelected(0);
     }
 }

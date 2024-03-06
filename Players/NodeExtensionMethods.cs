@@ -147,6 +147,30 @@ public static class NodeExtensionMethods
             return Mathf.Clamp(1f - dist / height, 0f, 1f);
         }
     }
+
+    /// <summary>
+    /// Finds the first child of the given type. Uses breadth first search.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="node"></param>
+    /// <returns></returns>
+    public static T GetChild<T>(this Node node)
+    {
+        Queue<Node> queue = new();
+        queue.Enqueue(node);
+
+        while (queue.Count > 0)
+        {
+            if (queue.Peek() is T target) return target;
+            
+            foreach(var child in queue.Dequeue().GetChildren())
+            {
+                queue.Enqueue(child);
+            }
+        }
+
+        return default;
+    }
 }
 
 public static class MathExtensions

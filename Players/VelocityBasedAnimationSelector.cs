@@ -8,6 +8,8 @@ public partial class VelocityBasedAnimationSelector : Node, IDisableableControl
     [Export] CharacterBody2D _body;
     [Export] Sprite2D _sprite;
     [Export] AnimationPlayer _player;
+    [Export] CrouchHandler _crouchHandler;
+    [Export] FlipHandler _flipHandler;
     [Export] float _walkToRunTransitionThreshold = 300f;
     [ExportGroup("Animation Names")]
     [Export] StringName _idleAnimation = "idle";
@@ -15,6 +17,7 @@ public partial class VelocityBasedAnimationSelector : Node, IDisableableControl
     [Export] StringName _runAnimation = "run";
     [Export] StringName _fallAnimation = "fall";
     [Export] StringName _riseAnimation = "rise";
+    [Export] StringName _crouch = "crouch";
 
     #region Interface Implementation
     public string ControlID { get => ControlIDs.AUTO_ANIMATION; }
@@ -31,12 +34,20 @@ public partial class VelocityBasedAnimationSelector : Node, IDisableableControl
         if (!IsEnabled) return;
         if (_body.Velocity.X != 0f)
         {
-            _sprite.FlipH = _body.Velocity.X < 0f;
+            if (_body.Velocity.X < 0f)
+            {
+                _flipHandler.OnFaceLeft();
+            }
+            else _flipHandler.OnFaceRight();
         }
 
         if (_body.IsOnFloor())
         {
-            if (_body.Velocity.X == 0f)
+            if (_crouchHandler.IsCrouched)
+            {
+                _player.PlayIfExists(_crouch);
+            }
+            else if (_body.Velocity.X == 0f)
             {
                 _player.PlayIfExists(_idleAnimation);
             }
