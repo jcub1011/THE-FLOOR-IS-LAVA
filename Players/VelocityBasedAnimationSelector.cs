@@ -32,6 +32,11 @@ public partial class VelocityBasedAnimationSelector : Node, IDisableableControl
     {
         base._PhysicsProcess(delta);
         if (!IsEnabled) return;
+        else
+        {
+            _player.PlayIfExists("ball_static");
+            return;
+        }
         if (_body.Velocity.X != 0f)
         {
             if (_body.Velocity.X < 0f)

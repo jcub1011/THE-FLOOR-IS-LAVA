@@ -37,16 +37,16 @@ public partial class PlayerController : CharacterBody2D
             {
                 handler.SetControlStates(false, float.PositiveInfinity);
 
-                var player = GetNode<AnimationPlayer>("AnimationPlayer");
-                player.Play("death");
+                //var player = GetNode<AnimationPlayer>("AnimationPlayer");
+                //player.Play("death");
 
-                float length = player.GetAnimation("death").Length;
+                //float length = player.GetAnimation("death").Length;
 
-                var timer = GetTree().CreateTimer(length, false);
-                timer.Timeout += () => {
-                    GD.Print("Death animation ended.");
-                    Visible = false;
-                };
+                //var timer = GetTree().CreateTimer(length, false);
+                //timer.Timeout += () => {
+                //    GD.Print("Death animation ended.");
+                //    Visible = false;
+                //};
                 break;
             }
         }

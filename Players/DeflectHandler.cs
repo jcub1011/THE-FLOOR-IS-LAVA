@@ -6,7 +6,6 @@ public partial class DeflectHandler : Node, IDisableableControl
 {
     [Export] Sprite2D _sprite;
     [Export] CharacterBody2D _body;
-    [Export] CrouchHandler _crouchHandler;
     float _remainingDeflectTime;
     bool _isEnabled;
 
@@ -35,10 +34,6 @@ public partial class DeflectHandler : Node, IDisableableControl
         if (_remainingDeflectTime <= 0f) return;
         var direction = args.HitBy.HurtboxOwner.GlobalPosition
             .RelativeTo(_body.GlobalPosition);
-        bool isTowardsLeft = direction.X < 0f;
-        args.ReturnKnockback = (
-            _sprite.FlipH == isTowardsLeft
-            && _crouchHandler.IsCrouched 
-            == (args.HitBy.AttackHeight == AttackHeight.Crouched));
+        args.ReturnKnockback = true;
     }
 }

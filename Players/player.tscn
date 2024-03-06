@@ -1,11 +1,11 @@
-[gd_scene load_steps=42 format=3 uid="uid://cv7g2fnqrxx7s"]
+[gd_scene load_steps=41 format=3 uid="uid://cv7g2fnqrxx7s"]
 
 [ext_resource type="Script" path="res://Players/PlayerController.cs" id="1_bukco"]
 [ext_resource type="Script" path="res://Players/BallActionHandler.cs" id="2_8sxkk"]
 [ext_resource type="Script" path="res://Players/PlayerInputHandler.cs" id="2_bjy2i"]
-[ext_resource type="Script" path="res://Players/HorizontalMovementHandler.cs" id="3_8cg7j"]
+[ext_resource type="Script" path="res://Players/BallHorizontalMovementHandler.cs" id="3_vn5cb"]
 [ext_resource type="Script" path="res://Players/GravityApplicator.cs" id="4_46gxe"]
-[ext_resource type="Script" path="res://Players/JumpHandler.cs" id="5_mw2vm"]
+[ext_resource type="Script" path="res://Players/BallJumpHandler.cs" id="4_kdm3q"]
 [ext_resource type="Script" path="res://Players/MeleeHurtboxHandler.cs" id="6_rgnv7"]
 [ext_resource type="Script" path="res://Players/DeflectHandler.cs" id="7_bcpnl"]
 [ext_resource type="Script" path="res://Players/TimedCollider.cs" id="7_xohju"]
@@ -14,7 +14,6 @@
 [ext_resource type="Script" path="res://Players/VelocityBasedAnimationSelector.cs" id="9_igj33"]
 [ext_resource type="Script" path="res://Players/ControlDisablerHandler.cs" id="10_t2a0i"]
 [ext_resource type="Script" path="res://Players/FlipHandler.cs" id="11_t7grp"]
-[ext_resource type="Script" path="res://Players/CrouchHandler.cs" id="12_5v8f2"]
 [ext_resource type="Script" path="res://Players/SpriteControls.cs" id="16_cd1ek"]
 [ext_resource type="Texture2D" uid="uid://cxdam2ge4nrff" path="res://Players/Sprite Sheets/Ball Sprites/Ball_Sheets.png" id="18_ngx1i"]
 
@@ -330,6 +329,8 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_2xutl"]
 resource_name = "ball_dash"
+length = 0.5
+step = 0.0833333
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -341,6 +342,20 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [1]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("MeleeHurtboxHandler")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [&"DashHurtbox", 0.5, 100.0, 0],
+"method": &"EnableHitbox"
+}]
 }
 
 [sub_resource type="Animation" id="Animation_c4htm"]
@@ -360,6 +375,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_dkk1p"]
 resource_name = "ball_block"
+length = 0.50001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -371,6 +387,20 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [0]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("DeflectHandler")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [0.5],
+"method": &"EnableDeflect"
+}]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_r5udm"]
@@ -420,36 +450,33 @@ _controlDisabler = NodePath("../ControlDisablerHandler")
 _blockAnimation = &"ball_block"
 _dashAnimation = &"ball_dash"
 
+[node name="BallHorizontalMovement" type="Node" parent="." node_paths=PackedStringArray("_body")]
+script = ExtResource("3_vn5cb")
+_body = NodePath("..")
+
+[node name="BallJumpHandler" type="Node" parent="." node_paths=PackedStringArray("_body")]
+script = ExtResource("4_kdm3q")
+_body = NodePath("..")
+
 [node name="PlayerInputHandler" type="Node" parent="."]
 script = ExtResource("2_bjy2i")
-
-[node name="HorizontalMovementHandler" type="Node" parent="." node_paths=PackedStringArray("_body")]
-script = ExtResource("3_8cg7j")
-_body = NodePath("..")
 
 [node name="GravityApplicator" type="Node" parent="." node_paths=PackedStringArray("_body")]
 script = ExtResource("4_46gxe")
 _body = NodePath("..")
 Gravity = 750.0
 
-[node name="JumpHandler" type="Node" parent="." node_paths=PackedStringArray("_body")]
-script = ExtResource("5_mw2vm")
-_body = NodePath("..")
-_jumpVelocity = 142.0
-_maxJumpTime = 0.2
-
-[node name="DeflectHandler" type="Node" parent="." node_paths=PackedStringArray("_sprite", "_body", "_crouchHandler")]
+[node name="DeflectHandler" type="Node" parent="." node_paths=PackedStringArray("_sprite", "_body")]
 script = ExtResource("7_bcpnl")
 _sprite = NodePath("../Sprite_New")
 _body = NodePath("..")
-_crouchHandler = NodePath("../CrouchHandler")
 
 [node name="VelocityBasedAniSelector" type="Node" parent="." node_paths=PackedStringArray("_body", "_sprite", "_player", "_crouchHandler", "_flipHandler")]
 script = ExtResource("9_igj33")
 _body = NodePath("..")
 _sprite = NodePath("../Sprite_New")
 _player = NodePath("../AnimationPlayer")
-_crouchHandler = NodePath("../CrouchHandler")
+_crouchHandler = NodePath("")
 _flipHandler = NodePath("../FlipHandler")
 _walkToRunTransitionThreshold = 100.0
 
@@ -465,9 +492,6 @@ script = ExtResource("10_t2a0i")
 
 [node name="FlipHandler" type="Node" parent="."]
 script = ExtResource("11_t7grp")
-
-[node name="CrouchHandler" type="Node" parent="."]
-script = ExtResource("12_5v8f2")
 
 [node name="Hitbox" type="Area2D" parent="."]
 script = ExtResource("9_4xjwb")
@@ -492,6 +516,7 @@ script = ExtResource("7_xohju")
 [node name="DashHurtbox" type="CollisionShape2D" parent="MeleeHurtboxHandler"]
 position = Vector2(0, -4)
 shape = SubResource("CircleShape2D_1w2jy")
+script = ExtResource("7_xohju")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -508,17 +533,11 @@ script = ExtResource("16_cd1ek")
 PossibleSprites = Array[Texture2D]([ExtResource("18_ngx1i")])
 
 [connection signal="area_entered" from="Lava Collider" to="." method="OnTouchedLava"]
-[connection signal="CrouchPressed" from="PlayerInputHandler" to="CrouchHandler" method="OnCrouchStart"]
-[connection signal="CrouchReleased" from="PlayerInputHandler" to="CrouchHandler" method="OnCrouchEnd"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="BallActionHandler" method="InputEventHandler"]
-[connection signal="JumpPressed" from="PlayerInputHandler" to="JumpHandler" method="OnJumpPressed"]
-[connection signal="JumpReleased" from="PlayerInputHandler" to="JumpHandler" method="OnJumpReleased"]
-[connection signal="MoveLeftPressed" from="PlayerInputHandler" to="HorizontalMovementHandler" method="OnLeftPressed"]
+[connection signal="InputRecieved" from="PlayerInputHandler" to="BallHorizontalMovement" method="InputEventHandler"]
+[connection signal="InputRecieved" from="PlayerInputHandler" to="BallJumpHandler" method="InputEventHandler"]
 [connection signal="MoveLeftPressed" from="PlayerInputHandler" to="FlipHandler" method="OnFaceLeft"]
-[connection signal="MoveLeftReleased" from="PlayerInputHandler" to="HorizontalMovementHandler" method="OnLeftReleased"]
-[connection signal="MoveRightPressed" from="PlayerInputHandler" to="HorizontalMovementHandler" method="OnRightPressed"]
 [connection signal="MoveRightPressed" from="PlayerInputHandler" to="FlipHandler" method="OnFaceRight"]
-[connection signal="MoveRightReleased" from="PlayerInputHandler" to="HorizontalMovementHandler" method="OnRightReleased"]
 [connection signal="OnFlip" from="FlipHandler" to="MeleeHurtboxHandler" method="SetFlipState"]
 [connection signal="OnFlip" from="FlipHandler" to="Sprite_New" method="SetFlipH"]
 [connection signal="OnReceivedDamage" from="Hitbox" to="KnockbackHandler" method="OnApplyKnockback"]

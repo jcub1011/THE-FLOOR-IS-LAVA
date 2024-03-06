@@ -10,7 +10,7 @@ public partial class BallActionHandler : Node, IDisableableControl
     [Export] ControlDisablerHandler _controlDisabler;
     [Export] StringName _blockAnimation;
     [Export] StringName _dashAnimation;
-    bool _enabled;
+    bool _enabled = true;
 
     public string ControlID => ControlIDs.ACTION_HANDLER;
 
@@ -36,6 +36,7 @@ public partial class BallActionHandler : Node, IDisableableControl
 
     void PerformDash()
     {
+        GD.Print("Performing Dash.");
         _aniPlayer.Play(_dashAnimation);
         _controlDisabler.SetControlStatesExcept(
             false, _aniPlayer.GetAnimation(_dashAnimation).Length);
@@ -43,6 +44,7 @@ public partial class BallActionHandler : Node, IDisableableControl
 
     void PerformBlock()
     {
+        GD.Print("Performing Block.");
         _aniPlayer.Play(_blockAnimation);
         _controlDisabler.SetControlStatesExcept(
             false, _aniPlayer.GetAnimation(_blockAnimation).Length,
