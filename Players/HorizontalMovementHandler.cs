@@ -7,6 +7,7 @@ public partial class HorizontalMovementHandler : Node, IDisableableControl
     [Export] CharacterBody2D _body;
     [Export] float _moveSpeed;
     [Export] bool _isEnabled = true;
+    [Export] float _airAcceleration = 800f;
     bool _isLeftButtonDown;
     bool _isRightButtonDown;
 
@@ -36,20 +37,49 @@ public partial class HorizontalMovementHandler : Node, IDisableableControl
         if (!_isEnabled) return;
         Vector2 newVel = new(0, _body.Velocity.Y);
 
-        if (GetParent().GetChild<CrouchHandler>().IsCrouched)
+        if (GetParent().GetChild<CrouchHandler>().IsCrouched
+            && _body.IsOnFloor())
         {
-            if (_body.IsOnFloor())
-                _body.Velocity = newVel;
+            _body.Velocity = newVel;
             return;
         }
 
         if (_isLeftButtonDown)
         {
-            newVel.X += -_moveSpeed;
+            if (_body.IsOnFloor())
+                newVel.X += -_moveSpeed;
+            else
+            {
+                float deltaV = _airAcceleration * (float)delta;
+                newVel.X = _body.Velocity.X - deltaV;
+                newVel.X = Mathf.Clamp(newVel.X, -_moveSpeed, _moveSpeed);
+            }
         }
         if (_isRightButtonDown)
         {
-            newVel.X += _moveSpeed;
+            if (_body.IsOnFloor())
+                newVel.X += _moveSpeed;
+            else
+            {
+                float deltaV = _airAcceleration * (float)delta;
+                newVel.X = _body.Velocity.X + deltaV;
+                newVel.X = Mathf.Clamp(newVel.X, -_moveSpeed, _moveSpeed);
+            }
+        }
+        if (!_isLeftButtonDown && !_isRightButtonDown
+            && !_body.IsOnFloor())
+        {
+            float deltaV = _airAcceleration * (float)delta
+                * (_body.Velocity.X < 0f ? 1f : -1f);
+
+            if (Mathf.Abs(deltaV) > Mathf.Abs(_body.Velocity.X))
+            {
+                newVel.X = 0f;
+            }
+            else
+            {
+                newVel.X = _body.Velocity.X + deltaV;
+            }
         }
 
         _body.Velocity = newVel;

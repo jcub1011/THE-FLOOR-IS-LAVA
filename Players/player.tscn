@@ -368,6 +368,7 @@ script = ExtResource("2_bjy2i")
 script = ExtResource("3_8cg7j")
 _body = NodePath("..")
 _moveSpeed = 80.0
+_airAcceleration = 800.0
 
 [node name="GravityApplicator" type="Node" parent="." node_paths=PackedStringArray("_body")]
 script = ExtResource("4_46gxe")
