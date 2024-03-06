@@ -422,6 +422,7 @@ position = Vector2(781, 619)
 
 [node name="StaticBody2D" type="StaticBody2D" parent="Node2D"]
 position = Vector2(-780, -616)
+collision_layer = 0
 collision_mask = 0
 metadata/_edit_group_ = true
 
@@ -447,5 +448,3 @@ offset_bottom = 68.0
 grow_horizontal = 0
 theme_override_font_sizes/font_size = 36
 text = "Close"
-
-[connection signal="pressed" from="Button" to="." method="OnClose"]

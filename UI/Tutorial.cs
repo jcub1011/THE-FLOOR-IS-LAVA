@@ -32,6 +32,7 @@ public partial class Tutorial : Control
             newPlayer.Scale = new(_playerScale, _playerScale);
             node.AddChild(newPlayer);
         }
+        node.GetChild<StaticBody2D>().SetCollisionLayerValue(1, true);
     }
 
     void OnHide()
@@ -43,6 +44,7 @@ public partial class Tutorial : Control
             player.QueueFree();
             node.RemoveChild(player);
         }
+        node.GetChild<StaticBody2D>().SetCollisionLayerValue(1, false);
     }
 
     public void OnClose()
