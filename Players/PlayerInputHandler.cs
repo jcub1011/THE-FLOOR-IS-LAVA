@@ -1,6 +1,7 @@
 using Godot;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 
 namespace Players;
 
@@ -195,6 +196,7 @@ public static class InputBuffer
 public partial class PlayerInputHandler : Node, IDisableableControl
 {
     #region Static
+    static bool _onJoypadConnectedCallbackSet = false;
     static readonly List<InputDevice> DevicesToUse = new();
     static readonly List<InputDevice> RegisteredDevices = new();
 
@@ -286,6 +288,11 @@ public partial class PlayerInputHandler : Node, IDisableableControl
     {
         return DevicesToUse.ToList();
     }
+
+    static void HandleJoypadConnectionChanged(long device, bool connected)
+    {
+
+    }
     #endregion
 
     /// <summary>
@@ -325,6 +332,11 @@ public partial class PlayerInputHandler : Node, IDisableableControl
         base._Ready();
         //SetDevice(this, GetNextOpenDevice());
         //GD.Print(_device);
+        if (!_onJoypadConnectedCallbackSet)
+        {
+            _onJoypadConnectedCallbackSet = true;
+            Input.JoyConnectionChanged += HandleJoypadConnectionChanged;
+        }
     }
 
     public override void _Input(InputEvent @event)
