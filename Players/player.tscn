@@ -1,12 +1,12 @@
-[gd_scene load_steps=38 format=3 uid="uid://cv7g2fnqrxx7s"]
+[gd_scene load_steps=42 format=3 uid="uid://cv7g2fnqrxx7s"]
 
 [ext_resource type="Script" path="res://Players/PlayerController.cs" id="1_bukco"]
+[ext_resource type="Script" path="res://Players/BallActionHandler.cs" id="2_8sxkk"]
 [ext_resource type="Script" path="res://Players/PlayerInputHandler.cs" id="2_bjy2i"]
 [ext_resource type="Script" path="res://Players/HorizontalMovementHandler.cs" id="3_8cg7j"]
 [ext_resource type="Script" path="res://Players/GravityApplicator.cs" id="4_46gxe"]
 [ext_resource type="Script" path="res://Players/JumpHandler.cs" id="5_mw2vm"]
 [ext_resource type="Script" path="res://Players/MeleeHurtboxHandler.cs" id="6_rgnv7"]
-[ext_resource type="Script" path="res://Players/AttackHandler.cs" id="6_wkqlm"]
 [ext_resource type="Script" path="res://Players/DeflectHandler.cs" id="7_bcpnl"]
 [ext_resource type="Script" path="res://Players/TimedCollider.cs" id="7_xohju"]
 [ext_resource type="Script" path="res://Players/Hitbox.cs" id="9_4xjwb"]
@@ -15,24 +15,27 @@
 [ext_resource type="Script" path="res://Players/ControlDisablerHandler.cs" id="10_t2a0i"]
 [ext_resource type="Script" path="res://Players/FlipHandler.cs" id="11_t7grp"]
 [ext_resource type="Script" path="res://Players/CrouchHandler.cs" id="12_5v8f2"]
-[ext_resource type="Texture2D" uid="uid://ni70xkxh2nk0" path="res://Players/Sprite Sheets/Male_1_Clothes_1_Long_New_Animations.png" id="15_rkq5e"]
 [ext_resource type="Script" path="res://Players/SpriteControls.cs" id="16_cd1ek"]
+[ext_resource type="Texture2D" uid="uid://cxdam2ge4nrff" path="res://Players/Sprite Sheets/Ball Sprites/Ball_Sheets.png" id="18_ngx1i"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pi3oo"]
-size = Vector2(8, 14)
+size = Vector2(8, 8)
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_meg5j"]
 radius = 4.0
-height = 14.0
+height = 8.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_f5o2s"]
-size = Vector2(8, 16)
+size = Vector2(8, 8)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lqg1u"]
 size = Vector2(20, 10)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sg5v1"]
 size = Vector2(20, 7.875)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1w2jy"]
+radius = 6.0
 
 [sub_resource type="Animation" id="Animation_lkr48"]
 length = 0.001
@@ -325,9 +328,57 @@ tracks/0/keys = {
 "values": [10, 11, 10, 11, 10]
 }
 
+[sub_resource type="Animation" id="Animation_2xutl"]
+resource_name = "ball_dash"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="Animation" id="Animation_c4htm"]
+resource_name = "ball_static"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [2]
+}
+
+[sub_resource type="Animation" id="Animation_dkk1p"]
+resource_name = "ball_block"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_r5udm"]
 _data = {
 "RESET": SubResource("Animation_lkr48"),
+"ball_block": SubResource("Animation_dkk1p"),
+"ball_dash": SubResource("Animation_2xutl"),
+"ball_static": SubResource("Animation_c4htm"),
 "crouch": SubResource("Animation_ei81v"),
 "crouched_deflect": SubResource("Animation_nrlqh"),
 "death": SubResource("Animation_uxa3w"),
@@ -354,12 +405,20 @@ collision_layer = 0
 collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Lava Collider"]
-position = Vector2(0, -7)
+position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_pi3oo")
 
 [node name="Collider" type="CollisionShape2D" parent="."]
-position = Vector2(0, -7)
+position = Vector2(0, -4)
 shape = SubResource("CapsuleShape2D_meg5j")
+
+[node name="BallActionHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_aniPlayer", "_controlDisabler")]
+script = ExtResource("2_8sxkk")
+_body = NodePath("..")
+_aniPlayer = NodePath("../AnimationPlayer")
+_controlDisabler = NodePath("../ControlDisablerHandler")
+_blockAnimation = &"ball_block"
+_dashAnimation = &"ball_dash"
 
 [node name="PlayerInputHandler" type="Node" parent="."]
 script = ExtResource("2_bjy2i")
@@ -378,14 +437,6 @@ script = ExtResource("5_mw2vm")
 _body = NodePath("..")
 _jumpVelocity = 142.0
 _maxJumpTime = 0.2
-
-[node name="AttackHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_aniPlayer", "_controlDisabler")]
-script = ExtResource("6_wkqlm")
-_body = NodePath("..")
-_aniPlayer = NodePath("../AnimationPlayer")
-_controlDisabler = NodePath("../ControlDisablerHandler")
-_dropkickDrag = 10.0
-_actionBufferTime = 0.3
 
 [node name="DeflectHandler" type="Node" parent="." node_paths=PackedStringArray("_sprite", "_body", "_crouchHandler")]
 script = ExtResource("7_bcpnl")
@@ -422,7 +473,7 @@ script = ExtResource("12_5v8f2")
 script = ExtResource("9_4xjwb")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
-position = Vector2(0, -8)
+position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_f5o2s")
 
 [node name="MeleeHurtboxHandler" type="Area2D" parent="."]
@@ -438,6 +489,10 @@ position = Vector2(10, -4.0625)
 shape = SubResource("RectangleShape2D_sg5v1")
 script = ExtResource("7_xohju")
 
+[node name="DashHurtbox" type="CollisionShape2D" parent="MeleeHurtboxHandler"]
+position = Vector2(0, -4)
+shape = SubResource("CircleShape2D_1w2jy")
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 "": SubResource("AnimationLibrary_r5udm")
@@ -445,19 +500,17 @@ libraries = {
 
 [node name="Sprite_New" type="Sprite2D" parent="."]
 texture_filter = 5
-position = Vector2(0, -8)
+position = Vector2(0, -4)
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("15_rkq5e")
-hframes = 99
-frame = 5
+texture = ExtResource("18_ngx1i")
+hframes = 3
 script = ExtResource("16_cd1ek")
-PossibleSprites = Array[Texture2D]([ExtResource("15_rkq5e")])
+PossibleSprites = Array[Texture2D]([ExtResource("18_ngx1i")])
 
 [connection signal="area_entered" from="Lava Collider" to="." method="OnTouchedLava"]
-[connection signal="ActionPressed" from="PlayerInputHandler" to="AttackHandler" method="OnAttack"]
-[connection signal="BlockPressed" from="PlayerInputHandler" to="AttackHandler" method="OnDeflect"]
 [connection signal="CrouchPressed" from="PlayerInputHandler" to="CrouchHandler" method="OnCrouchStart"]
 [connection signal="CrouchReleased" from="PlayerInputHandler" to="CrouchHandler" method="OnCrouchEnd"]
+[connection signal="InputRecieved" from="PlayerInputHandler" to="BallActionHandler" method="InputEventHandler"]
 [connection signal="JumpPressed" from="PlayerInputHandler" to="JumpHandler" method="OnJumpPressed"]
 [connection signal="JumpReleased" from="PlayerInputHandler" to="JumpHandler" method="OnJumpReleased"]
 [connection signal="MoveLeftPressed" from="PlayerInputHandler" to="HorizontalMovementHandler" method="OnLeftPressed"]

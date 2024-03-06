@@ -17,6 +17,7 @@ public readonly struct ControlIDs
     public const string DEFLECT = "Deflect";
     public const string FLIPPER = "Flipper";
     public const string CROUCHER = "Croucher";
+    public const string ACTION_HANDLER = "ActionHandler";
 }
 
 public interface IDisableableControl
