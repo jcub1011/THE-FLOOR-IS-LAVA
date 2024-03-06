@@ -25,7 +25,7 @@ offset_top = -6038.0
 offset_right = 10005.0
 offset_bottom = 12531.8
 
-[connection signal="OnPressedWithTimer" from="CanvasLayer/RetryScreen/CenterContainer/VBoxContainer/Button" to="." method="OnRestartHandler"]
+[connection signal="OnPressedWithTimer" from="CanvasLayer/RetryScreen/VBoxContainer/Button" to="." method="OnRestartHandler"]
 [connection signal="OnPressedWithTimer" from="CanvasLayer/MainMenu/HBoxContainer/VBoxContainer/Button" to="." method="OnStartGameHandler"]
 
 [editable path="CanvasLayer/RetryScreen"]
