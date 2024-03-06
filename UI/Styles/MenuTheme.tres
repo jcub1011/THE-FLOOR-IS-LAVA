@@ -1,0 +1,7 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://bp1bagmcfevk7"]
+
+[ext_resource type="FontFile" uid="uid://bml2tndx7ouf6" path="res://UI/Fonts/Ldfcomicsans-jj7l.ttf" id="1_tlsx2"]
+
+[resource]
+Button/fonts/font = ExtResource("1_tlsx2")
+RichTextLabel/fonts/normal_font = ExtResource("1_tlsx2")

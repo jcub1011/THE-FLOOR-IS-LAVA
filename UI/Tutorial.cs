@@ -44,4 +44,14 @@ public partial class Tutorial : Control
             node.RemoveChild(player);
         }
     }
+
+    public void OnClose()
+    {
+        Visible = false;
+    }
+
+    public void OnOpen()
+    {
+        Visible = true;
+    }
 }

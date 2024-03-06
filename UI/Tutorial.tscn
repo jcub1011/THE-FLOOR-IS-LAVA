@@ -1,5 +1,6 @@
-[gd_scene load_steps=22 format=3 uid="uid://dwer2a4rvtn5a"]
+[gd_scene load_steps=23 format=3 uid="uid://dwer2a4rvtn5a"]
 
+[ext_resource type="Theme" uid="uid://bp1bagmcfevk7" path="res://UI/Styles/MenuTheme.tres" id="1_4fro4"]
 [ext_resource type="Script" path="res://UI/Tutorial.cs" id="1_oy248"]
 [ext_resource type="StyleBox" uid="uid://d4d13421t76qv" path="res://UI/Styles/Blank_BG_Panel.tres" id="1_w2rby"]
 [ext_resource type="Texture2D" uid="uid://cu3twjf5jdixy" path="res://UI/Keyboard & Mouse/Dark/A_Key_Dark.png" id="1_wv7ed"]
@@ -35,6 +36,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_4fro4")
 script = ExtResource("1_oy248")
 _player = ExtResource("2_ydao1")
 
@@ -400,6 +402,21 @@ offset_bottom = 150.0
 grow_horizontal = 2
 texture = ExtResource("14_2hpin")
 
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 550.0
+offset_bottom = 676.0
+grow_horizontal = 2
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]Blocking an attack causes the attacker to stagger.
+Attacking a staggered foe increases the knockback.
+Crouching allows you to attack and block low.
+Standing attacks can't be blocked by low blocks and vice versa."
+fit_content = true
+
 [node name="Node2D" type="Node2D" parent="."]
 position = Vector2(781, 619)
 
@@ -417,3 +434,18 @@ shape = SubResource("WorldBoundaryShape2D_p5b3x")
 [node name="CollisionShape2D3" type="CollisionShape2D" parent="Node2D/StaticBody2D"]
 position = Vector2(1600, 0)
 shape = SubResource("WorldBoundaryShape2D_r4ya8")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -130.0
+offset_top = 11.0
+offset_right = -10.0
+offset_bottom = 68.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 36
+text = "Close"
+
+[connection signal="pressed" from="Button" to="." method="OnClose"]
