@@ -44,7 +44,8 @@ public partial class HorizontalMovementHandler : Node, IDisableableControl
         deltaX *= (float)delta;
 
         if (_isLeftButtonDown == _isRightButtonDown
-            || GetParent().GetChild<CrouchHandler>().IsCrouched)
+            || (GetParent().GetChild<CrouchHandler>().IsCrouched
+            && _body.IsOnFloor()))
         {
             if (deltaX > Mathf.Abs(_body.Velocity.X))
             {
