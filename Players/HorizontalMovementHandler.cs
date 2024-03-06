@@ -5,9 +5,10 @@ namespace Players;
 public partial class HorizontalMovementHandler : Node, IDisableableControl
 {
     [Export] CharacterBody2D _body;
-    [Export] float _moveSpeed;
+    [Export] float _moveSpeed = 80;
     [Export] bool _isEnabled = true;
-    [Export] float _airAcceleration = 800f;
+    [Export] float _groundAcceleration = 1200f;
+    [Export] float _airAcceleration = 900f;
     bool _isLeftButtonDown;
     bool _isRightButtonDown;
 
@@ -35,53 +36,43 @@ public partial class HorizontalMovementHandler : Node, IDisableableControl
     {
         base._Process(delta);
         if (!_isEnabled) return;
-        Vector2 newVel = new(0, _body.Velocity.Y);
+        Vector2 newVel = _body.Velocity;
+        float speedLim = (_body as PlayerController).SpeedLimit.X;
 
-        if (GetParent().GetChild<CrouchHandler>().IsCrouched
-            && _body.IsOnFloor())
-        {
-            _body.Velocity = newVel;
-            return;
-        }
+        float deltaX = _body.IsOnFloor() ?
+            _groundAcceleration : _airAcceleration;
+        deltaX *= (float)delta;
 
-        if (_isLeftButtonDown)
+        if (_isLeftButtonDown == _isRightButtonDown
+            || GetParent().GetChild<CrouchHandler>().IsCrouched)
         {
-            if (_body.IsOnFloor())
-                newVel.X += -_moveSpeed;
-            else
-            {
-                float deltaV = _airAcceleration * (float)delta;
-                newVel.X = _body.Velocity.X - deltaV;
-                newVel.X = Mathf.Clamp(newVel.X, -_moveSpeed, _moveSpeed);
-            }
-        }
-        if (_isRightButtonDown)
-        {
-            if (_body.IsOnFloor())
-                newVel.X += _moveSpeed;
-            else
-            {
-                float deltaV = _airAcceleration * (float)delta;
-                newVel.X = _body.Velocity.X + deltaV;
-                newVel.X = Mathf.Clamp(newVel.X, -_moveSpeed, _moveSpeed);
-            }
-        }
-        if (!_isLeftButtonDown && !_isRightButtonDown
-            && !_body.IsOnFloor())
-        {
-            float deltaV = _airAcceleration * (float)delta
-                * (_body.Velocity.X < 0f ? 1f : -1f);
-
-            if (Mathf.Abs(deltaV) > Mathf.Abs(_body.Velocity.X))
+            if (deltaX > Mathf.Abs(_body.Velocity.X))
             {
                 newVel.X = 0f;
             }
             else
             {
-                newVel.X = _body.Velocity.X + deltaV;
+                newVel.X += _body.Velocity.X < 0f ? deltaX : -deltaX;
+            }
+        }
+        else if (_isLeftButtonDown)
+        {
+            if (newVel.X > -_moveSpeed)
+            {
+                newVel.X = Mathf.Clamp(newVel.X - deltaX,
+                    -_moveSpeed, _moveSpeed);
+            }
+        }
+        else
+        {
+            if (newVel.X < _moveSpeed)
+            {
+                newVel.X = Mathf.Clamp(newVel.X + deltaX,
+                    -_moveSpeed, _moveSpeed);
             }
         }
 
+        newVel.X = Mathf.Clamp(newVel.X, -speedLim, speedLim);
         _body.Velocity = newVel;
     }
 

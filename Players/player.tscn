@@ -347,7 +347,6 @@ _data = {
 collision_layer = 2
 script = ExtResource("1_bukco")
 InputHandler = NodePath("PlayerInputHandler")
-_speedLimit = Vector2(400, 400)
 
 [node name="Lava Collider" type="Area2D" parent="."]
 collision_layer = 0
@@ -367,8 +366,8 @@ script = ExtResource("2_bjy2i")
 [node name="HorizontalMovementHandler" type="Node" parent="." node_paths=PackedStringArray("_body")]
 script = ExtResource("3_8cg7j")
 _body = NodePath("..")
-_moveSpeed = 80.0
-_airAcceleration = 800.0
+_groundAcceleration = 1200.0
+_airAcceleration = 900.0
 
 [node name="GravityApplicator" type="Node" parent="." node_paths=PackedStringArray("_body")]
 script = ExtResource("4_46gxe")
