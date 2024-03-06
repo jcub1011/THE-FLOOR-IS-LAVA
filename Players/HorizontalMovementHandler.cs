@@ -62,6 +62,11 @@ public partial class HorizontalMovementHandler : Node, IDisableableControl
                 newVel.X = Mathf.Clamp(newVel.X - deltaX,
                     -_moveSpeed, _moveSpeed);
             }
+            else
+            {
+                newVel.X = Mathf.Clamp(newVel.X + deltaX,
+                    float.NegativeInfinity, _moveSpeed);
+            }
         }
         else
         {
@@ -69,6 +74,11 @@ public partial class HorizontalMovementHandler : Node, IDisableableControl
             {
                 newVel.X = Mathf.Clamp(newVel.X + deltaX,
                     -_moveSpeed, _moveSpeed);
+            }
+            else
+            {
+                newVel.X = Mathf.Clamp(newVel.X - deltaX,
+                    -_moveSpeed, float.PositiveInfinity);
             }
         }
 

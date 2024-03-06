@@ -345,6 +345,7 @@ _data = {
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("InputHandler")]
 collision_layer = 2
+slide_on_ceiling = false
 script = ExtResource("1_bukco")
 InputHandler = NodePath("PlayerInputHandler")
 
@@ -366,8 +367,6 @@ script = ExtResource("2_bjy2i")
 [node name="HorizontalMovementHandler" type="Node" parent="." node_paths=PackedStringArray("_body")]
 script = ExtResource("3_8cg7j")
 _body = NodePath("..")
-_groundAcceleration = 1200.0
-_airAcceleration = 900.0
 
 [node name="GravityApplicator" type="Node" parent="." node_paths=PackedStringArray("_body")]
 script = ExtResource("4_46gxe")
