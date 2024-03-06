@@ -1,5 +1,6 @@
-[gd_scene load_steps=16 format=3 uid="uid://dwer2a4rvtn5a"]
+[gd_scene load_steps=17 format=3 uid="uid://dwer2a4rvtn5a"]
 
+[ext_resource type="StyleBox" uid="uid://d4d13421t76qv" path="res://UI/Styles/Blank_BG_Panel.tres" id="1_w2rby"]
 [ext_resource type="Texture2D" uid="uid://cu3twjf5jdixy" path="res://UI/Keyboard & Mouse/Dark/A_Key_Dark.png" id="1_wv7ed"]
 [ext_resource type="Texture2D" uid="uid://ca3abgsk2ocid" path="res://UI/Keyboard & Mouse/Dark/W_Key_Dark.png" id="2_d3m5u"]
 [ext_resource type="Texture2D" uid="uid://clw51jug1la3s" path="res://UI/Keyboard & Mouse/Dark/D_Key_Dark.png" id="3_tfhsm"]
@@ -72,80 +73,235 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Movement KYB L" type="RichTextLabel" parent="MarginContainer/GridContainer/Controls_1"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/GridContainer/Controls_1"]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -262.0
-offset_right = 262.0
-offset_bottom = 35.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Movement KYB L" type="RichTextLabel" parent="MarginContainer/GridContainer/Controls_1/VBoxContainer"]
+layout_mode = 2
 theme_override_font_sizes/normal_font_size = 25
 bbcode_enabled = true
 text = "[center]Movement"
 fit_content = true
 
-[node name="Left" type="TextureRect" parent="MarginContainer/GridContainer/Controls_1"]
+[node name="Panel" type="Panel" parent="MarginContainer/GridContainer/Controls_1/VBoxContainer"]
+custom_minimum_size = Vector2(0, 180)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("1_w2rby")
+
+[node name="Left" type="TextureRect" parent="MarginContainer/GridContainer/Controls_1/VBoxContainer/Panel"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -132.0
-offset_top = 130.0
+offset_top = 80.0
 offset_right = -32.0
-offset_bottom = 230.0
+offset_bottom = 180.0
 grow_horizontal = 2
 texture = ExtResource("1_wv7ed")
 
-[node name="Up" type="TextureRect" parent="MarginContainer/GridContainer/Controls_1"]
+[node name="Up" type="TextureRect" parent="MarginContainer/GridContainer/Controls_1/VBoxContainer/Panel"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -50.0
-offset_top = 50.0
 offset_right = 50.0
-offset_bottom = 150.0
+offset_bottom = 100.0
 grow_horizontal = 2
 texture = ExtResource("2_d3m5u")
 
-[node name="Right" type="TextureRect" parent="MarginContainer/GridContainer/Controls_1"]
+[node name="Right" type="TextureRect" parent="MarginContainer/GridContainer/Controls_1/VBoxContainer/Panel"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = 33.0
-offset_top = 130.0
+offset_top = 80.0
 offset_right = 133.0
-offset_bottom = 230.0
+offset_bottom = 180.0
 grow_horizontal = 2
 texture = ExtResource("3_tfhsm")
 
-[node name="Down" type="TextureRect" parent="MarginContainer/GridContainer/Controls_1"]
+[node name="Down" type="TextureRect" parent="MarginContainer/GridContainer/Controls_1/VBoxContainer/Panel"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -50.0
-offset_top = 130.0
+offset_top = 80.0
 offset_right = 50.0
-offset_bottom = 230.0
+offset_bottom = 180.0
 grow_horizontal = 2
 texture = ExtResource("3_tfhsm")
+
+[node name="Movement KYB L2" type="RichTextLabel" parent="MarginContainer/GridContainer/Controls_1/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/normal_font_size = 25
+bbcode_enabled = true
+text = "[center]Attack        Block"
+fit_content = true
+
+[node name="Controls_Attk_4" type="Panel" parent="MarginContainer/GridContainer/Controls_1/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("1_w2rby")
+
+[node name="Attack" type="TextureRect" parent="MarginContainer/GridContainer/Controls_1/VBoxContainer/Controls_Attk_4"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -112.0
+offset_right = -12.0
+offset_bottom = 100.0
+grow_horizontal = 2
+texture = ExtResource("9_l5kyk")
+
+[node name="Block" type="TextureRect" parent="MarginContainer/GridContainer/Controls_1/VBoxContainer/Controls_Attk_4"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 13.0
+offset_right = 113.0
+offset_bottom = 100.0
+grow_horizontal = 2
+texture = ExtResource("10_ct5i6")
+
+[node name="Controls_4" type="Panel" parent="MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/GridContainer/Controls_4"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Movement KYB L" type="RichTextLabel" parent="MarginContainer/GridContainer/Controls_4/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 25
+bbcode_enabled = true
+text = "[center]Movement"
+fit_content = true
+
+[node name="Panel" type="Panel" parent="MarginContainer/GridContainer/Controls_4/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 1.27
+theme_override_styles/panel = ExtResource("1_w2rby")
+
+[node name="Left" type="TextureRect" parent="MarginContainer/GridContainer/Controls_4/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -132.0
+offset_top = 80.0
+offset_right = -32.0
+offset_bottom = 180.0
+grow_horizontal = 2
+texture = ExtResource("1_wv7ed")
+
+[node name="Up" type="TextureRect" parent="MarginContainer/GridContainer/Controls_4/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -50.0
+offset_right = 50.0
+offset_bottom = 100.0
+grow_horizontal = 2
+texture = ExtResource("2_d3m5u")
+
+[node name="Right" type="TextureRect" parent="MarginContainer/GridContainer/Controls_4/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 33.0
+offset_top = 80.0
+offset_right = 133.0
+offset_bottom = 180.0
+grow_horizontal = 2
+texture = ExtResource("3_tfhsm")
+
+[node name="Down" type="TextureRect" parent="MarginContainer/GridContainer/Controls_4/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -50.0
+offset_top = 80.0
+offset_right = 50.0
+offset_bottom = 180.0
+grow_horizontal = 2
+texture = ExtResource("3_tfhsm")
+
+[node name="Movement KYB L2" type="RichTextLabel" parent="MarginContainer/GridContainer/Controls_4/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 25
+bbcode_enabled = true
+text = "[center]Attack        Block"
+fit_content = true
+
+[node name="Controls_Attk_4" type="Panel" parent="MarginContainer/GridContainer/Controls_4/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("1_w2rby")
+
+[node name="Attack" type="TextureRect" parent="MarginContainer/GridContainer/Controls_4/VBoxContainer/Controls_Attk_4"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -112.0
+offset_right = -12.0
+offset_bottom = 100.0
+grow_horizontal = 2
+texture = ExtResource("9_l5kyk")
+
+[node name="Block" type="TextureRect" parent="MarginContainer/GridContainer/Controls_4/VBoxContainer/Controls_Attk_4"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 13.0
+offset_right = 113.0
+offset_bottom = 100.0
+grow_horizontal = 2
+texture = ExtResource("10_ct5i6")
 
 [node name="Controls_2" type="Panel" parent="MarginContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Movement KYB L" type="RichTextLabel" parent="MarginContainer/GridContainer/Controls_2"]
+[node name="Panel" type="Panel" parent="MarginContainer/GridContainer/Controls_2"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Movement KYB L" type="RichTextLabel" parent="MarginContainer/GridContainer/Controls_2/Panel"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -262.0
-offset_right = 262.0
+offset_left = -20.0
+offset_right = 504.0
 offset_bottom = 35.0
 grow_horizontal = 2
 theme_override_font_sizes/normal_font_size = 25
@@ -153,50 +309,50 @@ bbcode_enabled = true
 text = "[center]Movement"
 fit_content = true
 
-[node name="Left" type="TextureRect" parent="MarginContainer/GridContainer/Controls_2"]
+[node name="Left" type="TextureRect" parent="MarginContainer/GridContainer/Controls_2/Panel"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -132.0
+offset_left = 110.0
 offset_top = 130.0
-offset_right = -32.0
+offset_right = 210.0
 offset_bottom = 230.0
 grow_horizontal = 2
 texture = ExtResource("4_lke67")
 
-[node name="Up" type="TextureRect" parent="MarginContainer/GridContainer/Controls_2"]
+[node name="Up" type="TextureRect" parent="MarginContainer/GridContainer/Controls_2/Panel"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -50.0
+offset_left = 192.0
 offset_top = 50.0
-offset_right = 50.0
+offset_right = 292.0
 offset_bottom = 150.0
 grow_horizontal = 2
 texture = ExtResource("5_yuov4")
 
-[node name="Right" type="TextureRect" parent="MarginContainer/GridContainer/Controls_2"]
+[node name="Right" type="TextureRect" parent="MarginContainer/GridContainer/Controls_2/Panel"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = 33.0
+offset_left = 275.0
 offset_top = 130.0
-offset_right = 133.0
+offset_right = 375.0
 offset_bottom = 230.0
 grow_horizontal = 2
 texture = ExtResource("6_fnp5k")
 
-[node name="Down" type="TextureRect" parent="MarginContainer/GridContainer/Controls_2"]
+[node name="Down" type="TextureRect" parent="MarginContainer/GridContainer/Controls_2/Panel"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -50.0
+offset_left = 192.0
 offset_top = 130.0
-offset_right = 50.0
+offset_right = 292.0
 offset_bottom = 230.0
 grow_horizontal = 2
 texture = ExtResource("7_r6oxd")
@@ -243,49 +399,6 @@ offset_right = 113.0
 offset_bottom = 195.0
 grow_horizontal = 2
 texture = ExtResource("9_u2afw")
-
-[node name="Controls_Attk_4" type="Panel" parent="MarginContainer/GridContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Movement KYB L" type="RichTextLabel" parent="MarginContainer/GridContainer/Controls_Attk_4"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -262.0
-offset_right = 262.0
-offset_bottom = 35.0
-grow_horizontal = 2
-theme_override_font_sizes/normal_font_size = 25
-bbcode_enabled = true
-text = "[center]Attack        Block"
-fit_content = true
-
-[node name="Attack" type="TextureRect" parent="MarginContainer/GridContainer/Controls_Attk_4"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -112.0
-offset_top = 50.0
-offset_right = -12.0
-offset_bottom = 150.0
-grow_horizontal = 2
-texture = ExtResource("9_l5kyk")
-
-[node name="Block" type="TextureRect" parent="MarginContainer/GridContainer/Controls_Attk_4"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = 13.0
-offset_top = 50.0
-offset_right = 113.0
-offset_bottom = 150.0
-grow_horizontal = 2
-texture = ExtResource("10_ct5i6")
 
 [node name="Controls_Attk_5" type="Panel" parent="MarginContainer/GridContainer"]
 layout_mode = 2

@@ -17,13 +17,13 @@ public partial class CameraZoomer : Camera2D
         _initialZoom = Zoom;
 
         GD.Print(_targetSize);
-        AdjustZoom();
+        //AdjustZoom();
     }
 
     public override void _Process(double delta)
     {
         base._Process(delta);
-        AdjustZoom();
+        //AdjustZoom();
     }
 
     void AdjustZoom()
