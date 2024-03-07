@@ -18,7 +18,7 @@ public readonly struct TimescaleTransition
     public TimescaleTransition(double targetTimeScale, double transitionTime)
     {
         TargetTimeScale = Mathf.Clamp(targetTimeScale, 0.0001, 1);
-        TransitionTime = Mathf.Clamp(transitionTime, 0, double.PositiveInfinity);
+        TransitionTime = Mathf.Clamp(transitionTime, 0.0001, double.PositiveInfinity);
     }
 
     /// <summary>
