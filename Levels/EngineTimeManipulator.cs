@@ -34,6 +34,7 @@ public readonly struct TimescaleTransition
 
 public partial class EngineTimeManipulator : Node
 {
+    #region Static
     static EngineTimeManipulator Instance { get; set; }
 
     static Queue<TimescaleTransition> _transitions = new();
@@ -41,14 +42,44 @@ public partial class EngineTimeManipulator : Node
     static double _remainingTransitionTime;
     static double _targetTimescale;
 
+    static void UpdateTimeInfo(TimescaleTransition transition)
+    {
+        _targetTimescale = transition.TargetTimeScale;
+        _remainingTransitionTime = transition.TransitionTime;
+
+        if (!double.IsNaN(_targetTimescale))
+        {
+            _timescaleROC = (Engine.TimeScale - _targetTimescale)
+                / _remainingTransitionTime;
+            GD.Print(_timescaleROC);
+        }
+    }
+
+    /// <summary>
+    /// Adds the transition to the queue.
+    /// </summary>
+    /// <param name="transition"></param>
+    public static void QueueTimeTransition(TimescaleTransition transition)
+    {
+        _transitions.Enqueue(transition);
+    }
+
+    /// <summary>
+    /// Skips the queue and instantly performs the transition. This removes 
+    /// any transitions currently in the queue.
+    /// </summary>
+    /// <param name="transition"></param>
+    public static void OverrideTimeTransition(TimescaleTransition transition)
+    {
+        _transitions.Clear();
+        UpdateTimeInfo(transition);
+    }
+    #endregion
+
     public override void _Ready()
     {
         base._Ready();
         Instance = this;
-
-        QueueTimeTransition(new(0.01, 2));
-        QueueTimeTransition(new(2));
-        QueueTimeTransition(new(1, 2));
     }
 
     public override void _ExitTree()
@@ -96,38 +127,5 @@ public partial class EngineTimeManipulator : Node
             if (Engine.TimeScale < _targetTimescale) Engine.TimeScale = _targetTimescale;
         }
         Engine.TimeScale = Mathf.Clamp(Engine.TimeScale, 0.0001, 1);
-    }
-
-    /// <summary>
-    /// Adds the transition to the queue.
-    /// </summary>
-    /// <param name="transition"></param>
-    public void QueueTimeTransition(TimescaleTransition transition)
-    {
-        _transitions.Enqueue(transition);
-    }
-
-    /// <summary>
-    /// Skips the queue and instantly performs the transition. This removes 
-    /// any transitions currently in the queue.
-    /// </summary>
-    /// <param name="transition"></param>
-    public void OverrideTimeTransition(TimescaleTransition transition)
-    {
-        _transitions.Clear();
-        UpdateTimeInfo(transition);
-    }
-
-    void UpdateTimeInfo(TimescaleTransition transition)
-    {
-        _targetTimescale = transition.TargetTimeScale;
-        _remainingTransitionTime = transition.TransitionTime;
-
-        if (!double.IsNaN(_targetTimescale))
-        {
-            _timescaleROC = (Engine.TimeScale - _targetTimescale)
-                / _remainingTransitionTime;
-            GD.Print(_timescaleROC);
-        }
     }
 }
