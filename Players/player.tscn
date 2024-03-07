@@ -330,7 +330,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_2xutl"]
 resource_name = "ball_dash"
-length = 0.5
+length = 0.166675
 step = 0.0833333
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -354,7 +354,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [&"DashHurtbox", 0.5, 100.0, 0],
+"args": [&"DashHurtbox", 0.4, 100.0, 0],
 "method": &"EnableHitbox"
 }]
 }
@@ -455,6 +455,7 @@ _dashHandler = NodePath("../DashHandler")
 [node name="BallHorizontalMovement" type="Node" parent="." node_paths=PackedStringArray("_body")]
 script = ExtResource("3_vn5cb")
 _body = NodePath("..")
+_airAcceleration = 700.0
 
 [node name="BallJumpHandler" type="Node" parent="." node_paths=PackedStringArray("_body")]
 script = ExtResource("4_kdm3q")
@@ -463,7 +464,6 @@ _body = NodePath("..")
 [node name="DashHandler" type="Node" parent="." node_paths=PackedStringArray("_body")]
 script = ExtResource("13_c0kft")
 _body = NodePath("..")
-_dashSpeed = 100.0
 
 [node name="PlayerInputHandler" type="Node" parent="."]
 script = ExtResource("2_bjy2i")
@@ -535,6 +535,7 @@ position = Vector2(0, -4)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("18_ngx1i")
 hframes = 3
+frame = 1
 script = ExtResource("16_cd1ek")
 PossibleSprites = Array[Texture2D]([ExtResource("18_ngx1i")])
 

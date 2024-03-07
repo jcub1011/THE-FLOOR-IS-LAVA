@@ -31,6 +31,12 @@ public partial class KnockbackHandler : Node, IDisableableControl
         _inStaggerState = _remainingStagger > 0f;
     }
 
+    public void ApplyKnockback(Vector2 knockback)
+    {
+        DisableHandlers(_recoveryTime);
+        _body.Velocity = knockback;
+    }
+
     public void OnApplyKnockback(float knockback, Node2D source)
     {
         knockback *= _inStaggerState ? _staggeredKnockbackMultiplier : 1f;

@@ -6,6 +6,7 @@ public partial class DeflectHandler : Node, IDisableableControl
 {
     [Export] Sprite2D _sprite;
     [Export] CharacterBody2D _body;
+    public bool IsActive => _remainingDeflectTime > 0f;
     float _remainingDeflectTime;
     bool _isEnabled;
 

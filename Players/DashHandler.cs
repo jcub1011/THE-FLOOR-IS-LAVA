@@ -7,13 +7,23 @@ namespace Players;
 public partial class DashHandler : Node
 {
     [Export] PlayerController _body;
-    [Export] float _dashSpeed;
+    [Export] KnockbackHandler _knockback;
+    [Export] float _dashSpeed = 250;
     public int DashCharges { get; set; } = 1;
 
     bool _leftPressed;
     bool _rightPressed;
     bool _upPressed;
     bool _downPressed;
+
+    public override void _Process(double delta)
+    {
+        base._Process(delta);
+        if (_body.IsOnFloor())
+        {
+            DashCharges = 1;
+        }
+    }
 
     public void InputEventHandler(StringName input, bool pressed)
     {
