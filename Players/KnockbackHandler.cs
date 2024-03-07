@@ -34,6 +34,7 @@ public partial class KnockbackHandler : Node, IDisableableControl
     public void ApplyKnockback(Vector2 knockback)
     {
         DisableHandlers(_recoveryTime);
+        _remainingStagger = 0f;
         _body.Velocity = knockback;
     }
 
@@ -50,30 +51,16 @@ public partial class KnockbackHandler : Node, IDisableableControl
     void DisableHandlers(float time)
     {
         //EmitSignal(SignalName.OnDisableMovementControl);
-        _disabler.SetControlStates(false,
+        _disabler.SetControlStatesExcept(false,
             time,
-            ControlIDs.ATTACK_HANDLER,
-            ControlIDs.HITBOX,
-            ControlIDs.HURTBOX,
-            ControlIDs.MOVEMENT,
-            ControlIDs.AUTO_ANIMATION,
-            ControlIDs.DEFLECT,
-            ControlIDs.FLIPPER,
-            ControlIDs.CROUCHER);
+            ControlIDs.INPUT,
+            ControlIDs.GRAVITY);
     }
 
-    public void SetInStaggerState()
+    public void SetInStaggerState(CharacterBody2D body)
     {
         float staggerTime = _aniPlayer.GetAnimation(_staggerAnimationName).Length;
-        _disabler.SetControlStates(false,
-            staggerTime,
-            ControlIDs.ATTACK_HANDLER,
-            ControlIDs.HURTBOX,
-            ControlIDs.MOVEMENT,
-            ControlIDs.AUTO_ANIMATION,
-            ControlIDs.DEFLECT,
-            ControlIDs.FLIPPER,
-            ControlIDs.CROUCHER);
+        DisableHandlers(staggerTime);
         _remainingStagger = staggerTime;
         _aniPlayer.PlayIfExists(_staggerAnimationName);
         _inStaggerState = true;

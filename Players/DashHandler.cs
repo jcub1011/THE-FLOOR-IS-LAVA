@@ -8,6 +8,7 @@ public partial class DashHandler : Node
 {
     [Export] PlayerController _body;
     [Export] KnockbackHandler _knockback;
+    [Export] FlipHandler _flip;
     [Export] float _dashSpeed = 250;
     public int DashCharges { get; set; } = 1;
 
@@ -58,7 +59,7 @@ public partial class DashHandler : Node
         if (_downPressed) direction.Y += 1;
 
         if (direction.LengthSquared() == 0f) 
-            direction = ((_body.Velocity.X < 0f) ? Vector2.Left : Vector2.Right);
+            direction = ((_flip.FacingLeft) ? Vector2.Left : Vector2.Right);
         return direction;
     }
 }

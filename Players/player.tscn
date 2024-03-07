@@ -34,8 +34,9 @@ size = Vector2(20, 10)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sg5v1"]
 size = Vector2(20, 7.875)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_1w2jy"]
-radius = 6.0
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_e5llx"]
+radius = 4.0
+height = 16.0
 
 [sub_resource type="Animation" id="Animation_lkr48"]
 length = 0.001
@@ -461,9 +462,11 @@ _airAcceleration = 700.0
 script = ExtResource("4_kdm3q")
 _body = NodePath("..")
 
-[node name="DashHandler" type="Node" parent="." node_paths=PackedStringArray("_body")]
+[node name="DashHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_knockback", "_flip")]
 script = ExtResource("13_c0kft")
 _body = NodePath("..")
+_knockback = NodePath("../KnockbackHandler")
+_flip = NodePath("../FlipHandler")
 
 [node name="PlayerInputHandler" type="Node" parent="."]
 script = ExtResource("2_bjy2i")
@@ -477,6 +480,9 @@ Gravity = 750.0
 script = ExtResource("7_bcpnl")
 _sprite = NodePath("../Sprite_New")
 _body = NodePath("..")
+_slomoTime = 5.0
+_deflectKnockback = 300.0
+_successfulKnockbackBounce = 300.0
 
 [node name="VelocityBasedAniSelector" type="Node" parent="." node_paths=PackedStringArray("_body", "_sprite", "_player", "_flipHandler")]
 script = ExtResource("9_igj33")
@@ -492,6 +498,7 @@ _recoveryTime = 0.5
 _body = NodePath("..")
 _disabler = NodePath("../ControlDisablerHandler")
 _aniPlayer = NodePath("../AnimationPlayer")
+_staggerAnimationName = &"ball_static"
 
 [node name="ControlDisablerHandler" type="Node" parent="."]
 script = ExtResource("10_t2a0i")
@@ -499,8 +506,9 @@ script = ExtResource("10_t2a0i")
 [node name="FlipHandler" type="Node" parent="."]
 script = ExtResource("11_t7grp")
 
-[node name="Hitbox" type="Area2D" parent="."]
+[node name="Hitbox" type="Area2D" parent="." node_paths=PackedStringArray("_deflectHandler")]
 script = ExtResource("9_4xjwb")
+_deflectHandler = NodePath("../DeflectHandler")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
 position = Vector2(0, -4)
@@ -510,18 +518,21 @@ shape = SubResource("RectangleShape2D_f5o2s")
 script = ExtResource("6_rgnv7")
 
 [node name="PunchHurtbox" type="CollisionShape2D" parent="MeleeHurtboxHandler"]
+visible = false
 position = Vector2(10, -11)
 shape = SubResource("RectangleShape2D_lqg1u")
 script = ExtResource("7_xohju")
 
 [node name="DropkickHurtbox" type="CollisionShape2D" parent="MeleeHurtboxHandler"]
+visible = false
 position = Vector2(10, -4.0625)
 shape = SubResource("RectangleShape2D_sg5v1")
 script = ExtResource("7_xohju")
 
 [node name="DashHurtbox" type="CollisionShape2D" parent="MeleeHurtboxHandler"]
-position = Vector2(0, -4)
-shape = SubResource("CircleShape2D_1w2jy")
+position = Vector2(1, -4)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_e5llx")
 script = ExtResource("7_xohju")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -544,6 +555,7 @@ PossibleSprites = Array[Texture2D]([ExtResource("18_ngx1i")])
 [connection signal="InputRecieved" from="PlayerInputHandler" to="BallHorizontalMovement" method="InputEventHandler"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="BallJumpHandler" method="InputEventHandler"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="DashHandler" method="InputEventHandler"]
+[connection signal="InputRecieved" from="PlayerInputHandler" to="DeflectHandler" method="InputEventHandler"]
 [connection signal="MoveLeftPressed" from="PlayerInputHandler" to="FlipHandler" method="OnFaceLeft"]
 [connection signal="MoveRightPressed" from="PlayerInputHandler" to="FlipHandler" method="OnFaceRight"]
 [connection signal="OnFlip" from="FlipHandler" to="MeleeHurtboxHandler" method="SetFlipState"]

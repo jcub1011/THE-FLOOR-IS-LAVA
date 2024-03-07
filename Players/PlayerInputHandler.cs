@@ -17,6 +17,24 @@ public readonly struct InputNames
     public readonly static StringName RIGHT_KB_ID = "_kb_r";
 }
 
+public static class InputNamesExtensions
+{
+    /// <summary>
+    /// Converts an InputNames string to a direction. 
+    /// If it does not have a cardinal direction it will return zero.
+    /// </summary>
+    /// <param name="inputName"></param>
+    /// <returns></returns>
+    public static Vector2 ToDirection(this StringName inputName)
+    {
+        if (inputName == InputNames.JUMP) return Vector2.Up;
+        if (inputName == InputNames.LEFT) return Vector2.Left;
+        if (inputName == InputNames.RIGHT) return Vector2.Right;
+        if (inputName == InputNames.CROUCH) return Vector2.Down;
+        return Vector2.Zero;
+    }
+}
+
 public enum DeviceType
 {
     None,
@@ -318,6 +336,11 @@ public partial class PlayerInputHandler : Node, IDisableableControl
 
     public void SetControlState(bool enabled)
     {
+        if (!enabled)
+        {
+            GD.PushWarning("Don't disable input handler.");
+            return;
+        }
         _isEnabled = enabled;
     }
     #endregion

@@ -43,7 +43,9 @@ public partial class BallActionHandler : Node, IDisableableControl
             _aniPlayer.Play(_dashAnimation);
             _controlDisabler.SetControlStatesExcept(
                 false, _aniPlayer.GetAnimation(_dashAnimation).Length,
-                ControlIDs.INPUT);
+                ControlIDs.INPUT,
+                ControlIDs.HURTBOX,
+                ControlIDs.HITBOX);
         }
         else GD.Print("Insufficient dash charges.");
     }
@@ -55,6 +57,7 @@ public partial class BallActionHandler : Node, IDisableableControl
         _controlDisabler.SetControlStatesExcept(
             false, _aniPlayer.GetAnimation(_blockAnimation).Length,
             ControlIDs.GRAVITY,
-            ControlIDs.INPUT);
+            ControlIDs.INPUT,
+            ControlIDs.HITBOX);
     }
 }
