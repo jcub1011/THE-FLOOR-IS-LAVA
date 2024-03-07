@@ -98,11 +98,20 @@ public partial class EngineTimeManipulator : Node
         Engine.TimeScale = Mathf.Clamp(Engine.TimeScale, 0.0001, 1);
     }
 
+    /// <summary>
+    /// Adds the transition to the queue.
+    /// </summary>
+    /// <param name="transition"></param>
     public void QueueTimeTransition(TimescaleTransition transition)
     {
         _transitions.Enqueue(transition);
     }
 
+    /// <summary>
+    /// Skips the queue and instantly performs the transition. This removes 
+    /// any transitions currently in the queue.
+    /// </summary>
+    /// <param name="transition"></param>
     public void OverrideTimeTransition(TimescaleTransition transition)
     {
         _transitions.Clear();
