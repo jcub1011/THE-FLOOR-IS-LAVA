@@ -36,7 +36,7 @@ size = Vector2(20, 7.875)
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_e5llx"]
 radius = 4.0
-height = 16.0
+height = 12.0
 
 [sub_resource type="Animation" id="Animation_lkr48"]
 length = 0.001
@@ -51,6 +51,82 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [5]
+}
+
+[sub_resource type="Animation" id="Animation_dkk1p"]
+resource_name = "ball_block"
+length = 0.50001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("DeflectHandler")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [0.5],
+"method": &"EnableDeflect"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_2xutl"]
+resource_name = "ball_dash"
+length = 0.150005
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("MeleeHurtboxHandler")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [&"DashHurtbox", 0.3, 100.0, 0],
+"method": &"EnableHitbox"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_c4htm"]
+resource_name = "ball_static"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [2]
 }
 
 [sub_resource type="Animation" id="Animation_ei81v"]
@@ -329,82 +405,6 @@ tracks/0/keys = {
 "values": [10, 11, 10, 11, 10]
 }
 
-[sub_resource type="Animation" id="Animation_2xutl"]
-resource_name = "ball_dash"
-length = 0.166675
-step = 0.0833333
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite_New:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [1]
-}
-tracks/1/type = "method"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("MeleeHurtboxHandler")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [&"DashHurtbox", 0.4, 100.0, 0],
-"method": &"EnableHitbox"
-}]
-}
-
-[sub_resource type="Animation" id="Animation_c4htm"]
-resource_name = "ball_static"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite_New:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [2]
-}
-
-[sub_resource type="Animation" id="Animation_dkk1p"]
-resource_name = "ball_block"
-length = 0.50001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite_New:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-tracks/1/type = "method"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("DeflectHandler")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [0.5],
-"method": &"EnableDeflect"
-}]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_r5udm"]
 _data = {
 "RESET": SubResource("Animation_lkr48"),
@@ -530,7 +530,7 @@ shape = SubResource("RectangleShape2D_sg5v1")
 script = ExtResource("7_xohju")
 
 [node name="DashHurtbox" type="CollisionShape2D" parent="MeleeHurtboxHandler"]
-position = Vector2(1, -4)
+position = Vector2(2, -4)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_e5llx")
 script = ExtResource("7_xohju")
@@ -562,4 +562,5 @@ PossibleSprites = Array[Texture2D]([ExtResource("18_ngx1i")])
 [connection signal="OnFlip" from="FlipHandler" to="Sprite_New" method="SetFlipH"]
 [connection signal="OnReceivedDamage" from="Hitbox" to="KnockbackHandler" method="OnApplyKnockback"]
 [connection signal="OnReceivedHit" from="Hitbox" to="DeflectHandler" method="OnReceivedHitHandler"]
+[connection signal="HitLanded" from="MeleeHurtboxHandler" to="KnockbackHandler" method="OnHitLanded"]
 [connection signal="OnHurtboxDeflected" from="MeleeHurtboxHandler" to="KnockbackHandler" method="SetInStaggerState"]

@@ -55,6 +55,7 @@ public partial class Hitbox : Area2D, IDisableableControl
             {
                 GD.Print($"{_body.Name} was hit by {collider.HurtboxOwner.Name}.");
                 EmitSignal(SignalName.OnReceivedDamage, collider.Knockback, collider.HurtboxOwner);
+                args.HitBy.OnHitLanded(_body);
             }
         }
     }

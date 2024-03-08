@@ -11,6 +11,7 @@ public enum AttackHeight
 public partial class MeleeHurtboxHandler : Area2D, IDisableableControl
 {
     [Signal] public delegate void OnHurtboxDeflectedEventHandler(CharacterBody2D deflector);
+    [Signal] public delegate void HitLandedEventHandler(Node2D thingHit);
     //[Signal] public delegate void OnHurtboxDeflectedEventHandler();
 
     /// <summary>
@@ -95,6 +96,12 @@ public partial class MeleeHurtboxHandler : Area2D, IDisableableControl
     {
         GD.Print($"{HurtboxOwner.Name} emitting attack deflected.");
         EmitSignal(SignalName.OnHurtboxDeflected, deflector);
+    }
+
+    public void OnHitLanded(Node2D thingHit)
+    {
+        GD.Print($"Hit landed on {thingHit}.");
+        EmitSignal(SignalName.HitLanded, thingHit);
     }
 
     //public void HandleAttackDeflected()

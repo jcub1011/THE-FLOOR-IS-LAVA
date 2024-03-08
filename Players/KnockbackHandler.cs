@@ -11,6 +11,8 @@ public partial class KnockbackHandler : Node, IDisableableControl
     [Export] AnimationPlayer _aniPlayer;
     [Export] StringName _staggerAnimationName = "stagger";
     [Export] float _staggeredKnockbackMultiplier = 2f;
+    [Export] float _hitLandedKnockbackStrength = 80f;
+    [Export] float _hitLandedRecoveryTime = 0.08f;
     bool _inStaggerState = false;
     float _remainingStagger;
 
@@ -33,7 +35,12 @@ public partial class KnockbackHandler : Node, IDisableableControl
 
     public void ApplyKnockback(Vector2 knockback)
     {
-        DisableHandlers(_recoveryTime);
+        ApplyKnockback(knockback, _recoveryTime);
+    }
+
+    public void ApplyKnockback(Vector2 knockback, float recoveryTime)
+    {
+        DisableHandlers(recoveryTime);
         _remainingStagger = 0f;
         _body.Velocity = knockback;
     }
@@ -64,5 +71,12 @@ public partial class KnockbackHandler : Node, IDisableableControl
         _remainingStagger = staggerTime;
         _aniPlayer.PlayIfExists(_staggerAnimationName);
         _inStaggerState = true;
+    }
+
+    public void OnHitLanded(Node2D node)
+    {
+        Vector2 direction = node.GlobalPosition.RelativeTo(_body.GlobalPosition);
+        Vector2 knockback = new(direction.X < 0f ? 1f : -1f, -3f);
+        ApplyKnockback(knockback * _hitLandedKnockbackStrength, _hitLandedRecoveryTime);
     }
 }
