@@ -1,4 +1,4 @@
-[gd_scene load_steps=48 format=3 uid="uid://cv7g2fnqrxx7s"]
+[gd_scene load_steps=49 format=3 uid="uid://cv7g2fnqrxx7s"]
 
 [ext_resource type="Script" path="res://Players/PlayerController.cs" id="1_bukco"]
 [ext_resource type="Script" path="res://Players/BallActionHandler.cs" id="2_8sxkk"]
@@ -15,8 +15,8 @@
 [ext_resource type="Script" path="res://Players/ControlDisablerHandler.cs" id="10_t2a0i"]
 [ext_resource type="Script" path="res://Players/FlipHandler.cs" id="11_t7grp"]
 [ext_resource type="Script" path="res://Players/DashHandler.cs" id="13_c0kft"]
-[ext_resource type="Texture2D" uid="uid://clqa765twekx4" path="res://Players/Sprite Sheets/Medieval Tank Dude PixelArt Shrunk.png" id="16_12y05"]
 [ext_resource type="Script" path="res://Players/SpriteControls.cs" id="16_cd1ek"]
+[ext_resource type="Texture2D" uid="uid://c83ud5he4rggx" path="res://Players/Sprite Sheets/Medieval Tank PixelArt Shrunk With Stagger.png" id="16_vhdrh"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pi3oo"]
 size = Vector2(16, 13)
@@ -540,6 +540,22 @@ tracks/1/keys = {
 }]
 }
 
+[sub_resource type="Animation" id="Animation_m1jeo"]
+resource_name = "tank_stagger"
+length = 0.500013
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2i(1, 5), Vector2i(0, 5), Vector2i(1, 5), Vector2i(0, 5), Vector2i(1, 5)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_r5udm"]
 _data = {
 "RESET": SubResource("Animation_lkr48"),
@@ -564,7 +580,8 @@ _data = {
 "tank_drive": SubResource("Animation_6su6g"),
 "tank_fall": SubResource("Animation_m3j8w"),
 "tank_idle": SubResource("Animation_d8hkb"),
-"tank_rise": SubResource("Animation_lljq4")
+"tank_rise": SubResource("Animation_lljq4"),
+"tank_stagger": SubResource("Animation_m1jeo")
 }
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("InputHandler")]
@@ -646,7 +663,7 @@ _recoveryTime = 0.5
 _body = NodePath("..")
 _disabler = NodePath("../ControlDisablerHandler")
 _aniPlayer = NodePath("../AnimationPlayer")
-_staggerAnimationName = &"ball_static"
+_staggerAnimationName = &"tank_stagger"
 
 [node name="ControlDisablerHandler" type="Node" parent="."]
 script = ExtResource("10_t2a0i")
@@ -692,11 +709,11 @@ libraries = {
 texture_filter = 5
 position = Vector2(0, -6.4)
 scale = Vector2(0.8, 0.8)
-texture = ExtResource("16_12y05")
+texture = ExtResource("16_vhdrh")
 hframes = 6
-vframes = 5
+vframes = 6
 script = ExtResource("16_cd1ek")
-PossibleSprites = Array[Texture2D]([ExtResource("16_12y05")])
+PossibleSprites = Array[Texture2D]([ExtResource("16_vhdrh")])
 
 [connection signal="area_entered" from="Lava Collider" to="." method="OnTouchedLava"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="BallActionHandler" method="InputEventHandler"]
