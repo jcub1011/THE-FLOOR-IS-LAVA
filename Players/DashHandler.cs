@@ -10,7 +10,17 @@ public partial class DashHandler : Node
     [Export] KnockbackHandler _knockback;
     [Export] FlipHandler _flip;
     [Export] float _dashSpeed = 250;
-    public int DashCharges { get; set; } = 1;
+    int _dashCharges;
+    public int DashCharges
+    {
+        get => _dashCharges;
+        set
+        {
+            GD.Print($"{GetParent().Name} - " +
+                $"Setting dash charges to {value} from {_dashCharges}.");
+            _dashCharges = value;
+        }
+    }
 
     bool _leftPressed;
     bool _rightPressed;
@@ -22,7 +32,7 @@ public partial class DashHandler : Node
         base._Process(delta);
         if (_body.IsOnFloor())
         {
-            DashCharges = 1;
+            if (DashCharges <= 0) DashCharges = 1;
         }
     }
 
@@ -65,6 +75,6 @@ public partial class DashHandler : Node
 
     public void OnHitLandedHandler(Node2D thingHit)
     {
-        DashCharges++;
+        if (DashCharges <= 0) DashCharges++;
     }
 }

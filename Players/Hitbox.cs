@@ -45,7 +45,7 @@ public partial class Hitbox : Area2D, IDisableableControl
             };
             EmitSignal(SignalName.OnReceivedHit, args);
 
-            if (_deflectHandler.IsActive)
+            if (args.Deflected)
             {
                 GD.Print($"{_body.Name} deflected " +
                     $"{collider.HurtboxOwner.Name}.");
