@@ -211,7 +211,7 @@ public static class InputBuffer
     }
 }
 
-public partial class PlayerInputHandler : Node, IDisableableControl
+public partial class PlayerInputHandler : Node/*, IDisableableControl*/
 {
     #region Static
     static readonly List<InputDevice> DevicesToUse = new();

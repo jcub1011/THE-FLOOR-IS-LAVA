@@ -62,4 +62,9 @@ public partial class DashHandler : Node
             direction = ((_flip.FacingLeft) ? Vector2.Left : Vector2.Right);
         return direction;
     }
+
+    public void OnHitLandedHandler(Node2D thingHit)
+    {
+        DashCharges++;
+    }
 }

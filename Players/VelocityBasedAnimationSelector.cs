@@ -39,11 +39,11 @@ public partial class VelocityBasedAnimationSelector : Node, IDisableableControl
         //}
         if (_body.Velocity.X != 0f)
         {
-            if (_body.Velocity.X < 0f)
-            {
-                _flipHandler.OnFaceLeft();
-            }
-            else _flipHandler.OnFaceRight();
+            //if (_body.Velocity.X < 0f)
+            //{
+            //    _flipHandler.OnFaceLeft();
+            //}
+            //else _flipHandler.OnFaceRight();
         }
 
         if (_body.IsOnFloor())
