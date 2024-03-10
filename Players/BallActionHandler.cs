@@ -38,11 +38,12 @@ public partial class BallActionHandler : Node, IDisableableControl
     void PerformDash()
     {
         GD.Print("Performing Dash.");
-        if (_dashHandler.PerformDash(_body.Velocity))
+        float aniDuration = _aniPlayer.GetAnimation(_dashAnimation).Length;
+        if (_dashHandler.PerformDash(_body.Velocity, aniDuration))
         {
             _aniPlayer.Play(_dashAnimation);
             _controlDisabler.SetControlStatesExcept(
-                false, _aniPlayer.GetAnimation(_dashAnimation).Length,
+                false, aniDuration,
                 ControlIDs.INPUT,
                 ControlIDs.HURTBOX,
                 ControlIDs.HITBOX);

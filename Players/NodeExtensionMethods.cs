@@ -171,6 +171,21 @@ public static class NodeExtensionMethods
 
         return default;
     }
+
+    /// <summary>
+    /// Gets all the collisions since the last call to MoveAndSlide().
+    /// </summary>
+    /// <param name="body"></param>
+    /// <returns></returns>
+    public static KinematicCollision2D[] GetCollisions(this CharacterBody2D body)
+    {
+        KinematicCollision2D[] values = new KinematicCollision2D[body.GetSlideCollisionCount()];
+        for(int i = 0; i < values.Length; i++)
+        {
+            values[i] = body.GetSlideCollision(i);
+        }
+        return values;
+    }
 }
 
 public static class MathExtensions

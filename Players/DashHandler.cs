@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq;
 using static Godot.TextServer;
 
 namespace Players;
@@ -10,6 +11,7 @@ public partial class DashHandler : Node
     [Export] KnockbackHandler _knockback;
     [Export] FlipHandler _flip;
     [Export] float _dashSpeed = 250;
+    [Export] float _dashAngleAdjustSpeed = 5f;
     int _dashCharges;
     public int DashCharges
     {
@@ -27,6 +29,8 @@ public partial class DashHandler : Node
     bool _upPressed;
     bool _downPressed;
 
+    float _remainingDashTime;
+
     public override void _Process(double delta)
     {
         base._Process(delta);
@@ -34,6 +38,31 @@ public partial class DashHandler : Node
         {
             if (DashCharges <= 0) DashCharges = 1;
         }
+
+        //_remainingDashTime -= (float)delta;
+        //if (_remainingDashTime > 0f)
+        //{
+        //    HandleDashNudging((float)delta);
+        //}
+    }
+
+    void HandleDashNudging(float delta)
+    {
+        if (_upPressed == _downPressed) return;
+        //Vector2 normal;
+        Vector2 moveDir = _body.Velocity;
+        //if (moveDir.Y != 0f) return;
+        _body.Velocity += new Vector2(0f, (_upPressed 
+            ? -_dashAngleAdjustSpeed : _dashAngleAdjustSpeed) * delta);
+        //_body.Velocity = moveDir.Rotated((_upPressed 
+        //    ? _dashAngleAdjustSpeed : -_dashAngleAdjustSpeed) * delta);
+
+        //// Get first horizontal normal.
+        //foreach(var collision in _body.GetCollisions())
+        //{
+        //    normal = collision.GetNormal();
+        //    if (normal == Vector2.Right || normal == Vector2.Left) break;
+        //}
     }
 
     public void InputEventHandler(StringName input, bool pressed)
@@ -49,10 +78,11 @@ public partial class DashHandler : Node
     /// </summary>
     /// <param name="direction"></param>
     /// <returns></returns>
-    public bool PerformDash(Vector2 direction)
+    public bool PerformDash(Vector2 direction, float duration)
     {
         if (DashCharges <= 0) return false;
         DashCharges--;
+        _remainingDashTime = duration;
 
         direction = GetDashDirection();
 
