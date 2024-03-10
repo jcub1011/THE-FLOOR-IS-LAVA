@@ -15,18 +15,18 @@
 [ext_resource type="Script" path="res://Players/ControlDisablerHandler.cs" id="10_t2a0i"]
 [ext_resource type="Script" path="res://Players/FlipHandler.cs" id="11_t7grp"]
 [ext_resource type="Script" path="res://Players/DashHandler.cs" id="13_c0kft"]
+[ext_resource type="Texture2D" uid="uid://clqa765twekx4" path="res://Players/Sprite Sheets/Medieval Tank Dude PixelArt Shrunk.png" id="16_12y05"]
 [ext_resource type="Script" path="res://Players/SpriteControls.cs" id="16_cd1ek"]
-[ext_resource type="Texture2D" uid="uid://2jdpi5va1rvl" path="res://Players/Sprite Sheets/Medieval Tank Dude PixelArt.png" id="16_foch0"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pi3oo"]
-size = Vector2(8, 4)
+size = Vector2(16, 13)
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_meg5j"]
-radius = 2.0
-height = 8.0
+radius = 6.0
+height = 16.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_f5o2s"]
-size = Vector2(8, 4)
+size = Vector2(16, 13)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lqg1u"]
 size = Vector2(20, 10)
@@ -35,8 +35,8 @@ size = Vector2(20, 10)
 size = Vector2(20, 7.875)
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_e5llx"]
-radius = 3.0
-height = 12.0
+radius = 8.0
+height = 20.0
 
 [sub_resource type="Animation" id="Animation_lkr48"]
 length = 0.001
@@ -549,11 +549,11 @@ collision_layer = 0
 collision_mask = 4
 
 [node name="LavaCollisionShape" type="CollisionShape2D" parent="Lava Collider"]
-position = Vector2(0, -2)
+position = Vector2(0, -6.5)
 shape = SubResource("RectangleShape2D_pi3oo")
 
 [node name="GroundCollider" type="CollisionShape2D" parent="."]
-position = Vector2(0, -2)
+position = Vector2(0, -6)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_meg5j")
 
@@ -630,7 +630,7 @@ script = ExtResource("9_4xjwb")
 _deflectHandler = NodePath("../DeflectHandler")
 
 [node name="HitboxCollider" type="CollisionShape2D" parent="Hitbox"]
-position = Vector2(0, -2)
+position = Vector2(0, -6.5)
 shape = SubResource("RectangleShape2D_f5o2s")
 
 [node name="MeleeHurtboxHandler" type="Area2D" parent="."]
@@ -649,7 +649,7 @@ shape = SubResource("RectangleShape2D_sg5v1")
 script = ExtResource("7_xohju")
 
 [node name="DashHurtbox" type="CollisionShape2D" parent="MeleeHurtboxHandler"]
-position = Vector2(2, -2)
+position = Vector2(2, -7)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_e5llx")
 script = ExtResource("7_xohju")
@@ -661,13 +661,13 @@ libraries = {
 
 [node name="Sprite_New" type="Sprite2D" parent="."]
 texture_filter = 5
-position = Vector2(0, -2)
-scale = Vector2(0.25, 0.25)
-texture = ExtResource("16_foch0")
+position = Vector2(0, -6.4)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("16_12y05")
 hframes = 6
 vframes = 5
 script = ExtResource("16_cd1ek")
-PossibleSprites = Array[Texture2D]([ExtResource("16_foch0")])
+PossibleSprites = Array[Texture2D]([ExtResource("16_12y05")])
 
 [connection signal="area_entered" from="Lava Collider" to="." method="OnTouchedLava"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="BallActionHandler" method="InputEventHandler"]
