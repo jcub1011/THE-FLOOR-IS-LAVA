@@ -626,6 +626,7 @@ script = ExtResource("13_c0kft")
 _body = NodePath("..")
 _knockback = NodePath("../KnockbackHandler")
 _flip = NodePath("../FlipHandler")
+_dashSpeed = 225.0
 
 [node name="PlayerInputHandler" type="Node" parent="."]
 script = ExtResource("2_bjy2i")
