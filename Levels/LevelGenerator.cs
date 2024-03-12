@@ -136,7 +136,7 @@ public partial class LevelGenerator : Node2D
     }
 
     List<Vector2> _spawnLocs;
-    List<Node2D> _players;
+    List<PlayerController> _players;
     ScrollSpeedAccelerator _speedAccelerator;
 
     public override void _Ready()
@@ -175,7 +175,7 @@ public partial class LevelGenerator : Node2D
             temp.GlobalPosition = spawnLocs[i % spawnLocs.Count];
             PlayerInputHandler.SetDevice(temp.GetChildren<PlayerInputHandler>().First(), devices[i]);
             AddSibling(temp);
-            _players.Add(temp);
+            _players.Add((PlayerController)temp);
         }
 
         Engine.TimeScale = 1f;
@@ -183,7 +183,8 @@ public partial class LevelGenerator : Node2D
 
     void RemoveDeletedScenes()
     {
-        while(!IsInstanceValid(_activeWorldSections.Peek()))
+        while(_activeWorldSections.Count != 0 
+            && !IsInstanceValid(_activeWorldSections.Peek()))
         {
             _activeWorldSections.Dequeue();
         }
@@ -236,9 +237,16 @@ public partial class LevelGenerator : Node2D
         }
         velocity = GetNewScrollspeed(delta);
         //double deltaPos = UpdateCameraPosition(_players.Where(x => x.Visible).ToList());
-        GD.Print(velocity);
+        //GD.Print(velocity);
 
-        var last = _activeWorldSections.Last();
+        var last = _activeWorldSections.LastOrDefault();
+        if (last == null || !IsInstanceValid(last))
+        {
+            GD.PushWarning("No more active world sections.");
+            _startDelay = 1f;
+            return;
+        }
+
         if (last.Position.Y + last.UpperBoundary >= GetWorldTopY())
         {
             var newSection = _preloader.GetNextSection();
@@ -252,7 +260,7 @@ public partial class LevelGenerator : Node2D
         }
 
         //Vector2 deltaPos = new(0f, (float)(velocity * delta));
-        Vector2 deltaPos = new(0f, (float)(UpdateCameraPosition(_players.Where(x => x.Visible).ToList(), delta)));
+        Vector2 deltaPos = new(0f, (float)(UpdateCameraPosition(_players.Where(x => x.IsAlive).ToList(), delta)));
         foreach (var section in _activeWorldSections)
         {
             if (!IsInstanceValid(section)) continue;
@@ -268,7 +276,7 @@ public partial class LevelGenerator : Node2D
         _lava.Position += deltaPos;
     }
 
-    double GetAveragePlayerPosition(List<Node2D> players)
+    double GetAveragePlayerPosition(List<PlayerController> players)
     {
         double sum = 0;
         foreach(var player in players)
@@ -278,19 +286,19 @@ public partial class LevelGenerator : Node2D
         return sum / players.Count;
     }
 
-    int PlayersInUpperCameraLimit(List<Node2D> players)
+    int PlayersInUpperCameraLimit(List<PlayerController> players)
     {
         var upperRegion = GetNode<Area2D>(_speedRegionName);
         return players.Count(x => upperRegion.OverlapsBody(x));
     }
 
-    int PlayersInLowerCameraLimit(List<Node2D> players)
+    int PlayersInLowerCameraLimit(List<PlayerController> players)
     {
         var lowerRegion = GetNode<Area2D>(_slowRegionName);
         return players.Count(x => lowerRegion.OverlapsBody(x));
     }
 
-    double UpdateCameraPosition(List<Node2D> players, double deltaTime)
+    double UpdateCameraPosition(List<PlayerController> players, double deltaTime)
     {
         double avgPos = GetAveragePlayerPosition(players); 
         double deltaPos = 0 - avgPos;
@@ -319,7 +327,7 @@ public partial class LevelGenerator : Node2D
     {
         var upperRegion = GetNode<Area2D>(_speedRegionName);
         var lowerRegion = GetNode<Area2D>(_slowRegionName);
-        List<Node2D> livingPlayers = _players.Where(x => x.Visible).ToList();
+        List<PlayerController> livingPlayers = _players.Where(x => x.IsAlive).ToList();
         int speedyBois = livingPlayers.Count(x => upperRegion.OverlapsBody(x));
         int slowBois = livingPlayers.Count(x => lowerRegion.OverlapsBody(x));
 

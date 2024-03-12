@@ -148,7 +148,6 @@ frame_progress = 0.0720958
 
 [node name="Collider" type="CollisionShape2D" parent="LAVA"]
 shape = SubResource("WorldBoundaryShape2D_fcu7n")
-disabled = true
 
 [node name="World Bounds" type="StaticBody2D" parent="."]
 collision_mask = 0

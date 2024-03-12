@@ -12,11 +12,6 @@ public partial class LavaRaiseHandler : Area2D
 
 	public double AdditionalVelocity { get; set; }
 
-	public override void _Ready()
-	{
-
-	}
-
 	public override void _Process(double delta)
 	{
 		base._Process(delta);
