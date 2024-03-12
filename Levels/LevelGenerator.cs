@@ -251,6 +251,10 @@ public partial class LevelGenerator : Node2D
         List<PlayerController> players = _players.Where(x => x.IsAlive).ToList();
         if (players.Count == 0)
         {
+            if (_lava.Position.Y < GetWorldTopY() - 15)
+            {
+                _lava.Position = new Vector2(0, GetWorldTopY() - 15);
+            }
             return;
         }
 
