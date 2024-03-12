@@ -118,6 +118,7 @@ public partial class LevelGenerator : Node2D
     [Export] string _slowRegionName = "SlowRegion";
     [Export] double _speedupFactor = 0.3;
     [Export] double _slowdownFactor = 0.2;
+    [Export] double _cameraHeightOffset = 40;
     [Export] LavaRaiseHandler _lava;
 
     Queue<WorldSection> _activeWorldSections;
@@ -260,20 +261,20 @@ public partial class LevelGenerator : Node2D
         }
 
         //Vector2 deltaPos = new(0f, (float)(velocity * delta));
-        Vector2 deltaPos = new(0f, (float)(UpdateCameraPosition(_players.Where(x => x.IsAlive).ToList(), delta)));
+        Vector2 deltaX = new(0f, (float)(GetCameraDeltaX(_players.Where(x => x.IsAlive).ToList(), delta)));
         foreach (var section in _activeWorldSections)
         {
             if (!IsInstanceValid(section)) continue;
-            section.Position += deltaPos;
+            section.Position += deltaX;
         }
 
         foreach(var player in _players)
         {
             if (!IsInstanceValid(player)) continue;
-            player.Position += deltaPos;
+            player.Position += deltaX;
         }
 
-        _lava.Position += deltaPos;
+        _lava.Position += deltaX;
     }
 
     double GetAveragePlayerPosition(List<PlayerController> players)
@@ -298,29 +299,11 @@ public partial class LevelGenerator : Node2D
         return players.Count(x => lowerRegion.OverlapsBody(x));
     }
 
-    double UpdateCameraPosition(List<PlayerController> players, double deltaTime)
+    double GetCameraDeltaX(List<PlayerController> players, double deltaTime)
     {
-        double avgPos = GetAveragePlayerPosition(players); 
-        double deltaPos = 0 - avgPos;
-
-        //if (PlayersInLowerCameraLimit(players) > 0)
-        //{
-        //    if (deltaPos > 0)
-        //    {
-        //        return ScrollSpeed * deltaTime;
-        //    }
-        //}
-        //else if (PlayersInUpperCameraLimit(players) > 0)
-        //{
-        //    if (deltaPos < 0)
-        //    {
-        //        return -ScrollSpeed * deltaTime;
-        //    }
-        //}
-
-        
-
-        return deltaPos;
+        double avgPos = GetAveragePlayerPosition(players);
+        double deltaX = (_cameraHeightOffset - avgPos) * deltaTime;
+        return Mathf.Clamp(deltaX, -MaxScrollSpeed * deltaTime, MaxScrollSpeed * deltaTime);
     }
 
     double GetNewScrollspeed(double deltaTime)
