@@ -59,6 +59,7 @@ internal class SectionPreloader
 
 internal class ScrollSpeedAccelerator
 {
+    [Export] LavaRaiseHandler _lava;
     const double SPEED_CAP = 1000.0;
     const double TIME_CAP = 1000.0;
     readonly double _maxSpeed;
@@ -117,6 +118,7 @@ public partial class LevelGenerator : Node2D
     [Export] string _slowRegionName = "SlowRegion";
     [Export] double _speedupFactor = 0.3;
     [Export] double _slowdownFactor = 0.2;
+    [Export] LavaRaiseHandler _lava;
 
     Queue<WorldSection> _activeWorldSections;
     [Export] Godot.Collections.Array<StringName> _templates;
@@ -262,6 +264,8 @@ public partial class LevelGenerator : Node2D
             if (!IsInstanceValid(player)) continue;
             player.Position += deltaPos;
         }
+
+        _lava.Position += deltaPos;
     }
 
     double GetAveragePlayerPosition(List<Node2D> players)
@@ -291,24 +295,24 @@ public partial class LevelGenerator : Node2D
         double avgPos = GetAveragePlayerPosition(players); 
         double deltaPos = 0 - avgPos;
 
-        if (PlayersInLowerCameraLimit(players) > 0)
-        {
-            if (deltaPos > 0)
-            {
-                return ScrollSpeed * deltaTime;
-            }
-        }
-        else if (PlayersInUpperCameraLimit(players) > 0)
-        {
-            if (deltaPos < 0)
-            {
-                return -ScrollSpeed * deltaTime;
-            }
-        }
+        //if (PlayersInLowerCameraLimit(players) > 0)
+        //{
+        //    if (deltaPos > 0)
+        //    {
+        //        return ScrollSpeed * deltaTime;
+        //    }
+        //}
+        //else if (PlayersInUpperCameraLimit(players) > 0)
+        //{
+        //    if (deltaPos < 0)
+        //    {
+        //        return -ScrollSpeed * deltaTime;
+        //    }
+        //}
 
         
 
-        return 0;
+        return deltaPos;
     }
 
     double GetNewScrollspeed(double deltaTime)

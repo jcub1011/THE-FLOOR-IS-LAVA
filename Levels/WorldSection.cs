@@ -1,4 +1,5 @@
 using Godot;
+using Players;
 using System.Collections.Generic;
 
 namespace WorldGeneration;
@@ -35,7 +36,7 @@ public partial class WorldSection : TileMap
 
     float GetWorldBottomY()
     {
-        return GetParent<LevelGenerator>().WorldBottomY;
+        return GetParent<LevelGenerator>().GetParent().GetChild<LavaRaiseHandler>().Position.Y;
     }
 
     public bool IsVisible()
