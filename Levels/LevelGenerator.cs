@@ -272,7 +272,7 @@ public partial class LevelGenerator : Node2D
 
         //Vector2 deltaPos = new(0f, (float)(velocity * delta));
         Vector2 deltaPos = new(0f, (float)(GetCameraDeltaX(players, delta)));
-        deltaPos.Y += (float)ForceCameraAboveLava(deltaPos.Y, 10);
+        deltaPos.Y += (float)ForceCameraAboveLava(deltaPos.Y, 10, delta);
         foreach (var section in _activeWorldSections)
         {
             if (!IsInstanceValid(section)) continue;
@@ -290,14 +290,14 @@ public partial class LevelGenerator : Node2D
 
     }
 
-    double ForceCameraAboveLava(double deltaY, double amountOfLavaToKeepInFrame)
+    double ForceCameraAboveLava(double deltaY, double amountOfLavaToKeepInFrame, double deltaTime)
     {
         double newLavaPos = _lava.Position.Y + deltaY;
         double lowerBound = GetWorldBottomY() - amountOfLavaToKeepInFrame;
 
         if (newLavaPos < lowerBound)
         {
-            return lowerBound - newLavaPos;
+            return (lowerBound - newLavaPos) * deltaTime;
         }
         return 0;
     }
