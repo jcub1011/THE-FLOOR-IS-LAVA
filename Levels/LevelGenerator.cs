@@ -250,7 +250,7 @@ public partial class LevelGenerator : Node2D
         }
 
         //Vector2 deltaPos = new(0f, (float)(velocity * delta));
-        Vector2 deltaPos = new(0f, (float)(UpdateCameraPosition(_players.Where(x => x.Visible).ToList())));
+        Vector2 deltaPos = new(0f, (float)(UpdateCameraPosition(_players.Where(x => x.Visible).ToList(), delta)));
         foreach (var section in _activeWorldSections)
         {
             if (!IsInstanceValid(section)) continue;
@@ -286,13 +286,29 @@ public partial class LevelGenerator : Node2D
         return players.Count(x => lowerRegion.OverlapsBody(x));
     }
 
-    double UpdateCameraPosition(List<Node2D> players)
+    double UpdateCameraPosition(List<Node2D> players, double deltaTime)
     {
-        double avgPos = GetAveragePlayerPosition(players);
-
+        double avgPos = GetAveragePlayerPosition(players); 
         double deltaPos = 0 - avgPos;
 
-        return deltaPos;
+        if (PlayersInLowerCameraLimit(players) > 0)
+        {
+            if (deltaPos > 0)
+            {
+                return ScrollSpeed * deltaTime;
+            }
+        }
+        else if (PlayersInUpperCameraLimit(players) > 0)
+        {
+            if (deltaPos < 0)
+            {
+                return -ScrollSpeed * deltaTime;
+            }
+        }
+
+        
+
+        return 0;
     }
 
     double GetNewScrollspeed(double deltaTime)

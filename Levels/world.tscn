@@ -9,10 +9,10 @@
 [ext_resource type="Script" path="res://Levels/EngineTimeManipulator.cs" id="7_jnn1u"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ayxn6"]
-size = Vector2(399, 76)
+size = Vector2(399, 37)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_omdls"]
-size = Vector2(400, 84)
+size = Vector2(400, 98)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1iuj7"]
 texture = ExtResource("4_83wch")
@@ -91,7 +91,7 @@ collision_layer = 0
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Level Generator/SlowRegion"]
-position = Vector2(-0.5, 76)
+position = Vector2(-0.5, 95.5)
 shape = SubResource("RectangleShape2D_ayxn6")
 
 [node name="SpeedRegion" type="Area2D" parent="Level Generator"]
@@ -100,7 +100,7 @@ collision_layer = 0
 collision_mask = 2
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Level Generator/SpeedRegion"]
-position = Vector2(0, -71)
+position = Vector2(0, -64)
 shape = SubResource("RectangleShape2D_omdls")
 
 [node name="Section Bounds" type="Node2D" parent="."]
@@ -146,6 +146,7 @@ frame_progress = 0.0720958
 [node name="Collider" type="CollisionShape2D" parent="LAVA"]
 position = Vector2(0, -4)
 shape = SubResource("WorldBoundaryShape2D_fcu7n")
+disabled = true
 
 [node name="World Bounds" type="StaticBody2D" parent="."]
 collision_mask = 0
