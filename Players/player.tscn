@@ -707,7 +707,7 @@ libraries = {
 }
 
 [node name="Sprite_New" type="Sprite2D" parent="."]
-texture_filter = 5
+texture_filter = 3
 position = Vector2(0, -6.4)
 scale = Vector2(0.8, 0.8)
 texture = ExtResource("16_vhdrh")

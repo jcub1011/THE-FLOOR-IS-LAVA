@@ -2,7 +2,6 @@ using Godot;
 using Players;
 using System.Collections.Generic;
 using System.Linq;
-using static System.Collections.Specialized.BitVector32;
 
 namespace WorldGeneration;
 
@@ -197,7 +196,8 @@ public partial class LevelGenerator : Node2D
     public override void _Process(double delta)
     {
         base._Process(delta);
-        UpdateSectionPositions(ScrollSpeed, delta);
+        CallDeferred("UpdateSectionPositions", ScrollSpeed, delta);
+        //UpdateSectionPositions(ScrollSpeed, delta);
     }
 
     float GetWorldBottomY()
@@ -233,6 +233,7 @@ public partial class LevelGenerator : Node2D
             return;
         }
         velocity = GetNewScrollspeed(delta);
+        //double deltaPos = UpdateCameraPosition(_players.Where(x => x.Visible).ToList());
         GD.Print(velocity);
 
         var last = _activeWorldSections.Last();
@@ -248,7 +249,8 @@ public partial class LevelGenerator : Node2D
             AddChild(newSection);
         }
 
-        Vector2 deltaPos = new(0f, (float)(velocity * delta));
+        //Vector2 deltaPos = new(0f, (float)(velocity * delta));
+        Vector2 deltaPos = new(0f, (float)(UpdateCameraPosition(_players.Where(x => x.Visible).ToList())));
         foreach (var section in _activeWorldSections)
         {
             if (!IsInstanceValid(section)) continue;
@@ -260,6 +262,37 @@ public partial class LevelGenerator : Node2D
             if (!IsInstanceValid(player)) continue;
             player.Position += deltaPos;
         }
+    }
+
+    double GetAveragePlayerPosition(List<Node2D> players)
+    {
+        double sum = 0;
+        foreach(var player in players)
+        {
+            sum += player.GlobalPosition.Y;
+        }
+        return sum / players.Count;
+    }
+
+    int PlayersInUpperCameraLimit(List<Node2D> players)
+    {
+        var upperRegion = GetNode<Area2D>(_speedRegionName);
+        return players.Count(x => upperRegion.OverlapsBody(x));
+    }
+
+    int PlayersInLowerCameraLimit(List<Node2D> players)
+    {
+        var lowerRegion = GetNode<Area2D>(_slowRegionName);
+        return players.Count(x => lowerRegion.OverlapsBody(x));
+    }
+
+    double UpdateCameraPosition(List<Node2D> players)
+    {
+        double avgPos = GetAveragePlayerPosition(players);
+
+        double deltaPos = 0 - avgPos;
+
+        return deltaPos;
     }
 
     double GetNewScrollspeed(double deltaTime)
