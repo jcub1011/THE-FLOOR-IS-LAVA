@@ -58,11 +58,61 @@ internal class SectionPreloader
     }
 }
 
+internal class ScrollSpeedAccelerator
+{
+    const double SPEED_CAP = 1000.0;
+    const double TIME_CAP = 1000.0;
+    readonly double _maxSpeed;
+    readonly double _startSpeed;
+
+    double _remainingTimeToReachMaxSpeed;
+    double _timeToReachMaxSpeed;
+
+    /// <summary>
+    /// Max speed cannot be lower than start speed.
+    /// </summary>
+    /// <param name="startSpeed"></param>
+    /// <param name="maxSpeed"></param>
+    /// <param name="timeToReachEndSpeed"></param>
+    public ScrollSpeedAccelerator(double startSpeed, double maxSpeed, double timeToReachEndSpeed)
+    {
+        _remainingTimeToReachMaxSpeed = Mathf.Clamp(timeToReachEndSpeed, 0.01, TIME_CAP);
+        _timeToReachMaxSpeed = _remainingTimeToReachMaxSpeed;
+        _startSpeed = startSpeed;
+        _maxSpeed = Mathf.Clamp(maxSpeed, startSpeed, SPEED_CAP);
+    }
+
+    /// <summary>
+    /// Gets the new scrolls speed given the delta time since the last call.
+    /// </summary>
+    /// <param name="deltaTime"></param>
+    /// <returns></returns>
+    double GetNewScrollSpeed(double deltaTime)
+    {
+        _remainingTimeToReachMaxSpeed = 
+            Mathf.Clamp(_remainingTimeToReachMaxSpeed - deltaTime, 0, TIME_CAP);
+        
+        return _startSpeed + (_maxSpeed - _startSpeed) 
+            * (_remainingTimeToReachMaxSpeed / _timeToReachMaxSpeed);
+    }
+
+    public double GetNewScrollSpeed(double deltaTime, int livingPlayerCount, 
+        int numInSpeedupArea, int numInSlowdownArea, double speedUpFactor, double slowdownFactor)
+    {
+        double unmodifiedScrollSpeed = GetNewScrollSpeed(deltaTime);
+        double speedupModifier = unmodifiedScrollSpeed * speedUpFactor * numInSpeedupArea / livingPlayerCount;
+        double slowdownModifier = unmodifiedScrollSpeed * slowdownFactor * numInSlowdownArea / livingPlayerCount;
+        return unmodifiedScrollSpeed + speedupModifier - slowdownModifier;
+    }
+}
+
 public partial class LevelGenerator : Node2D
 {
     [Export] float _startDelay = 5f;
     [Export] Camera2D _camera;
     [Export] public double ScrollSpeed { get; set; } = 25f;
+    [Export] public double MaxScrollSpeed { get; set; } = 50f;
+    [Export] public double TimeToReachMaxSpeed { get; set; } = 30f;
     [Export] StringName PlayerTemplatePath;
     [Export] string _speedRegionName = "SpeedRegion";
     [Export] string _slowRegionName = "SlowRegion";
@@ -86,10 +136,12 @@ public partial class LevelGenerator : Node2D
 
     List<Vector2> _spawnLocs;
     List<Node2D> _players;
+    ScrollSpeedAccelerator _speedAccelerator;
 
     public override void _Ready()
     {
         base._Ready();
+        _speedAccelerator = new(ScrollSpeed, MaxScrollSpeed, TimeToReachMaxSpeed);
         _players = new();
         Engine.TimeScale = 0f;
         ResourceLoader.LoadThreadedRequest(PlayerTemplatePath);
@@ -180,7 +232,8 @@ public partial class LevelGenerator : Node2D
             _startDelay -= (float)delta;
             return;
         }
-        velocity = GetModifiedVelocity(velocity);
+        velocity = GetNewScrollspeed(delta);
+        GD.Print(velocity);
 
         var last = _activeWorldSections.Last();
         if (last.Position.Y + last.UpperBoundary >= GetWorldTopY())
@@ -209,27 +262,20 @@ public partial class LevelGenerator : Node2D
         }
     }
 
-    double GetModifiedVelocity(double baseVel)
+    double GetNewScrollspeed(double deltaTime)
     {
         var upperRegion = GetNode<Area2D>(_speedRegionName);
         var lowerRegion = GetNode<Area2D>(_slowRegionName);
         List<Node2D> livingPlayers = _players.Where(x => x.Visible).ToList();
-        double modifiedVel = baseVel;
-        double speedup = baseVel * _speedupFactor * 1 / livingPlayers.Count;
-        double slowdown = baseVel * _slowdownFactor * 1 / livingPlayers.Count;
+        int speedyBois = livingPlayers.Count(x => upperRegion.OverlapsBody(x));
+        int slowBois = livingPlayers.Count(x => lowerRegion.OverlapsBody(x));
 
-        foreach(var player in livingPlayers)
-        {
-            if (upperRegion.OverlapsBody(player))
-            {
-                modifiedVel += speedup * (1 - upperRegion.GetNormalizedDistFromTop(player));
-            }
-            else if (lowerRegion.OverlapsBody(player))
-            {
-                modifiedVel -= slowdown * lowerRegion.GetNormalizedDistFromTop(player);
-            }
-        }
-
-        return modifiedVel;
+        return _speedAccelerator.GetNewScrollSpeed(
+            deltaTime, 
+            livingPlayers.Count,
+            speedyBois,
+            slowBois,
+            _speedupFactor,
+            _slowdownFactor);
     }
 }

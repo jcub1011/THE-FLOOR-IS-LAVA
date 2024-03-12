@@ -79,6 +79,7 @@ script = ExtResource("2_lriob")
 _startDelay = 3.0
 _camera = NodePath("../Camera2D")
 ScrollSpeed = 20.0
+TimeToReachMaxSpeed = 15.0
 PlayerTemplatePath = &"res://Players/player.tscn"
 _speedupFactor = 0.4
 _slowdownFactor = 0.3
