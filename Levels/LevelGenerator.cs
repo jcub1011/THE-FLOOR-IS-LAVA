@@ -248,6 +248,12 @@ public partial class LevelGenerator : Node2D
             return;
         }
 
+        List<PlayerController> players = _players.Where(x => x.IsAlive).ToList();
+        if (players.Count == 0)
+        {
+            return;
+        }
+
         if (last.Position.Y + last.UpperBoundary >= GetWorldTopY())
         {
             var newSection = _preloader.GetNextSection();
@@ -261,20 +267,35 @@ public partial class LevelGenerator : Node2D
         }
 
         //Vector2 deltaPos = new(0f, (float)(velocity * delta));
-        Vector2 deltaX = new(0f, (float)(GetCameraDeltaX(_players.Where(x => x.IsAlive).ToList(), delta)));
+        Vector2 deltaPos = new(0f, (float)(GetCameraDeltaX(players, delta)));
+        deltaPos.Y += (float)ForceCameraAboveLava(deltaPos.Y, 10);
         foreach (var section in _activeWorldSections)
         {
             if (!IsInstanceValid(section)) continue;
-            section.Position += deltaX;
+            section.Position += deltaPos;
         }
 
         foreach(var player in _players)
         {
             if (!IsInstanceValid(player)) continue;
-            player.Position += deltaX;
+            player.Position += deltaPos;
         }
 
-        _lava.Position += deltaX;
+        _lava.Position += deltaPos;
+
+
+    }
+
+    double ForceCameraAboveLava(double deltaY, double amountOfLavaToKeepInFrame)
+    {
+        double newLavaPos = _lava.Position.Y + deltaY;
+        double lowerBound = GetWorldBottomY() - amountOfLavaToKeepInFrame;
+
+        if (newLavaPos < lowerBound)
+        {
+            return lowerBound - newLavaPos;
+        }
+        return 0;
     }
 
     double GetAveragePlayerPosition(List<PlayerController> players)
@@ -301,6 +322,7 @@ public partial class LevelGenerator : Node2D
 
     double GetCameraDeltaX(List<PlayerController> players, double deltaTime)
     {
+        if (players.Count == 0) return 0;
         double avgPos = GetAveragePlayerPosition(players);
         double deltaX = (_cameraHeightOffset - avgPos) * deltaTime;
         return Mathf.Clamp(deltaX, -MaxScrollSpeed * deltaTime, MaxScrollSpeed * deltaTime);
