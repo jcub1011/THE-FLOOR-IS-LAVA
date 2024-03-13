@@ -286,6 +286,7 @@ public partial class LevelGenerator : Node2D
         }
 
         _lava.Position += deltaPos;
+        _lava.AddAdditionalRaiseSpeed(GetWorldBottomY(), delta);
 
         GetChild<LavaDistanceReadout>(0).UpdateReadout(GetWorldBottomY(), _lava.Position.Y);
     }

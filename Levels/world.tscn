@@ -90,14 +90,17 @@ _templates = Array[StringName]([&"res://Levels/Test Type/starter_section_1.tscn"
 
 [node name="PanelContainer" type="PanelContainer" parent="Level Generator"]
 z_index = 10
-offset_left = -176.0
-offset_top = 86.0
-offset_right = -136.0
-offset_bottom = 114.0
+offset_left = -200.0
+offset_top = 100.0
+offset_right = -130.0
+offset_bottom = 128.0
+scale = Vector2(0.5, 0.5)
 script = ExtResource("2_nxvow")
 
 [node name="Label" type="Label" parent="Level Generator/PanelContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 0
+text = "Test Text"
 
 [node name="SlowRegion" type="Area2D" parent="Level Generator"]
 z_index = 9
@@ -142,8 +145,10 @@ scale = Vector2(1.32, 1)
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("3_3li4a")
+_raiseSpeed = 10.0
 _raiseAcceleration = 0.5
 _maxRaiseSpeed = 80.0
+_waitTimer = 10.0
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
