@@ -215,7 +215,7 @@ public partial class LevelGenerator : Node2D
         float yHeight = NodeExtensionMethods.GetViewportSize().Y / _camera.Zoom.Y / 2f;
         //float returnVal = cameraPos + cameraRect.Y / 2f;
         float returnVal = cameraPos + yHeight;
-        GD.Print($"World bottom = {returnVal}");
+        //GD.Print($"World bottom = {returnVal}");
         return returnVal;
     }
 
@@ -258,37 +258,39 @@ public partial class LevelGenerator : Node2D
             return;
         }
 
-        if (last.Position.Y + last.UpperBoundary >= GetWorldTopY())
-        {
-            var newSection = _preloader.GetNextSection();
-            _activeWorldSections.Enqueue(newSection);
+        //if (last.Position.Y + last.UpperBoundary >= GetWorldTopY())
+        //{
+        //    var newSection = _preloader.GetNextSection();
+        //    _activeWorldSections.Enqueue(newSection);
 
-            Vector2 newPos = Vector2.Zero;
-            newPos.Y = last.Position.Y + last.UpperBoundary - newSection.LowerBoundary;
+        //    Vector2 newPos = Vector2.Zero;
+        //    newPos.Y = last.Position.Y + last.UpperBoundary - newSection.LowerBoundary;
 
-            newSection.Position = newPos;
-            AddChild(newSection);
-        }
+        //    newSection.Position = newPos;
+        //    AddChild(newSection);
+        //}
 
-        //Vector2 deltaPos = new(0f, (float)(velocity * delta));
-        Vector2 deltaPos = new(0f, (float)(GetCameraDeltaX(players, delta)));
-        deltaPos.Y += (float)ForceCameraAboveLava(deltaPos.Y, 10, delta);
-        foreach (var section in _activeWorldSections)
-        {
-            if (!IsInstanceValid(section)) continue;
-            section.Position += deltaPos;
-        }
+        ////Vector2 deltaPos = new(0f, (float)(velocity * delta));
+        //Vector2 deltaPos = new(0f, (float)(GetCameraDeltaX(players, delta)));
+        //deltaPos.Y += (float)ForceCameraAboveLava(deltaPos.Y, 10, delta);
+        //foreach (var section in _activeWorldSections)
+        //{
+        //    if (!IsInstanceValid(section)) continue;
+        //    section.Position += deltaPos;
+        //}
 
-        foreach(var player in _players)
-        {
-            if (!IsInstanceValid(player)) continue;
-            player.Position += deltaPos;
-        }
+        //foreach(var player in _players)
+        //{
+        //    if (!IsInstanceValid(player)) continue;
+        //    player.Position += deltaPos;
+        //}
 
-        _lava.Position += deltaPos;
-        _lava.AddAdditionalRaiseSpeed(GetWorldBottomY(), delta);
+        //_lava.Position += deltaPos;
+        //_lava.AddAdditionalRaiseSpeed(GetWorldBottomY(), delta);
 
         GetChild<LavaDistanceReadout>(0).UpdateReadout(GetWorldBottomY(), _lava.Position.Y);
+        GetChild<CameraSimulator>(1).UpdateObjectPositions(_activeWorldSections, _players, delta, _lava);
+        _camera.Zoom = GetChild<CameraSimulator>(1).GetNewCameraZoom(players.Cast<Node2D>().ToList());
     }
 
     double ForceCameraAboveLava(double deltaY, double amountOfLavaToKeepInFrame, double deltaTime)
@@ -329,8 +331,27 @@ public partial class LevelGenerator : Node2D
     {
         if (players.Count == 0) return 0;
         double avgPos = GetAveragePlayerPosition(players);
-        double deltaX = (_cameraHeightOffset - avgPos) * deltaTime;
-        return Mathf.Clamp(deltaX, -MaxScrollSpeed * deltaTime, MaxScrollSpeed * deltaTime);
+        double normalizedDist = DistFromCameraCenterNormalized(_cameraHeightOffset - avgPos);
+        double deltaX = MaxScrollSpeed * normalizedDist * deltaTime;
+        if (PlayersInLowerCameraLimit(players) > 0)
+        {
+            GD.Print($"Current camera vel {deltaX}.");
+            if (deltaX > 0) return 0;
+        }
+        return deltaX;
+        //double deltaX = (_cameraHeightOffset - avgPos) * deltaTime;
+        //return Mathf.Clamp(deltaX, -MaxScrollSpeed * deltaTime, MaxScrollSpeed * deltaTime);
+    }
+
+    double DistFromCameraCenterNormalized(double yPos)
+    {
+        double top = GetWorldTopY();
+        double bottom = GetWorldBottomY();
+        double middle = (top + bottom) / 2;
+        double halfRange = Mathf.Abs(top - bottom) / 2;
+        double displacement = yPos - middle;
+        if (Mathf.Abs(displacement) > halfRange) return displacement < 0 ? -1 : 1;
+        else return displacement / halfRange;
     }
 
     double GetNewScrollspeed(double deltaTime)

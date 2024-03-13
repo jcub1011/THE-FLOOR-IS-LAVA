@@ -1,5 +1,6 @@
-[gd_scene load_steps=20 format=3 uid="uid://c6vxsfrvbssc6"]
+[gd_scene load_steps=21 format=3 uid="uid://c6vxsfrvbssc6"]
 
+[ext_resource type="Script" path="res://Levels/CameraSimulator.cs" id="2_2ud8y"]
 [ext_resource type="Script" path="res://Levels/CameraZoomer.cs" id="2_7kig3"]
 [ext_resource type="Script" path="res://Levels/LevelGenerator.cs" id="2_lriob"]
 [ext_resource type="Script" path="res://Levels/LavaDistanceReadout.cs" id="2_nxvow"]
@@ -80,11 +81,12 @@ script = ExtResource("2_lriob")
 _startDelay = 0.0
 _camera = NodePath("../Camera2D")
 ScrollSpeed = 20.0
-MaxScrollSpeed = 90.0
+MaxScrollSpeed = 450.0
 TimeToReachMaxSpeed = 10.0
 PlayerTemplatePath = &"res://Players/player.tscn"
 _speedupFactor = 0.4
 _slowdownFactor = 0.3
+_cameraHeightOffset = 20.0
 _lava = NodePath("../LAVA")
 _templates = Array[StringName]([&"res://Levels/Test Type/starter_section_1.tscn"])
 
@@ -101,6 +103,10 @@ script = ExtResource("2_nxvow")
 layout_mode = 2
 theme_override_font_sizes/font_size = 0
 text = "Test Text"
+
+[node name="CameraSimulator" type="Node" parent="Level Generator" node_paths=PackedStringArray("_camera")]
+script = ExtResource("2_2ud8y")
+_camera = NodePath("../../Camera2D")
 
 [node name="SlowRegion" type="Area2D" parent="Level Generator"]
 z_index = 9
@@ -139,7 +145,7 @@ position = Vector2(200, 115)
 zoom = Vector2(4, 4)
 script = ExtResource("2_7kig3")
 
-[node name="LAVA" type="Area2D" parent="."]
+[node name="LAVA" type="Area2D" parent="." node_paths=PackedStringArray("_cameraSimulator")]
 z_index = 11
 position = Vector2(0, 115)
 scale = Vector2(1.32, 1)
@@ -149,7 +155,8 @@ script = ExtResource("3_3li4a")
 _raiseSpeed = 10.0
 _raiseAcceleration = 0.5
 _maxRaiseSpeed = 80.0
-_waitTimer = 10.0
+_waitTimer = 50.0
+_cameraSimulator = NodePath("../Level Generator/CameraSimulator")
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
@@ -171,6 +178,7 @@ frame_progress = 0.0720958
 shape = SubResource("WorldBoundaryShape2D_fcu7n")
 
 [node name="World Bounds" type="StaticBody2D" parent="."]
+collision_layer = 0
 collision_mask = 0
 metadata/_edit_group_ = true
 metadata/_edit_lock_ = true
