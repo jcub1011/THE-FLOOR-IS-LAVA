@@ -1,7 +1,8 @@
-[gd_scene load_steps=19 format=3 uid="uid://c6vxsfrvbssc6"]
+[gd_scene load_steps=20 format=3 uid="uid://c6vxsfrvbssc6"]
 
 [ext_resource type="Script" path="res://Levels/CameraZoomer.cs" id="2_7kig3"]
 [ext_resource type="Script" path="res://Levels/LevelGenerator.cs" id="2_lriob"]
+[ext_resource type="Script" path="res://Levels/LavaDistanceReadout.cs" id="2_nxvow"]
 [ext_resource type="Script" path="res://Levels/LavaRaiseHandler.cs" id="3_3li4a"]
 [ext_resource type="Texture2D" uid="uid://tj7yfsiuowo0" path="res://Levels/Tilemaps/cavesofgallet_tiles.png" id="4_83wch"]
 [ext_resource type="Texture2D" uid="uid://c4odmib8ofaak" path="res://Levels/Tilemaps/Lava_Frames/AnimatedFloorLava_1.png" id="5_h5y7s"]
@@ -80,12 +81,23 @@ _startDelay = 0.0
 _camera = NodePath("../Camera2D")
 ScrollSpeed = 20.0
 MaxScrollSpeed = 90.0
-TimeToReachMaxSpeed = 15.0
+TimeToReachMaxSpeed = 10.0
 PlayerTemplatePath = &"res://Players/player.tscn"
 _speedupFactor = 0.4
 _slowdownFactor = 0.3
 _lava = NodePath("../LAVA")
 _templates = Array[StringName]([&"res://Levels/Test Type/starter_section_1.tscn"])
+
+[node name="PanelContainer" type="PanelContainer" parent="Level Generator"]
+z_index = 10
+offset_left = -176.0
+offset_top = 86.0
+offset_right = -136.0
+offset_bottom = 114.0
+script = ExtResource("2_nxvow")
+
+[node name="Label" type="Label" parent="Level Generator/PanelContainer"]
+layout_mode = 2
 
 [node name="SlowRegion" type="Area2D" parent="Level Generator"]
 z_index = 9
@@ -130,6 +142,8 @@ scale = Vector2(1.32, 1)
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("3_3li4a")
+_raiseAcceleration = 0.5
+_maxRaiseSpeed = 80.0
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 

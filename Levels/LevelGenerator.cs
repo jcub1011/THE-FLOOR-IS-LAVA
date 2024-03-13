@@ -287,7 +287,7 @@ public partial class LevelGenerator : Node2D
 
         _lava.Position += deltaPos;
 
-
+        GetChild<LavaDistanceReadout>(0).UpdateReadout(GetWorldBottomY(), _lava.Position.Y);
     }
 
     double ForceCameraAboveLava(double deltaY, double amountOfLavaToKeepInFrame, double deltaTime)
