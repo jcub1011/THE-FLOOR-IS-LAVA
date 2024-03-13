@@ -16,6 +16,15 @@ public partial class CameraSimulator : Node
     [Export] Vector2 _minCameraZoom = new(2, 2);
     [Export] Vector2 _maxCameraZoom = new(4, 4);
 
+    float _unitsPerZoom;
+
+    public override void _Ready()
+    {
+        base._Ready();
+        _unitsPerZoom = NodeExtensionMethods.GetViewportSize().Y / _camera.Zoom.Y;
+        GD.Print(_unitsPerZoom);
+    }
+
     public float GetCameraUpperY()
     {
         return _camera.GetScreenCenterPosition().Y 
@@ -71,6 +80,35 @@ public partial class CameraSimulator : Node
             sum += node.GlobalPosition;
         }
         return sum / focusPoints.Count();
+    }
+
+    Vector2 GetFocusBox(IEnumerable<Node2D> focusPoints)
+    {
+        float minY = float.PositiveInfinity;
+        float maxY = float.NegativeInfinity;
+        float minX = float.PositiveInfinity;
+        float maxX = float.NegativeInfinity;
+
+        foreach (var node in focusPoints)
+        {
+            if (!IsInstanceValid(node)) continue;
+            if (node.GlobalPosition.Y < minY) minY = node.GlobalPosition.Y;
+            if (node.GlobalPosition.Y > maxY) maxY = node.GlobalPosition.Y;
+            if (node.GlobalPosition.X < minX) minX = node.GlobalPosition.X;
+            if (node.GlobalPosition.X > maxX) maxX = node.GlobalPosition.X;
+        }
+
+        if (float.IsInfinity(minY)) return Vector2.Zero;
+        else return new(Mathf.Abs(maxX - minX), Mathf.Abs(maxY - minY));
+    }
+
+    Rect2 GetFocusBoundingBox(IEnumerable<Node2D> focusPoints)
+    {
+        return new()
+        {
+            Size = GetFocusBox(focusPoints),
+            Position = GetFocusAvgPos(focusPoints)
+        };
     }
 
     float GetNormDistFromCamCenter(float yPos)
