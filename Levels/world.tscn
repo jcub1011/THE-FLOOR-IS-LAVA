@@ -140,6 +140,7 @@ zoom = Vector2(4, 4)
 script = ExtResource("2_7kig3")
 
 [node name="LAVA" type="Area2D" parent="."]
+z_index = 11
 position = Vector2(0, 115)
 scale = Vector2(1.32, 1)
 collision_layer = 4
