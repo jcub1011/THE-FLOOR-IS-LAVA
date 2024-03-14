@@ -640,7 +640,6 @@ Gravity = 750.0
 script = ExtResource("7_bcpnl")
 _sprite = NodePath("../Sprite_New")
 _body = NodePath("..")
-_slomoTime = 5.0
 _deflectKnockback = 300.0
 _successfulKnockbackBounce = 300.0
 

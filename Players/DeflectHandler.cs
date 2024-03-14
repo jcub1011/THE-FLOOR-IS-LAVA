@@ -10,7 +10,7 @@ public partial class DeflectHandler : Node, IDisableableControl
 {
     [Export] Sprite2D _sprite;
     [Export] CharacterBody2D _body;
-    [Export] float _slomoTime = 3f;
+    [Export] float _slomoTime = 5f;
     [Export] float _deflectKnockback = 100f;
     [Export] float _successfulKnockbackBounce = 30f;
     float _remainingSlomoTime;
@@ -66,7 +66,7 @@ public partial class DeflectHandler : Node, IDisableableControl
     {
         _activeInputsForRedirection.Clear();
         _remainingSlomoTime = _slomoTime;
-        EngineTimeManipulator.QueueTimeTransition(new(0.01, 0));
+        EngineTimeManipulator.QueueTimeTransition(new(0.0001, 0));
         EngineTimeManipulator.QueueTimeTransition(new(_slomoTime));
         EngineTimeManipulator.QueueTimeTransition(new(1, 0.2));
     }

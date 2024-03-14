@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://sufc8uq6r5fu"]
 
-[ext_resource type="TileSet" uid="uid://dc3tpukae2o3d" path="res://Levels/Tilemaps/developer_tilemap.tres" id="1_7l6nd"]
+[ext_resource type="TileSet" uid="uid://kxi7mam3dnya" path="res://Levels/Tilemaps/developer_tilemap.tres" id="1_7l6nd"]
 [ext_resource type="Script" path="res://Levels/WorldSection.cs" id="2_2c7ec"]
 
 [node name="TileMap" type="TileMap" node_paths=PackedStringArray("_sectionUpperBound", "_sectionLowerBound")]

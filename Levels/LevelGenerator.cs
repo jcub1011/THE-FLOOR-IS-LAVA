@@ -150,7 +150,7 @@ public partial class LevelGenerator : Node2D
             return;
         }
 
-        _camera.UpdateCamera(_activeWorldSections, _players, delta, _lava);
+        _camera.UpdateCamera(_activeWorldSections, players, delta, _lava);
 
         if (_activeWorldSections.Last().GlobalPosition.Y >= _camera.GetCameraUpperY())
         {

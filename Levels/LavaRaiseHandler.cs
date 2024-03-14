@@ -23,7 +23,7 @@ public partial class LavaRaiseHandler : Area2D
 			return;
 		}
 
-		Position -= new Vector2(0f, (float)((_raiseSpeed + AdditionalVelocity) * delta));
+		Position -= new Vector2(0f, (float)((_raiseSpeed) * delta));
 
 		_raiseSpeed += _raiseAcceleration * delta;
 		if (_raiseSpeed > _maxRaiseSpeed) _raiseSpeed = _maxRaiseSpeed;
@@ -36,6 +36,6 @@ public partial class LavaRaiseHandler : Area2D
 		float dist = cameraBottomPos - Position.Y;
 		if (dist > 0) return;
 
-		Position -= new Vector2(0f, dist * _offscreenSpeedFactor * (float)deltaTime);
+		Position += new Vector2(0f, dist * _offscreenSpeedFactor * (float)deltaTime);
 	}
 }
