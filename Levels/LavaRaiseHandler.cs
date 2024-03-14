@@ -27,7 +27,7 @@ public partial class LavaRaiseHandler : Area2D
 
 		_raiseSpeed += _raiseAcceleration * delta;
 		if (_raiseSpeed > _maxRaiseSpeed) _raiseSpeed = _maxRaiseSpeed;
-
+		return;
 		AddAdditionalRaiseSpeed(_cameraSimulator.GetCameraLowerY(), delta);
 	}
 

@@ -15,6 +15,7 @@ public partial class CameraSimulator : Node
     [Export] float _lookBehind = 100f;
     [Export] Vector2 _minCameraZoom = new(2, 2);
     [Export] Vector2 _maxCameraZoom = new(4, 4);
+    [Export] float _maxZoomSpeed = 5f;
 
     float _canvasTotalUnits = NodeExtensionMethods.GetViewportSize().Y;
 
@@ -50,7 +51,7 @@ public partial class CameraSimulator : Node
         params Node2D[] additionalItems)
     {
         Rect2 focusBox = GetFocusBoundingBox(focusPoints);
-        _camera.Zoom = GetNewZoom(focusBox, _minCameraZoom.Y, _maxCameraZoom.Y, _lookAhead, _lookBehind);
+        _camera.Zoom = GetNewZoom(focusBox, _minCameraZoom.Y, _maxCameraZoom.Y, _lookAhead, _lookBehind, (float)deltaTime);
 
         float dist = GetNormDistFromCamCenter(GetCameraLowerY() - _lookBehind - focusBox.GetBottomY());
 
@@ -116,13 +117,7 @@ public partial class CameraSimulator : Node
 
     float GetNormDistFromCamCenter(float yPos)
     {
-        float top = GetCameraUpperY();
-        float bottom = GetCameraLowerY();
-        float halfRange = Mathf.Abs(top - bottom) / 2f;
-        float displacement = yPos - (top + bottom) / 2f;
-        if (Mathf.Abs(displacement) > halfRange) 
-            return displacement < 0 ? -1f : 1f;
-        else return displacement / halfRange;
+        return MathExtensions.GetNormalizedValInRange(yPos, GetCameraUpperY(), GetCameraLowerY());
     }
 
     float GetCameraYCoverage(float cameraPaddingPercent)
@@ -132,7 +127,7 @@ public partial class CameraSimulator : Node
     }
 
     Vector2 GetNewZoom(Rect2 focusBox, float minZoom, float maxZoom,
-        float topPadding, float bottomPadding)
+        float topPadding, float bottomPadding, float deltaTime)
     {
         float padding = topPadding + bottomPadding;
         float coverage = Mathf.Abs(focusBox.GetTopY() - focusBox.GetBottomY()) + padding;
@@ -141,36 +136,11 @@ public partial class CameraSimulator : Node
         float requiredZoom = _canvasTotalUnits / coverage;
 
         requiredZoom = Mathf.Clamp(requiredZoom, minZoom, maxZoom);
-        return new(requiredZoom, requiredZoom);
-    }
-
-    public Vector2 GetNewCameraZoom(IEnumerable<Node2D> focusPoints)
-    {
-        float maxY = float.NegativeInfinity;
-        float minY = float.PositiveInfinity;
-
-        foreach(var point in focusPoints)
-        {
-            if (point.GlobalPosition.Y < minY) minY = point.GlobalPosition.Y;
-            if (point.GlobalPosition.Y > maxY) maxY = point.GlobalPosition.Y;
-        }
-
-        // No change to zoom in there are no focus points.
-        if (maxY == float.NegativeInfinity) return _camera.Zoom;
-
-        float curCoverage = GetCameraYCoverage(_paddingPercent);
-        float requiredCoverage = maxY - minY;
-
-        // No zoom change necessary.
-        if (_camera.Zoom == _minCameraZoom && requiredCoverage <= curCoverage) return _camera.Zoom;
-
-        float curZoom = _camera.Zoom.Y;
-        float zoomMin = _minCameraZoom.Y;
-        float zoomMax = _maxCameraZoom.Y;
-
-        float deltaZoom = (requiredCoverage - curCoverage) / requiredCoverage;
-        float newZoom = Mathf.Clamp(curZoom - deltaZoom, zoomMin, zoomMax);
-
-        return new(newZoom, newZoom);
+        float zoomDifference = requiredZoom - _camera.Zoom.Y;
+        float deltaZoom = MathExtensions.GetNormalizedValInRange(zoomDifference, -minZoom, minZoom) 
+            * _maxZoomSpeed * deltaTime;
+        //float deltaZoom = 0f;
+        //return new(requiredZoom, requiredZoom);
+        return new(_camera.Zoom.Y + deltaZoom, _camera.Zoom.Y + deltaZoom);
     }
 }

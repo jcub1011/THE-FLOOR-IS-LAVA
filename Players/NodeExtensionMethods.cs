@@ -282,6 +282,22 @@ public static class MathExtensions
     {
         return Mathf.Max(vect.X, vect.Y);
     }
+
+    /// <summary>
+    /// Gets the normalized position between the range, where the midpoint is 0, min is -1, and max is 1.
+    /// </summary>
+    /// <param name="curValue"></param>
+    /// <param name="min"></param>
+    /// <param name="max"></param>
+    /// <returns></returns>
+    public static float GetNormalizedValInRange(float curValue, float min, float max)
+    {
+        float halfRange = Mathf.Abs(max - min) / 2f;
+        float displacement = curValue - (max + min) / 2f;
+        if (Mathf.Abs(displacement) > halfRange)
+            return displacement < 0 ? -1f : 1f;
+        else return displacement / halfRange;
+    }
 }
 
 public static class ListExtensions

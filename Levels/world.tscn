@@ -102,6 +102,7 @@ script = ExtResource("2_2ud8y")
 _camera = NodePath("../../Camera2D")
 _lookAhead = 80.0
 _lookBehind = 60.0
+_maxZoomSpeed = 8.0
 
 [node name="SlowRegion" type="Area2D" parent="Level Generator"]
 z_index = 9
