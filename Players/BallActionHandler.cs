@@ -11,9 +11,17 @@ public partial class BallActionHandler : Node, IDisableableControl
     [Export] StringName _blockAnimation;
     [Export] StringName _dashAnimation;
     [Export] DashHandler _dashHandler;
+    [Export] float _blockCooldownTime = 0.3f;
+    float _remainingBlockCooldown;
     bool _enabled = true;
 
     public string ControlID => ControlIDs.ACTION_HANDLER;
+
+    public override void _Process(double delta)
+    {
+        base._Process(delta);
+        _remainingBlockCooldown -= (float)delta;
+    }
 
     public void SetControlState(bool enabled)
     {
@@ -29,7 +37,8 @@ public partial class BallActionHandler : Node, IDisableableControl
         {
             PerformDash();
         }
-        else if (input == InputNames.BLOCK)
+        else if (input == InputNames.BLOCK
+            && _remainingBlockCooldown <= 0f)
         {
             PerformBlock();
         }
@@ -54,6 +63,7 @@ public partial class BallActionHandler : Node, IDisableableControl
     void PerformBlock()
     {
         GD.Print("Performing Block.");
+        _remainingBlockCooldown = _aniPlayer.GetAnimation(_blockAnimation).Length + _blockCooldownTime;
         _aniPlayer.Play(_blockAnimation);
         _controlDisabler.SetControlStatesExcept(
             false, _aniPlayer.GetAnimation(_blockAnimation).Length,
