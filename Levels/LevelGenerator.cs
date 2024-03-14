@@ -138,16 +138,7 @@ public partial class LevelGenerator : Node2D
 
     void UpdateSectionPositions(double delta)
     {
-        var last = _activeWorldSections.LastOrDefault();
-        if (last == null || !IsInstanceValid(last))
-        {
-            if (!_alreadyWarnedForLackingSections)
-            {
-                GD.PushWarning("No more active world sections.");
-                _alreadyWarnedForLackingSections = true;
-            }
-            return;
-        }
+        if (!EnsureUpcommingSection()) return;
 
         List<PlayerController> players = _players.Where(x => x.IsAlive).ToList();
         if (players.Count == 0)
@@ -159,8 +150,46 @@ public partial class LevelGenerator : Node2D
             return;
         }
 
-        GetChild<CameraSimulator>(1).UpdateCamera(_activeWorldSections, _players, delta, _lava);
+        _camera.UpdateCamera(_activeWorldSections, _players, delta, _lava);
+
+        if (_activeWorldSections.Last().GlobalPosition.Y >= _camera.GetCameraUpperY())
+        {
+            _preloader.GetNextSection();
+        }
+
         GetChild<LavaDistanceReadout>(0).UpdateReadout(_camera.GetCameraLowerY(), _lava.Position.Y);
+    }
+
+    /// <summary>
+    /// Returns false if there are no active world sections to add onto.
+    /// </summary>
+    /// <returns></returns>
+    bool EnsureUpcommingSection()
+    {
+        var last = _activeWorldSections.LastOrDefault();
+        if (last == null || !IsInstanceValid(last))
+        {
+            if (!_alreadyWarnedForLackingSections)
+            {
+                GD.PushWarning("No more active world sections.");
+                _alreadyWarnedForLackingSections = true;
+            }
+            return false;
+        }
+
+        if (last.Position.Y + last.UpperBoundary >= _camera.GetCameraUpperY())
+        {
+            var newSection = _preloader.GetNextSection();
+            _activeWorldSections.Enqueue(newSection);
+
+            Vector2 newPos = Vector2.Zero;
+            newPos.Y = last.Position.Y + last.UpperBoundary - newSection.LowerBoundary;
+
+            newSection.Position = newPos;
+            AddChild(newSection);
+        }
+
+        return true;
     }
 
     double ForceCameraAboveLava(double deltaY, double amountOfLavaToKeepInFrame, double deltaTime)
