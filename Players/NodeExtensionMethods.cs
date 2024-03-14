@@ -186,6 +186,12 @@ public static class NodeExtensionMethods
         }
         return values;
     }
+
+    public static float GetBottomY(this Rect2 rect) 
+        => rect.Position.Y + rect.Size.Y / 2f;
+
+    public static float GetTopY(this Rect2 rect) 
+        => rect.Position.Y - rect.Size.Y / 2f;
 }
 
 public static class MathExtensions

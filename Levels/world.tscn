@@ -76,18 +76,11 @@ distance = -110.0
 
 [node name="World" type="Node2D"]
 
-[node name="Level Generator" type="Node2D" parent="." node_paths=PackedStringArray("_camera", "_lava")]
+[node name="Level Generator" type="Node2D" parent="." node_paths=PackedStringArray("_lava", "_camera")]
 script = ExtResource("2_lriob")
-_startDelay = 0.0
-_camera = NodePath("../Camera2D")
-ScrollSpeed = 20.0
-MaxScrollSpeed = 450.0
-TimeToReachMaxSpeed = 10.0
 PlayerTemplatePath = &"res://Players/player.tscn"
-_speedupFactor = 0.4
-_slowdownFactor = 0.3
-_cameraHeightOffset = 20.0
 _lava = NodePath("../LAVA")
+_camera = NodePath("CameraSimulator")
 _templates = Array[StringName]([&"res://Levels/Test Type/starter_section_1.tscn"])
 
 [node name="PanelContainer" type="PanelContainer" parent="Level Generator"]
@@ -107,6 +100,8 @@ text = "Test Text"
 [node name="CameraSimulator" type="Node" parent="Level Generator" node_paths=PackedStringArray("_camera")]
 script = ExtResource("2_2ud8y")
 _camera = NodePath("../../Camera2D")
+_lookAhead = 80.0
+_lookBehind = 60.0
 
 [node name="SlowRegion" type="Area2D" parent="Level Generator"]
 z_index = 9
