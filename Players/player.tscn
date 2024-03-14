@@ -621,12 +621,15 @@ _airAcceleration = 700.0
 script = ExtResource("4_kdm3q")
 _body = NodePath("..")
 
-[node name="DashHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_knockback", "_flip")]
+[node name="DashHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_knockback", "_flip", "_aniPlayer", "_disabler")]
 script = ExtResource("13_c0kft")
 _body = NodePath("..")
 _knockback = NodePath("../KnockbackHandler")
 _flip = NodePath("../FlipHandler")
 _dashSpeed = 225.0
+_dashAnimationName = &"tank_dash"
+_aniPlayer = NodePath("../AnimationPlayer")
+_disabler = NodePath("../ControlDisablerHandler")
 
 [node name="PlayerInputHandler" type="Node" parent="."]
 script = ExtResource("2_bjy2i")
@@ -636,12 +639,15 @@ script = ExtResource("4_46gxe")
 _body = NodePath("..")
 Gravity = 750.0
 
-[node name="DeflectHandler" type="Node" parent="." node_paths=PackedStringArray("_sprite", "_body")]
+[node name="DeflectHandler" type="Node" parent="." node_paths=PackedStringArray("_sprite", "_body", "_dashHandler", "_aniPlayer")]
 script = ExtResource("7_bcpnl")
 _sprite = NodePath("../Sprite_New")
 _body = NodePath("..")
 _deflectKnockback = 300.0
 _successfulKnockbackBounce = 300.0
+_dashHandler = NodePath("../DashHandler")
+_aniPlayer = NodePath("../AnimationPlayer")
+_dashAnimationName = &"tank_dash"
 
 [node name="VelocityBasedAniSelector" type="Node" parent="." node_paths=PackedStringArray("_body", "_sprite", "_player", "_flipHandler")]
 script = ExtResource("9_igj33")

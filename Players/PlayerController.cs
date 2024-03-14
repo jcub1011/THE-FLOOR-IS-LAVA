@@ -30,6 +30,7 @@ public partial class PlayerController : CharacterBody2D
     {
         GD.Print($"Player {Name} touched lava.");
         IsAlive = false;
+        Visible = false;
 
         foreach (var child in GetChildren())
         {

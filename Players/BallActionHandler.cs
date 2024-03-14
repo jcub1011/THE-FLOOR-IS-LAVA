@@ -48,16 +48,10 @@ public partial class BallActionHandler : Node, IDisableableControl
     {
         GD.Print("Performing Dash.");
         float aniDuration = _aniPlayer.GetAnimation(_dashAnimation).Length;
-        if (_dashHandler.PerformDash(_body.Velocity, aniDuration))
+        if (!_dashHandler.PerformDash(_body.Velocity, aniDuration))
         {
-            _aniPlayer.Play(_dashAnimation);
-            _controlDisabler.SetControlStatesExcept(
-                false, aniDuration,
-                ControlIDs.INPUT,
-                ControlIDs.HURTBOX,
-                ControlIDs.HITBOX);
+            GD.Print("Insufficient dash charges.");
         }
-        else GD.Print("Insufficient dash charges.");
     }
 
     void PerformBlock()

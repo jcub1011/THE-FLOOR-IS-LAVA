@@ -12,6 +12,9 @@ public partial class DashHandler : Node
     [Export] FlipHandler _flip;
     [Export] float _dashSpeed = 250;
     [Export] float _dashAngleAdjustSpeed = 5f;
+    [Export] StringName _dashAnimationName;
+    [Export] AnimationPlayer _aniPlayer;
+    [Export] ControlDisablerHandler _disabler;
     int _dashCharges;
     public int DashCharges
     {
@@ -82,11 +85,18 @@ public partial class DashHandler : Node
     {
         if (DashCharges <= 0) return false;
         DashCharges--;
-        _remainingDashTime = duration;
+        _remainingDashTime = _aniPlayer.GetAnimation(_dashAnimationName).Length;
 
         direction = GetDashDirection();
 
         _body.Velocity = direction.Normalized() * _dashSpeed;
+        _aniPlayer.Play(_dashAnimationName);
+        _disabler.SetControlStatesExcept(
+            false, _remainingDashTime,
+            ControlIDs.INPUT,
+            ControlIDs.HURTBOX,
+            ControlIDs.HITBOX);
+
         return true;
     }
 
