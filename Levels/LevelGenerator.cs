@@ -2,7 +2,6 @@ using Godot;
 using Players;
 using System.Collections.Generic;
 using System.Linq;
-using static System.Collections.Specialized.BitVector32;
 
 namespace WorldGeneration;
 
@@ -60,32 +59,21 @@ internal class SectionPreloader
 
 public partial class LevelGenerator : Node2D
 {
-    [Export] float _startDelay = 5f;
-    [Export] Camera2D _camera;
-    [Export] public double ScrollSpeed { get; set; } = 25f;
+    //[Export] Camera2D _camera;
     [Export] StringName PlayerTemplatePath;
     [Export] string _speedRegionName = "SpeedRegion";
     [Export] string _slowRegionName = "SlowRegion";
-    [Export] double _speedupFactor = 0.3;
-    [Export] double _slowdownFactor = 0.2;
+    [Export] LavaRaiseHandler _lava;
+    [Export] CameraSimulator _camera;
 
     Queue<WorldSection> _activeWorldSections;
     [Export] Godot.Collections.Array<StringName> _templates;
 
     SectionPreloader _preloader;
 
-    public float? _worldBottomY;
-    public float WorldBottomY
-    {
-        get
-        {
-            if (_worldBottomY == null) return float.PositiveInfinity;
-            else return _worldBottomY.Value;
-        }
-    }
-
     List<Vector2> _spawnLocs;
-    List<Node2D> _players;
+    List<PlayerController> _players;
+    bool _alreadyWarnedForLackingSections = false;
 
     public override void _Ready()
     {
@@ -93,14 +81,13 @@ public partial class LevelGenerator : Node2D
         _players = new();
         Engine.TimeScale = 0f;
         ResourceLoader.LoadThreadedRequest(PlayerTemplatePath);
-        _worldBottomY = GetWorldBottomY();
         _activeWorldSections = new();
 
         _preloader = new("starter_section_1");
 
         var newSection = _preloader.GetNextSection();
         AddChild(newSection);
-        newSection.Position = new(0f, - newSection.LowerBoundary + WorldBottomY);
+        newSection.Position = new(0f, - newSection.LowerBoundary + _camera.GetCameraLowerY());
         _activeWorldSections.Enqueue(newSection);
 
         _spawnLocs = newSection.GetSpawnLocations();
@@ -122,7 +109,7 @@ public partial class LevelGenerator : Node2D
             temp.GlobalPosition = spawnLocs[i % spawnLocs.Count];
             PlayerInputHandler.SetDevice(temp.GetChildren<PlayerInputHandler>().First(), devices[i]);
             AddSibling(temp);
-            _players.Add(temp);
+            _players.Add((PlayerController)temp);
         }
 
         Engine.TimeScale = 1f;
@@ -130,7 +117,8 @@ public partial class LevelGenerator : Node2D
 
     void RemoveDeletedScenes()
     {
-        while(!IsInstanceValid(_activeWorldSections.Peek()))
+        while(_activeWorldSections.Count != 0 
+            && !IsInstanceValid(_activeWorldSections.Peek()))
         {
             _activeWorldSections.Dequeue();
         }
@@ -145,45 +133,51 @@ public partial class LevelGenerator : Node2D
     public override void _Process(double delta)
     {
         base._Process(delta);
-        UpdateSectionPositions(ScrollSpeed, delta);
+        CallDeferred("UpdateSectionPositions", delta);
     }
 
-    float GetWorldBottomY()
+    void UpdateSectionPositions(double delta)
     {
-        float cameraPos = _camera.GetScreenCenterPosition().Y;
-        //var cameraRect =
-        //    GetCanvasTransform().AffineInverse().BasisXform(GetViewportRect().Size);
+        if (!EnsureUpcommingSection()) return;
 
-        //Vector2 winSize = DisplayServer.WindowGetSize();
-        //float yHeight = NodeExtensionMethods.GetViewportSize().Y;
-        float yHeight = NodeExtensionMethods.GetViewportSize().Y / _camera.Zoom.Y / 2f;
-        //float returnVal = cameraPos + cameraRect.Y / 2f;
-        float returnVal = cameraPos + yHeight;
-        GD.Print($"World bottom = {returnVal}");
-        return returnVal;
-    }
-
-    float GetWorldTopY()
-    {
-        float cameraPos = _camera.GetScreenCenterPosition().Y;
-        var cameraRect =
-            GetCanvasTransform().AffineInverse().BasisXform(GetViewportRect().Size);
-        float returnVal = cameraPos - cameraRect.Y / 2;
-        //GD.Print($"World top = {returnVal}");
-        return returnVal;
-    }
-
-    void UpdateSectionPositions(double velocity, double delta)
-    {
-        if (_startDelay > 0f)
+        List<PlayerController> players = _players.Where(x => x.IsAlive).ToList();
+        if (players.Count == 0)
         {
-            _startDelay -= (float)delta;
+            if (_lava.Position.Y < _camera.GetCameraUpperY() - 15)
+            {
+                _lava.Position = new Vector2(0, _camera.GetCameraUpperY() - 15);
+            }
             return;
         }
-        velocity = GetModifiedVelocity(velocity);
 
-        var last = _activeWorldSections.Last();
-        if (last.Position.Y + last.UpperBoundary >= GetWorldTopY())
+        _camera.UpdateCamera(_activeWorldSections, players, delta, _lava);
+
+        if (_activeWorldSections.Last().GlobalPosition.Y >= _camera.GetCameraUpperY())
+        {
+            _preloader.GetNextSection();
+        }
+
+        GetChild<LavaDistanceReadout>(0).UpdateReadout(_camera.GetCameraLowerY(), _lava.Position.Y);
+    }
+
+    /// <summary>
+    /// Returns false if there are no active world sections to add onto.
+    /// </summary>
+    /// <returns></returns>
+    bool EnsureUpcommingSection()
+    {
+        var last = _activeWorldSections.LastOrDefault();
+        if (last == null || !IsInstanceValid(last))
+        {
+            if (!_alreadyWarnedForLackingSections)
+            {
+                GD.PushWarning("No more active world sections.");
+                _alreadyWarnedForLackingSections = true;
+            }
+            return false;
+        }
+
+        if (last.Position.Y + last.UpperBoundary >= _camera.GetCameraUpperY())
         {
             var newSection = _preloader.GetNextSection();
             _activeWorldSections.Enqueue(newSection);
@@ -195,41 +189,30 @@ public partial class LevelGenerator : Node2D
             AddChild(newSection);
         }
 
-        Vector2 deltaPos = new(0f, (float)(velocity * delta));
-        foreach (var section in _activeWorldSections)
-        {
-            if (!IsInstanceValid(section)) continue;
-            section.Position += deltaPos;
-        }
-
-        foreach(var player in _players)
-        {
-            if (!IsInstanceValid(player)) continue;
-            player.Position += deltaPos;
-        }
+        return true;
     }
 
-    double GetModifiedVelocity(double baseVel)
+    double ForceCameraAboveLava(double deltaY, double amountOfLavaToKeepInFrame, double deltaTime)
+    {
+        double newLavaPos = _lava.Position.Y + deltaY;
+        double lowerBound = _camera.GetCameraLowerY() - amountOfLavaToKeepInFrame;
+
+        if (newLavaPos < lowerBound)
+        {
+            return (lowerBound - newLavaPos) * deltaTime;
+        }
+        return 0;
+    }
+
+    int PlayersInUpperCameraLimit(List<PlayerController> players)
     {
         var upperRegion = GetNode<Area2D>(_speedRegionName);
+        return players.Count(x => upperRegion.OverlapsBody(x));
+    }
+
+    int PlayersInLowerCameraLimit(List<PlayerController> players)
+    {
         var lowerRegion = GetNode<Area2D>(_slowRegionName);
-        List<Node2D> livingPlayers = _players.Where(x => x.Visible).ToList();
-        double modifiedVel = baseVel;
-        double speedup = baseVel * _speedupFactor * 1 / livingPlayers.Count;
-        double slowdown = baseVel * _slowdownFactor * 1 / livingPlayers.Count;
-
-        foreach(var player in livingPlayers)
-        {
-            if (upperRegion.OverlapsBody(player))
-            {
-                modifiedVel += speedup * (1 - upperRegion.GetNormalizedDistFromTop(player));
-            }
-            else if (lowerRegion.OverlapsBody(player))
-            {
-                modifiedVel -= slowdown * lowerRegion.GetNormalizedDistFromTop(player);
-            }
-        }
-
-        return modifiedVel;
+        return players.Count(x => lowerRegion.OverlapsBody(x));
     }
 }

@@ -5,7 +5,7 @@ namespace Players;
 public partial class OnHitArgs : GodotObject
 {
     public MeleeHurtboxHandler HitBy { get; set; }
-    public bool ReturnKnockback = false;
+    public bool Deflected = false;
 }
 
 public partial class Hitbox : Area2D, IDisableableControl
@@ -16,6 +16,7 @@ public partial class Hitbox : Area2D, IDisableableControl
     {
         get => GetParent<CharacterBody2D>();
     }
+    [Export] DeflectHandler _deflectHandler;
 
     #region Interface Implementation
     public string ControlID { get => ControlIDs.HITBOX; }
@@ -38,23 +39,23 @@ public partial class Hitbox : Area2D, IDisableableControl
         if (area is MeleeHurtboxHandler collider)
         {
             if (_body == collider.HurtboxOwner) return;
-            //GD.Print($"{_body.Name} was hit by {collider.HurtboxOwner.Name}.");
             var args = new OnHitArgs
             {
                 HitBy = collider
             };
             EmitSignal(SignalName.OnReceivedHit, args);
 
-            if (args.ReturnKnockback)
+            if (args.Deflected)
             {
                 GD.Print($"{_body.Name} deflected " +
                     $"{collider.HurtboxOwner.Name}.");
-                args.HitBy.HandleAttackDeflected();
+                args.HitBy.HandleAttackDeflected(_body);
             }
             else
             {
                 GD.Print($"{_body.Name} was hit by {collider.HurtboxOwner.Name}.");
                 EmitSignal(SignalName.OnReceivedDamage, collider.Knockback, collider.HurtboxOwner);
+                args.HitBy.OnHitLanded(_body);
             }
         }
     }

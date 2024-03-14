@@ -10,6 +10,7 @@ public partial class AttackHandler : Node, IDisableableControl
     [Export] float _dropkickDrag;
     [Export] float _actionBufferTime = 0.5f;
     [Export] float _blockBufferTime = 0.5f;
+    [Export] float _blockCooldown = 0.3f;
 
     [Export] StringName _dropkickAnimation = "dropkick";
     [Export] StringName _punchAnimation = "punch";
@@ -17,6 +18,7 @@ public partial class AttackHandler : Node, IDisableableControl
     [Export] StringName _crouchedDeflectAnimation = "crouched_deflect";
 
     bool _isDisabled;
+    float _remainingBlockCooldown = 0f;
 
     #region Interface Implementation
     public string ControlID { get => ControlIDs.ATTACK_HANDLER; }
@@ -30,6 +32,7 @@ public partial class AttackHandler : Node, IDisableableControl
     public override void _PhysicsProcess(double delta)
     {
         base._PhysicsProcess(delta);
+        _remainingBlockCooldown -= (float)delta;
         if (_isDisabled)
         {
             if (_body.IsOnFloor())
@@ -60,7 +63,7 @@ public partial class AttackHandler : Node, IDisableableControl
 
     public void OnDeflect()
     {
-        if (_isDisabled)
+        if (_isDisabled || _remainingBlockCooldown > 0f)
         {
             GD.Print($"{GetParent().Name} unable to perform action, currently " +
                 $"disabled.");
@@ -83,6 +86,7 @@ public partial class AttackHandler : Node, IDisableableControl
                 ControlIDs.HITBOX,
                 ControlIDs.DEFLECT);
         _aniPlayer.Play(animationToUse);
+        _remainingBlockCooldown = _aniPlayer.GetAnimation(animationToUse).Length + _blockCooldown;
     }
 
     public void OnAttack()

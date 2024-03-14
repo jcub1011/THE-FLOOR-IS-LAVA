@@ -1,4 +1,8 @@
 using Godot;
+using Godot.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using WorldGeneration;
 
 namespace Players;
 
@@ -6,9 +10,19 @@ public partial class DeflectHandler : Node, IDisableableControl
 {
     [Export] Sprite2D _sprite;
     [Export] CharacterBody2D _body;
-    [Export] CrouchHandler _crouchHandler;
+    [Export] float _slomoTime = 5f;
+    [Export] float _deflectKnockback = 100f;
+    [Export] float _successfulKnockbackBounce = 30f;
+    [Export] DashHandler _dashHandler;
+    [Export] AnimationPlayer _aniPlayer;
+    [Export] StringName _dashAnimationName;
+    float _remainingSlomoTime;
+    public bool IsActive => _remainingDeflectTime > 0f;
     float _remainingDeflectTime;
     bool _isEnabled;
+    CharacterBody2D _bodyToRedirect;
+
+    HashSet<StringName> _activeInputsForRedirection = new();
 
     #region Interface Implementation
     public string ControlID { get => ControlIDs.DEFLECT; }
@@ -28,17 +42,86 @@ public partial class DeflectHandler : Node, IDisableableControl
     {
         base._PhysicsProcess(delta);
         _remainingDeflectTime -= (float)delta;
+        _remainingSlomoTime -= (float)delta;
+
+        if (_body.IsOnFloor() && _remainingDeflectTime > 0f)
+        {
+            _body.Velocity = new(_body.Velocity.X / 2f, _body.Velocity.Y);
+        }
+
+        if (_remainingSlomoTime > 0f)
+        {
+            _remainingDeflectTime = 0f;
+        }
+        else _bodyToRedirect = null;
     }
 
     public void OnReceivedHitHandler(OnHitArgs args)
     {
-        if (_remainingDeflectTime <= 0f) return;
-        var direction = args.HitBy.HurtboxOwner.GlobalPosition
-            .RelativeTo(_body.GlobalPosition);
-        bool isTowardsLeft = direction.X < 0f;
-        args.ReturnKnockback = (
-            _sprite.FlipH == isTowardsLeft
-            && _crouchHandler.IsCrouched 
-            == (args.HitBy.AttackHeight == AttackHeight.Crouched));
+        if (!IsActive) return;
+        args.Deflected = true;
+        _bodyToRedirect = args.HitBy.HurtboxOwner as CharacterBody2D;
+        GD.Print("Deflecting.");
+        SlowTime();
+    }
+
+    public void SlowTime()
+    {
+        _activeInputsForRedirection.Clear();
+        _remainingSlomoTime = _slomoTime;
+        EngineTimeManipulator.QueueTimeTransition(new(0.01, 0));
+        EngineTimeManipulator.QueueTimeTransition(new(_slomoTime));
+        EngineTimeManipulator.QueueTimeTransition(new(1, 0.2));
+    }
+
+    public void RedirectDeflectedEnemy(params StringName[] inputs)
+    {
+        Vector2 deflectDir = new();
+
+        foreach(var input in inputs)
+        {
+            deflectDir += input.ToDirection();
+        }
+        deflectDir = deflectDir.Normalized();
+
+        _bodyToRedirect.GetChild<KnockbackHandler>()
+            .ApplyKnockback(-deflectDir * _deflectKnockback);
+
+        EngineTimeManipulator.OverrideTimeTransition(new(1, 0.2));
+
+        Vector2 dir = deflectDir;
+
+        _body.Velocity = dir * _successfulKnockbackBounce;
+
+        _remainingSlomoTime = 0f;
+        _bodyToRedirect = null;
+    }
+
+    public void InputEventHandler(StringName input, bool pressed)
+    {
+        if (_remainingSlomoTime <= 0f) return;
+        if (pressed && input == InputNames.ACTION)
+        {
+            GD.Print("Performing dash after block.");
+            EngineTimeManipulator.OverrideTimeTransition(new(1, 0.2));
+            _dashHandler.DashCharges = 2;
+            _dashHandler.PerformDash(new Vector2(), _aniPlayer.GetAnimation(_dashAnimationName).Length);
+        }
+
+        //if (pressed)
+        //{
+        //    _activeInputsForRedirection.Add(input);
+        //    if (_activeInputsForRedirection.Count >= 2)
+        //    {
+        //        RedirectDeflectedEnemy(_activeInputsForRedirection.ToArray());
+        //    }
+        //}
+        //else
+        //{
+        //    if (_activeInputsForRedirection.Remove(input))
+        //    {
+        //        RedirectDeflectedEnemy(input);
+        //    }
+        //}
     }
 }

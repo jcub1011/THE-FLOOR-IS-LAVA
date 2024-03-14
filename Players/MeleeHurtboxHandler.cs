@@ -10,8 +10,9 @@ public enum AttackHeight
 
 public partial class MeleeHurtboxHandler : Area2D, IDisableableControl
 {
-    //[Signal] public delegate void OnHurtboxDeflectedEventHandler(CharacterBody2D deflector, float knockback);
-    [Signal] public delegate void OnHurtboxDeflectedEventHandler();
+    [Signal] public delegate void OnHurtboxDeflectedEventHandler(CharacterBody2D deflector);
+    [Signal] public delegate void HitLandedEventHandler(Node2D thingHit);
+    //[Signal] public delegate void OnHurtboxDeflectedEventHandler();
 
     /// <summary>
     /// Defaults to length of frame @ 24fps.
@@ -76,7 +77,8 @@ public partial class MeleeHurtboxHandler : Area2D, IDisableableControl
             }
             else if (child is CollisionShape2D collider)
             {
-                collider.Disabled = true;
+                collider.SetDeferred("disabled", true);
+                //collider.Disabled = true;
             }
         }
         _activeCollider = null;
@@ -90,15 +92,21 @@ public partial class MeleeHurtboxHandler : Area2D, IDisableableControl
         Scale = new(Scale.X * -1f, Scale.Y);
     }
 
-    //public void HandleAttackDeflected(CharacterBody2D deflector, float knockback)
-    //{
-    //    GD.Print($"{HurtboxOwner.Name} emitting attack deflected.");
-    //    EmitSignal(SignalName.OnHurtboxDeflected, deflector, knockback);
-    //}
-
-    public void HandleAttackDeflected()
+    public void HandleAttackDeflected(CharacterBody2D deflector)
     {
         GD.Print($"{HurtboxOwner.Name} emitting attack deflected.");
-        EmitSignal(SignalName.OnHurtboxDeflected);
+        EmitSignal(SignalName.OnHurtboxDeflected, deflector);
     }
+
+    public void OnHitLanded(Node2D thingHit)
+    {
+        GD.Print($"Hit landed on {thingHit}.");
+        EmitSignal(SignalName.HitLanded, thingHit);
+    }
+
+    //public void HandleAttackDeflected()
+    //{
+    //    GD.Print($"{HurtboxOwner.Name} emitting attack deflected.");
+    //    EmitSignal(SignalName.OnHurtboxDeflected);
+    //}
 }

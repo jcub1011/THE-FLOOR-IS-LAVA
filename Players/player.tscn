@@ -1,12 +1,12 @@
-[gd_scene load_steps=38 format=3 uid="uid://cv7g2fnqrxx7s"]
+[gd_scene load_steps=49 format=3 uid="uid://cv7g2fnqrxx7s"]
 
 [ext_resource type="Script" path="res://Players/PlayerController.cs" id="1_bukco"]
+[ext_resource type="Script" path="res://Players/BallActionHandler.cs" id="2_8sxkk"]
 [ext_resource type="Script" path="res://Players/PlayerInputHandler.cs" id="2_bjy2i"]
-[ext_resource type="Script" path="res://Players/HorizontalMovementHandler.cs" id="3_8cg7j"]
+[ext_resource type="Script" path="res://Players/BallHorizontalMovementHandler.cs" id="3_vn5cb"]
 [ext_resource type="Script" path="res://Players/GravityApplicator.cs" id="4_46gxe"]
-[ext_resource type="Script" path="res://Players/JumpHandler.cs" id="5_mw2vm"]
+[ext_resource type="Script" path="res://Players/BallJumpHandler.cs" id="4_kdm3q"]
 [ext_resource type="Script" path="res://Players/MeleeHurtboxHandler.cs" id="6_rgnv7"]
-[ext_resource type="Script" path="res://Players/AttackHandler.cs" id="6_wkqlm"]
 [ext_resource type="Script" path="res://Players/DeflectHandler.cs" id="7_bcpnl"]
 [ext_resource type="Script" path="res://Players/TimedCollider.cs" id="7_xohju"]
 [ext_resource type="Script" path="res://Players/Hitbox.cs" id="9_4xjwb"]
@@ -14,25 +14,29 @@
 [ext_resource type="Script" path="res://Players/VelocityBasedAnimationSelector.cs" id="9_igj33"]
 [ext_resource type="Script" path="res://Players/ControlDisablerHandler.cs" id="10_t2a0i"]
 [ext_resource type="Script" path="res://Players/FlipHandler.cs" id="11_t7grp"]
-[ext_resource type="Script" path="res://Players/CrouchHandler.cs" id="12_5v8f2"]
-[ext_resource type="Texture2D" uid="uid://ni70xkxh2nk0" path="res://Players/Sprite Sheets/Male_1_Clothes_1_Long_New_Animations.png" id="15_rkq5e"]
+[ext_resource type="Script" path="res://Players/DashHandler.cs" id="13_c0kft"]
 [ext_resource type="Script" path="res://Players/SpriteControls.cs" id="16_cd1ek"]
+[ext_resource type="Texture2D" uid="uid://c83ud5he4rggx" path="res://Players/Sprite Sheets/Medieval Tank PixelArt Shrunk With Stagger.png" id="16_vhdrh"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pi3oo"]
-size = Vector2(8, 14)
+size = Vector2(16, 13)
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_meg5j"]
-radius = 4.0
-height = 14.0
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_26252"]
+radius = 6.0
+height = 16.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_f5o2s"]
-size = Vector2(8, 16)
+size = Vector2(16, 13)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lqg1u"]
 size = Vector2(20, 10)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sg5v1"]
 size = Vector2(20, 7.875)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_e5llx"]
+radius = 8.0
+height = 20.0
 
 [sub_resource type="Animation" id="Animation_lkr48"]
 length = 0.001
@@ -47,6 +51,94 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [5]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite_New:frame_coords")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2i(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_dkk1p"]
+resource_name = "ball_block"
+length = 0.50001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("DeflectHandler")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [0.5],
+"method": &"EnableDeflect"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_2xutl"]
+resource_name = "ball_dash"
+length = 0.150005
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("MeleeHurtboxHandler")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [&"DashHurtbox", 0.3, 100.0, 0],
+"method": &"EnableHitbox"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_c4htm"]
+resource_name = "ball_static"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [2]
 }
 
 [sub_resource type="Animation" id="Animation_ei81v"]
@@ -325,9 +417,151 @@ tracks/0/keys = {
 "values": [10, 11, 10, 11, 10]
 }
 
+[sub_resource type="Animation" id="Animation_n12j8"]
+resource_name = "tank_block"
+length = 0.50001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2i(0, 4)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("DeflectHandler")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [0.5],
+"method": &"EnableDeflect"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_wchel"]
+resource_name = "tank_dash"
+length = 0.156253
+step = 0.03125
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.03125, 0.0625, 0.09375, 0.125, 0.21875),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2i(0, 2), Vector2i(1, 2), Vector2i(2, 2), Vector2i(3, 2), Vector2i(5, 2), Vector2i(4, 2)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("MeleeHurtboxHandler")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [&"DashHurtbox", 0.25, 100.0, 0],
+"method": &"EnableHitbox"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_6su6g"]
+resource_name = "tank_drive"
+length = 0.500013
+step = 0.125
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.125, 0.25, 0.375),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [Vector2i(0, 1), Vector2i(1, 1), Vector2i(3, 1), Vector2i(2, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_m3j8w"]
+resource_name = "tank_fall"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2i(1, 3)]
+}
+
+[sub_resource type="Animation" id="Animation_d8hkb"]
+resource_name = "tank_idle"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2i(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_lljq4"]
+resource_name = "tank_rise"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2i(0, 3)]
+}
+
+[sub_resource type="Animation" id="Animation_m1jeo"]
+resource_name = "tank_stagger"
+length = 0.500013
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2i(1, 5), Vector2i(0, 5), Vector2i(1, 5), Vector2i(0, 5), Vector2i(1, 5)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_r5udm"]
 _data = {
 "RESET": SubResource("Animation_lkr48"),
+"ball_block": SubResource("Animation_dkk1p"),
+"ball_dash": SubResource("Animation_2xutl"),
+"ball_static": SubResource("Animation_c4htm"),
 "crouch": SubResource("Animation_ei81v"),
 "crouched_deflect": SubResource("Animation_nrlqh"),
 "death": SubResource("Animation_uxa3w"),
@@ -340,7 +574,14 @@ _data = {
 "punch": SubResource("Animation_qvcop"),
 "rise": SubResource("Animation_i5v2i"),
 "run": SubResource("Animation_qxqf1"),
-"stagger": SubResource("Animation_s8rat")
+"stagger": SubResource("Animation_s8rat"),
+"tank_block": SubResource("Animation_n12j8"),
+"tank_dash": SubResource("Animation_wchel"),
+"tank_drive": SubResource("Animation_6su6g"),
+"tank_fall": SubResource("Animation_m3j8w"),
+"tank_idle": SubResource("Animation_d8hkb"),
+"tank_rise": SubResource("Animation_lljq4"),
+"tank_stagger": SubResource("Animation_m1jeo")
 }
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("InputHandler")]
@@ -353,54 +594,74 @@ InputHandler = NodePath("PlayerInputHandler")
 collision_layer = 0
 collision_mask = 4
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Lava Collider"]
-position = Vector2(0, -7)
+[node name="LavaCollisionShape" type="CollisionShape2D" parent="Lava Collider"]
+position = Vector2(0, -6.5)
 shape = SubResource("RectangleShape2D_pi3oo")
 
-[node name="Collider" type="CollisionShape2D" parent="."]
+[node name="GroundCollider" type="CollisionShape2D" parent="."]
 position = Vector2(0, -7)
-shape = SubResource("CapsuleShape2D_meg5j")
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_26252")
+
+[node name="BallActionHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_aniPlayer", "_controlDisabler", "_dashHandler")]
+script = ExtResource("2_8sxkk")
+_body = NodePath("..")
+_aniPlayer = NodePath("../AnimationPlayer")
+_controlDisabler = NodePath("../ControlDisablerHandler")
+_blockAnimation = &"tank_block"
+_dashAnimation = &"tank_dash"
+_dashHandler = NodePath("../DashHandler")
+
+[node name="BallHorizontalMovement" type="Node" parent="." node_paths=PackedStringArray("_body")]
+script = ExtResource("3_vn5cb")
+_body = NodePath("..")
+_airAcceleration = 700.0
+
+[node name="BallJumpHandler" type="Node" parent="." node_paths=PackedStringArray("_body")]
+script = ExtResource("4_kdm3q")
+_body = NodePath("..")
+
+[node name="DashHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_knockback", "_flip", "_aniPlayer", "_disabler")]
+script = ExtResource("13_c0kft")
+_body = NodePath("..")
+_knockback = NodePath("../KnockbackHandler")
+_flip = NodePath("../FlipHandler")
+_dashSpeed = 225.0
+_dashAnimationName = &"tank_dash"
+_aniPlayer = NodePath("../AnimationPlayer")
+_disabler = NodePath("../ControlDisablerHandler")
 
 [node name="PlayerInputHandler" type="Node" parent="."]
 script = ExtResource("2_bjy2i")
-
-[node name="HorizontalMovementHandler" type="Node" parent="." node_paths=PackedStringArray("_body")]
-script = ExtResource("3_8cg7j")
-_body = NodePath("..")
 
 [node name="GravityApplicator" type="Node" parent="." node_paths=PackedStringArray("_body")]
 script = ExtResource("4_46gxe")
 _body = NodePath("..")
 Gravity = 750.0
 
-[node name="JumpHandler" type="Node" parent="." node_paths=PackedStringArray("_body")]
-script = ExtResource("5_mw2vm")
-_body = NodePath("..")
-_jumpVelocity = 142.0
-_maxJumpTime = 0.2
-
-[node name="AttackHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_aniPlayer", "_controlDisabler")]
-script = ExtResource("6_wkqlm")
-_body = NodePath("..")
-_aniPlayer = NodePath("../AnimationPlayer")
-_controlDisabler = NodePath("../ControlDisablerHandler")
-_dropkickDrag = 10.0
-_actionBufferTime = 0.3
-
-[node name="DeflectHandler" type="Node" parent="." node_paths=PackedStringArray("_sprite", "_body", "_crouchHandler")]
+[node name="DeflectHandler" type="Node" parent="." node_paths=PackedStringArray("_sprite", "_body", "_dashHandler", "_aniPlayer")]
 script = ExtResource("7_bcpnl")
 _sprite = NodePath("../Sprite_New")
 _body = NodePath("..")
-_crouchHandler = NodePath("../CrouchHandler")
+_deflectKnockback = 300.0
+_successfulKnockbackBounce = 300.0
+_dashHandler = NodePath("../DashHandler")
+_aniPlayer = NodePath("../AnimationPlayer")
+_dashAnimationName = &"tank_dash"
 
-[node name="VelocityBasedAniSelector" type="Node" parent="." node_paths=PackedStringArray("_body", "_sprite", "_player", "_crouchHandler", "_flipHandler")]
+[node name="VelocityBasedAniSelector" type="Node" parent="." node_paths=PackedStringArray("_body", "_sprite", "_player", "_flipHandler")]
 script = ExtResource("9_igj33")
 _body = NodePath("..")
 _sprite = NodePath("../Sprite_New")
 _player = NodePath("../AnimationPlayer")
-_crouchHandler = NodePath("../CrouchHandler")
 _flipHandler = NodePath("../FlipHandler")
 _walkToRunTransitionThreshold = 100.0
+_idleAnimation = &"tank_idle"
+_walkAnimation = &"tank_drive"
+_runAnimation = &"tank_drive"
+_fallAnimation = &"tank_fall"
+_riseAnimation = &"tank_rise"
+_crouch = &"tank_idle"
 
 [node name="KnockbackHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_disabler", "_aniPlayer")]
 script = ExtResource("9_ad621")
@@ -408,6 +669,7 @@ _recoveryTime = 0.5
 _body = NodePath("..")
 _disabler = NodePath("../ControlDisablerHandler")
 _aniPlayer = NodePath("../AnimationPlayer")
+_staggerAnimationName = &"tank_stagger"
 
 [node name="ControlDisablerHandler" type="Node" parent="."]
 script = ExtResource("10_t2a0i")
@@ -415,27 +677,33 @@ script = ExtResource("10_t2a0i")
 [node name="FlipHandler" type="Node" parent="."]
 script = ExtResource("11_t7grp")
 
-[node name="CrouchHandler" type="Node" parent="."]
-script = ExtResource("12_5v8f2")
-
-[node name="Hitbox" type="Area2D" parent="."]
+[node name="Hitbox" type="Area2D" parent="." node_paths=PackedStringArray("_deflectHandler")]
 script = ExtResource("9_4xjwb")
+_deflectHandler = NodePath("../DeflectHandler")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
-position = Vector2(0, -8)
+[node name="HitboxCollider" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(0, -6.5)
 shape = SubResource("RectangleShape2D_f5o2s")
 
 [node name="MeleeHurtboxHandler" type="Area2D" parent="."]
 script = ExtResource("6_rgnv7")
 
 [node name="PunchHurtbox" type="CollisionShape2D" parent="MeleeHurtboxHandler"]
+visible = false
 position = Vector2(10, -11)
 shape = SubResource("RectangleShape2D_lqg1u")
 script = ExtResource("7_xohju")
 
 [node name="DropkickHurtbox" type="CollisionShape2D" parent="MeleeHurtboxHandler"]
+visible = false
 position = Vector2(10, -4.0625)
 shape = SubResource("RectangleShape2D_sg5v1")
+script = ExtResource("7_xohju")
+
+[node name="DashHurtbox" type="CollisionShape2D" parent="MeleeHurtboxHandler"]
+position = Vector2(2, -7)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_e5llx")
 script = ExtResource("7_xohju")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -444,30 +712,27 @@ libraries = {
 }
 
 [node name="Sprite_New" type="Sprite2D" parent="."]
-texture_filter = 5
-position = Vector2(0, -8)
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("15_rkq5e")
-hframes = 99
-frame = 5
+texture_filter = 3
+position = Vector2(0, -6.4)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("16_vhdrh")
+hframes = 6
+vframes = 6
 script = ExtResource("16_cd1ek")
-PossibleSprites = Array[Texture2D]([ExtResource("15_rkq5e")])
+PossibleSprites = Array[Texture2D]([ExtResource("16_vhdrh")])
 
 [connection signal="area_entered" from="Lava Collider" to="." method="OnTouchedLava"]
-[connection signal="ActionPressed" from="PlayerInputHandler" to="AttackHandler" method="OnAttack"]
-[connection signal="BlockPressed" from="PlayerInputHandler" to="AttackHandler" method="OnDeflect"]
-[connection signal="CrouchPressed" from="PlayerInputHandler" to="CrouchHandler" method="OnCrouchStart"]
-[connection signal="CrouchReleased" from="PlayerInputHandler" to="CrouchHandler" method="OnCrouchEnd"]
-[connection signal="JumpPressed" from="PlayerInputHandler" to="JumpHandler" method="OnJumpPressed"]
-[connection signal="JumpReleased" from="PlayerInputHandler" to="JumpHandler" method="OnJumpReleased"]
-[connection signal="MoveLeftPressed" from="PlayerInputHandler" to="HorizontalMovementHandler" method="OnLeftPressed"]
+[connection signal="InputRecieved" from="PlayerInputHandler" to="BallActionHandler" method="InputEventHandler"]
+[connection signal="InputRecieved" from="PlayerInputHandler" to="BallHorizontalMovement" method="InputEventHandler"]
+[connection signal="InputRecieved" from="PlayerInputHandler" to="BallJumpHandler" method="InputEventHandler"]
+[connection signal="InputRecieved" from="PlayerInputHandler" to="DashHandler" method="InputEventHandler"]
+[connection signal="InputRecieved" from="PlayerInputHandler" to="DeflectHandler" method="InputEventHandler"]
 [connection signal="MoveLeftPressed" from="PlayerInputHandler" to="FlipHandler" method="OnFaceLeft"]
-[connection signal="MoveLeftReleased" from="PlayerInputHandler" to="HorizontalMovementHandler" method="OnLeftReleased"]
-[connection signal="MoveRightPressed" from="PlayerInputHandler" to="HorizontalMovementHandler" method="OnRightPressed"]
 [connection signal="MoveRightPressed" from="PlayerInputHandler" to="FlipHandler" method="OnFaceRight"]
-[connection signal="MoveRightReleased" from="PlayerInputHandler" to="HorizontalMovementHandler" method="OnRightReleased"]
 [connection signal="OnFlip" from="FlipHandler" to="MeleeHurtboxHandler" method="SetFlipState"]
 [connection signal="OnFlip" from="FlipHandler" to="Sprite_New" method="SetFlipH"]
 [connection signal="OnReceivedDamage" from="Hitbox" to="KnockbackHandler" method="OnApplyKnockback"]
 [connection signal="OnReceivedHit" from="Hitbox" to="DeflectHandler" method="OnReceivedHitHandler"]
+[connection signal="HitLanded" from="MeleeHurtboxHandler" to="DashHandler" method="OnHitLandedHandler"]
+[connection signal="HitLanded" from="MeleeHurtboxHandler" to="KnockbackHandler" method="OnHitLanded"]
 [connection signal="OnHurtboxDeflected" from="MeleeHurtboxHandler" to="KnockbackHandler" method="SetInStaggerState"]

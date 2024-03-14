@@ -412,9 +412,9 @@ grow_horizontal = 2
 theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
 text = "[center]Blocking an attack causes the attacker to stagger.
-Attacking a staggered foe increases the knockback.
-Crouching allows you to attack and block low.
-Standing attacks can't be blocked by low blocks and vice versa."
+In this mode, the blocker must dash in any direction they wish 
+and the attacker will be thrown in the opposite direction. 
+The blocker also receives a bonus dash."
 fit_content = true
 
 [node name="Node2D" type="Node2D" parent="."]

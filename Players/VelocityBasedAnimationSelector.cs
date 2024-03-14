@@ -8,7 +8,7 @@ public partial class VelocityBasedAnimationSelector : Node, IDisableableControl
     [Export] CharacterBody2D _body;
     [Export] Sprite2D _sprite;
     [Export] AnimationPlayer _player;
-    [Export] CrouchHandler _crouchHandler;
+    //[Export] CrouchHandler _crouchHandler;
     [Export] FlipHandler _flipHandler;
     [Export] float _walkToRunTransitionThreshold = 300f;
     [ExportGroup("Animation Names")]
@@ -32,22 +32,27 @@ public partial class VelocityBasedAnimationSelector : Node, IDisableableControl
     {
         base._PhysicsProcess(delta);
         if (!IsEnabled) return;
+        //else
+        //{
+        //    _player.PlayIfExists("ball_static");
+        //    return;
+        //}
         if (_body.Velocity.X != 0f)
         {
-            if (_body.Velocity.X < 0f)
-            {
-                _flipHandler.OnFaceLeft();
-            }
-            else _flipHandler.OnFaceRight();
+            //if (_body.Velocity.X < 0f)
+            //{
+            //    _flipHandler.OnFaceLeft();
+            //}
+            //else _flipHandler.OnFaceRight();
         }
 
         if (_body.IsOnFloor())
         {
-            if (_crouchHandler.IsCrouched)
-            {
-                _player.PlayIfExists(_crouch);
-            }
-            else if (_body.Velocity.X == 0f)
+            //if (_crouchHandler.IsCrouched)
+            //{
+            //    _player.PlayIfExists(_crouch);
+            //}
+            if (_body.Velocity.X == 0f)
             {
                 _player.PlayIfExists(_idleAnimation);
             }

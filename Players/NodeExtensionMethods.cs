@@ -171,6 +171,27 @@ public static class NodeExtensionMethods
 
         return default;
     }
+
+    /// <summary>
+    /// Gets all the collisions since the last call to MoveAndSlide().
+    /// </summary>
+    /// <param name="body"></param>
+    /// <returns></returns>
+    public static KinematicCollision2D[] GetCollisions(this CharacterBody2D body)
+    {
+        KinematicCollision2D[] values = new KinematicCollision2D[body.GetSlideCollisionCount()];
+        for(int i = 0; i < values.Length; i++)
+        {
+            values[i] = body.GetSlideCollision(i);
+        }
+        return values;
+    }
+
+    public static float GetBottomY(this Rect2 rect) 
+        => rect.Position.Y + rect.Size.Y / 2f;
+
+    public static float GetTopY(this Rect2 rect) 
+        => rect.Position.Y - rect.Size.Y / 2f;
 }
 
 public static class MathExtensions
@@ -260,6 +281,22 @@ public static class MathExtensions
     public static float MaxVal(this Vector2 vect)
     {
         return Mathf.Max(vect.X, vect.Y);
+    }
+
+    /// <summary>
+    /// Gets the normalized position between the range, where the midpoint is 0, min is -1, and max is 1.
+    /// </summary>
+    /// <param name="curValue"></param>
+    /// <param name="min"></param>
+    /// <param name="max"></param>
+    /// <returns></returns>
+    public static float GetNormalizedValInRange(float curValue, float min, float max)
+    {
+        float halfRange = Mathf.Abs(max - min) / 2f;
+        float displacement = curValue - (max + min) / 2f;
+        if (Mathf.Abs(displacement) > halfRange)
+            return displacement < 0 ? -1f : 1f;
+        else return displacement / halfRange;
     }
 }
 
