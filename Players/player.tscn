@@ -97,7 +97,7 @@ tracks/1/keys = {
 
 [sub_resource type="Animation" id="Animation_2xutl"]
 resource_name = "ball_dash"
-length = 0.150005
+length = 0.100005
 step = 0.05
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -121,7 +121,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [&"DashHurtbox", 0.3, 100.0, 0],
+"args": [&"DashHurtbox", 0.2, 100.0, 0],
 "method": &"EnableHitbox"
 }]
 }

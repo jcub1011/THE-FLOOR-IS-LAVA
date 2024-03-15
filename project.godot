@@ -14,6 +14,7 @@ config/name="The Floor Is Lava"
 config/version="1.0.1"
 run/main_scene="res://Levels/game_root.tscn"
 config/features=PackedStringArray("4.2", "C#", "Forward Plus")
+run/max_fps=240
 config/icon="res://icon.svg"
 
 [display]

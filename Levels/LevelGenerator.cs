@@ -41,6 +41,8 @@ internal class SectionPreloader
     {
         _sectionToLoad = ToPath(sectionName);
         ResourceLoader.LoadThreadedRequest(_sectionToLoad);
+        //GD.Print("Printing orphaned nodes.");
+        //Node.PrintOrphanNodes();
     }
 
     public WorldSection GetNextSection()
@@ -151,11 +153,6 @@ public partial class LevelGenerator : Node2D
         }
 
         _camera.UpdateCamera(_activeWorldSections, players, delta, _lava);
-
-        if (_activeWorldSections.Last().GlobalPosition.Y >= _camera.GetCameraUpperY())
-        {
-            _preloader.GetNextSection();
-        }
 
         GetChild<LavaDistanceReadout>(0).UpdateReadout(_camera.GetCameraLowerY(), _lava.Position.Y);
     }

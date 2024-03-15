@@ -30,6 +30,7 @@ public partial class WorldSection : TileMap
         base._PhysicsProcess(delta);
         if (IsInstanceValid(this) && !IsVisible())
         {
+            GD.Print($"Deleting {Name}.");
             QueueFree();
         }
     }
