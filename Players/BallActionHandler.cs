@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using Weapons;
 
 namespace Players;
 
@@ -11,6 +12,7 @@ public partial class BallActionHandler : Node, IDisableableControl
     [Export] StringName _blockAnimation;
     [Export] StringName _dashAnimation;
     [Export] DashHandler _dashHandler;
+    [Export] ProjectileGenerator _projGenerator;
     [Export] float _blockCooldownTime = 0.3f;
     float _remainingBlockCooldown;
     bool _enabled = true;
@@ -46,12 +48,13 @@ public partial class BallActionHandler : Node, IDisableableControl
 
     void PerformDash()
     {
-        GD.Print("Performing Dash.");
-        float aniDuration = _aniPlayer.GetAnimation(_dashAnimation).Length;
-        if (!_dashHandler.PerformDash(_body.Velocity, aniDuration))
-        {
-            GD.Print("Insufficient dash charges.");
-        }
+        _projGenerator.LaunchProjectile();
+        //GD.Print("Performing Dash.");
+        //float aniDuration = _aniPlayer.GetAnimation(_dashAnimation).Length;
+        //if (!_dashHandler.PerformDash(_body.Velocity, aniDuration))
+        //{
+        //    GD.Print("Insufficient dash charges.");
+        //}
     }
 
     void PerformBlock()

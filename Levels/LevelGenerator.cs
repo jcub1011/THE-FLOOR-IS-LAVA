@@ -2,6 +2,7 @@ using Godot;
 using Players;
 using System.Collections.Generic;
 using System.Linq;
+using Weapons;
 
 namespace WorldGeneration;
 
@@ -76,6 +77,7 @@ public partial class LevelGenerator : Node2D
 
     List<Vector2> _spawnLocs;
     List<PlayerController> _players;
+    List<Projectile> _projectiles;
     bool _alreadyWarnedForLackingSections = false;
 
     public override void _Ready()
@@ -94,6 +96,8 @@ public partial class LevelGenerator : Node2D
         _activeWorldSections.Enqueue(newSection);
 
         _spawnLocs = newSection.GetSpawnLocations();
+
+        _projectiles = new();
 
         GetParent().Ready += () =>
         {
@@ -115,7 +119,22 @@ public partial class LevelGenerator : Node2D
             _players.Add((PlayerController)temp);
         }
 
+        foreach (var person in _players)
+        {
+            var generator = person.GetChild<ProjectileGenerator>();
+            if (generator != null)
+            {
+                generator.ProjectileCreated += OnProjectileCreated;
+            }
+        }
+
         Engine.TimeScale = 1f;
+    }
+
+    void OnProjectileCreated(Node proj)
+    {
+        AddChild(proj);
+        _projectiles.Add(proj as Projectile);
     }
 
     void RemoveDeletedScenes()
@@ -124,6 +143,14 @@ public partial class LevelGenerator : Node2D
             && !IsInstanceValid(_activeWorldSections.Peek()))
         {
             _activeWorldSections.Dequeue();
+        }
+
+        int deleteIndex;
+        while(_projectiles.Count != 0)
+        {
+            deleteIndex = _projectiles.FindIndex(x => !IsInstanceValid(x));
+            if (deleteIndex == -1) break;
+            else _projectiles.RemoveAt(deleteIndex);
         }
     }
 

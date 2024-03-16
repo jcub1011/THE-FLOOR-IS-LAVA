@@ -1,4 +1,4 @@
-[gd_scene load_steps=50 format=3 uid="uid://cv7g2fnqrxx7s"]
+[gd_scene load_steps=51 format=3 uid="uid://cv7g2fnqrxx7s"]
 
 [ext_resource type="Script" path="res://Players/PlayerController.cs" id="1_bukco"]
 [ext_resource type="Script" path="res://Players/BallActionHandler.cs" id="2_8sxkk"]
@@ -17,6 +17,8 @@
 [ext_resource type="Script" path="res://Players/DashHandler.cs" id="13_c0kft"]
 [ext_resource type="Script" path="res://Players/SpriteControls.cs" id="16_cd1ek"]
 [ext_resource type="Texture2D" uid="uid://c83ud5he4rggx" path="res://Players/Sprite Sheets/Medieval Tank PixelArt Shrunk With Stagger.png" id="16_vhdrh"]
+[ext_resource type="Script" path="res://Players/ProjectileGenerator.cs" id="18_a3l56"]
+[ext_resource type="PackedScene" uid="uid://5skbldadvrki" path="res://Players/projectile_template.tscn" id="19_yetsy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pi3oo"]
 size = Vector2(16, 13)
@@ -584,9 +586,6 @@ _data = {
 "tank_stagger": SubResource("Animation_m1jeo")
 }
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_1vqvy"]
-radius = 3.0
-
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("InputHandler")]
 collision_layer = 2
 slide_on_ceiling = false
@@ -606,7 +605,7 @@ position = Vector2(0, -7)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_26252")
 
-[node name="BallActionHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_aniPlayer", "_controlDisabler", "_dashHandler")]
+[node name="BallActionHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_aniPlayer", "_controlDisabler", "_dashHandler", "_projGenerator")]
 script = ExtResource("2_8sxkk")
 _body = NodePath("..")
 _aniPlayer = NodePath("../AnimationPlayer")
@@ -614,11 +613,12 @@ _controlDisabler = NodePath("../ControlDisablerHandler")
 _blockAnimation = &"tank_block"
 _dashAnimation = &"tank_dash"
 _dashHandler = NodePath("../DashHandler")
+_projGenerator = NodePath("../ProjectileGenerator")
 
 [node name="BallHorizontalMovement" type="Node" parent="." node_paths=PackedStringArray("_body")]
 script = ExtResource("3_vn5cb")
 _body = NodePath("..")
-_airAcceleration = 700.0
+_airAcceleration = 300.0
 
 [node name="BallJumpHandler" type="Node" parent="." node_paths=PackedStringArray("_body")]
 script = ExtResource("4_kdm3q")
@@ -724,15 +724,13 @@ vframes = 6
 script = ExtResource("16_cd1ek")
 PossibleSprites = Array[Texture2D]([ExtResource("16_vhdrh")])
 
-[node name="ProjectileGenerator" type="Node2D" parent="."]
+[node name="ProjectileGenerator" type="Node2D" parent="." node_paths=PackedStringArray("_disabler")]
+script = ExtResource("18_a3l56")
+_projectile = ExtResource("19_yetsy")
+_disabler = NodePath("../ControlDisablerHandler")
 
-[node name="ProjectileTemplate" type="Area2D" parent="ProjectileGenerator"]
+[node name="ProjectileOutput" type="Marker2D" parent="ProjectileGenerator"]
 position = Vector2(7, -6)
-collision_layer = 8
-collision_mask = 8
-
-[node name="Ball" type="CollisionShape2D" parent="ProjectileGenerator/ProjectileTemplate"]
-shape = SubResource("CircleShape2D_1vqvy")
 
 [connection signal="area_entered" from="Lava Collider" to="." method="OnTouchedLava"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="BallActionHandler" method="InputEventHandler"]
@@ -740,10 +738,12 @@ shape = SubResource("CircleShape2D_1vqvy")
 [connection signal="InputRecieved" from="PlayerInputHandler" to="BallJumpHandler" method="InputEventHandler"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="DashHandler" method="InputEventHandler"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="DeflectHandler" method="InputEventHandler"]
+[connection signal="InputRecieved" from="PlayerInputHandler" to="ProjectileGenerator" method="InputHandler"]
 [connection signal="MoveLeftPressed" from="PlayerInputHandler" to="FlipHandler" method="OnFaceLeft"]
 [connection signal="MoveRightPressed" from="PlayerInputHandler" to="FlipHandler" method="OnFaceRight"]
 [connection signal="OnFlip" from="FlipHandler" to="MeleeHurtboxHandler" method="SetFlipState"]
 [connection signal="OnFlip" from="FlipHandler" to="Sprite_New" method="SetFlipH"]
+[connection signal="OnFlip" from="FlipHandler" to="ProjectileGenerator" method="SetFlipState"]
 [connection signal="OnReceivedDamage" from="Hitbox" to="KnockbackHandler" method="OnApplyKnockback"]
 [connection signal="OnReceivedHit" from="Hitbox" to="DeflectHandler" method="OnReceivedHitHandler"]
 [connection signal="HitLanded" from="MeleeHurtboxHandler" to="DashHandler" method="OnHitLandedHandler"]
