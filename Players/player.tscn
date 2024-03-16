@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=3 uid="uid://cv7g2fnqrxx7s"]
+[gd_scene load_steps=50 format=3 uid="uid://cv7g2fnqrxx7s"]
 
 [ext_resource type="Script" path="res://Players/PlayerController.cs" id="1_bukco"]
 [ext_resource type="Script" path="res://Players/BallActionHandler.cs" id="2_8sxkk"]
@@ -584,6 +584,9 @@ _data = {
 "tank_stagger": SubResource("Animation_m1jeo")
 }
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_1vqvy"]
+radius = 3.0
+
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("InputHandler")]
 collision_layer = 2
 slide_on_ceiling = false
@@ -720,6 +723,16 @@ hframes = 6
 vframes = 6
 script = ExtResource("16_cd1ek")
 PossibleSprites = Array[Texture2D]([ExtResource("16_vhdrh")])
+
+[node name="ProjectileGenerator" type="Node2D" parent="."]
+
+[node name="ProjectileTemplate" type="Area2D" parent="ProjectileGenerator"]
+position = Vector2(7, -6)
+collision_layer = 8
+collision_mask = 8
+
+[node name="Ball" type="CollisionShape2D" parent="ProjectileGenerator/ProjectileTemplate"]
+shape = SubResource("CircleShape2D_1vqvy")
 
 [connection signal="area_entered" from="Lava Collider" to="." method="OnTouchedLava"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="BallActionHandler" method="InputEventHandler"]
