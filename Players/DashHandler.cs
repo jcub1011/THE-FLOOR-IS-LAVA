@@ -103,8 +103,8 @@ public partial class DashHandler : Node
     Vector2 GetDashDirection()
     {
         Vector2 direction = new();
-        if (_leftPressed) direction.X -= 1;
-        if (_rightPressed) direction.X += 1;
+        if (_leftPressed) direction.X -= 0.8f;
+        if (_rightPressed) direction.X += 0.8f;
         if (_upPressed) direction.Y -= 1;
         if (_downPressed) direction.Y += 1;
 

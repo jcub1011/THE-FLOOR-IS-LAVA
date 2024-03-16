@@ -97,7 +97,7 @@ tracks/1/keys = {
 
 [sub_resource type="Animation" id="Animation_2xutl"]
 resource_name = "ball_dash"
-length = 0.100005
+length = 0.050005
 step = 0.05
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -449,8 +449,8 @@ tracks/1/keys = {
 
 [sub_resource type="Animation" id="Animation_wchel"]
 resource_name = "tank_dash"
-length = 0.156253
-step = 0.03125
+length = 0.0500025
+step = 0.025
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -458,10 +458,10 @@ tracks/0/path = NodePath("Sprite_New:frame_coords")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.03125, 0.0625, 0.09375, 0.125, 0.21875),
+"times": PackedFloat32Array(0, 0.025, 0.125, 0.15625, 0.1875, 0.21875),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [Vector2i(0, 2), Vector2i(1, 2), Vector2i(2, 2), Vector2i(3, 2), Vector2i(5, 2), Vector2i(4, 2)]
+"values": [Vector2i(1, 2), Vector2i(5, 2), Vector2i(3, 2), Vector2i(0, 2), Vector2i(2, 2), Vector2i(4, 2)]
 }
 tracks/1/type = "method"
 tracks/1/imported = false
@@ -473,7 +473,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [&"DashHurtbox", 0.25, 100.0, 0],
+"args": [&"DashHurtbox", 0.15, 100.0, 0],
 "method": &"EnableHitbox"
 }]
 }
@@ -626,7 +626,6 @@ script = ExtResource("13_c0kft")
 _body = NodePath("..")
 _knockback = NodePath("../KnockbackHandler")
 _flip = NodePath("../FlipHandler")
-_dashSpeed = 225.0
 _dashAnimationName = &"tank_dash"
 _aniPlayer = NodePath("../AnimationPlayer")
 _disabler = NodePath("../ControlDisablerHandler")
