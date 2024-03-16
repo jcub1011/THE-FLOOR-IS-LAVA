@@ -23,13 +23,13 @@ position = Vector2(0, 120)
 [node name="Section Bounds" type="Node2D" parent="."]
 
 [node name="Upper_L" type="Marker2D" parent="Section Bounds"]
-position = Vector2(-200, -115)
+position = Vector2(-267, -150)
 
 [node name="Upper_R" type="Marker2D" parent="Section Bounds"]
-position = Vector2(200, -115)
+position = Vector2(267, -150)
 
 [node name="Lower_L" type="Marker2D" parent="Section Bounds"]
-position = Vector2(-200, 115)
+position = Vector2(-267, 150)
 
 [node name="Lower_R" type="Marker2D" parent="Section Bounds"]
-position = Vector2(200, 115)
+position = Vector2(267, 150)
