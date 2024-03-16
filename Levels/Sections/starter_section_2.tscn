@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://b74xhy7dvc571"]
+[gd_scene load_steps=3 format=3 uid="uid://bcwvyp46p0k8p"]
 
 [ext_resource type="TileSet" uid="uid://kxi7mam3dnya" path="res://Levels/Tilemaps/developer_tilemap.tres" id="1_jcd31"]
 [ext_resource type="Script" path="res://Levels/WorldSection.cs" id="2_0g6du"]
