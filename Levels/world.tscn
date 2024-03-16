@@ -63,16 +63,16 @@ animations = [{
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_fcu7n"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_xfy5v"]
-distance = -125.0
+distance = -150.0
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_jhsoa"]
-distance = -200.0
+distance = -265.0
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_453lm"]
 distance = -200.0
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_5eqt8"]
-distance = -110.0
+distance = -150.0
 
 [node name="World" type="Node2D"]
 
@@ -102,8 +102,10 @@ script = ExtResource("2_2ud8y")
 _camera = NodePath("../../Camera2D")
 _lookAhead = 80.0
 _lookBehind = 60.0
+_maxCameraZoom = Vector2(3, 3)
 
 [node name="SlowRegion" type="Area2D" parent="Level Generator"]
+visible = false
 z_index = 9
 collision_layer = 0
 collision_mask = 2
@@ -114,9 +116,11 @@ position = Vector2(-0.5, 95.5)
 shape = SubResource("RectangleShape2D_ayxn6")
 
 [node name="SpeedRegion" type="Area2D" parent="Level Generator"]
+visible = false
 z_index = 9
 collision_layer = 0
 collision_mask = 2
+monitoring = false
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Level Generator/SpeedRegion"]
 position = Vector2(0, -57.5)
@@ -125,24 +129,24 @@ shape = SubResource("RectangleShape2D_omdls")
 [node name="Section Bounds" type="Node2D" parent="."]
 
 [node name="Upper_L" type="Marker2D" parent="Section Bounds"]
-position = Vector2(-200, -115)
+position = Vector2(-267, -150)
 
 [node name="Upper_R" type="Marker2D" parent="Section Bounds"]
-position = Vector2(200, -115)
+position = Vector2(267, -150)
 
 [node name="Lower_L" type="Marker2D" parent="Section Bounds"]
-position = Vector2(-200, 115)
+position = Vector2(-267, 150)
 
 [node name="Lower_R" type="Marker2D" parent="Section Bounds"]
-position = Vector2(200, 115)
+position = Vector2(267, 150)
 
 [node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(4, 4)
+zoom = Vector2(3, 3)
 script = ExtResource("2_7kig3")
 
 [node name="LAVA" type="Area2D" parent="." node_paths=PackedStringArray("_cameraSimulator")]
 z_index = 11
-position = Vector2(0, 115)
+position = Vector2(0, 154.04)
 scale = Vector2(1.32, 1)
 collision_layer = 4
 collision_mask = 0
@@ -173,6 +177,7 @@ frame_progress = 0.0720958
 shape = SubResource("WorldBoundaryShape2D_fcu7n")
 
 [node name="World Bounds" type="StaticBody2D" parent="."]
+visible = false
 collision_layer = 0
 collision_mask = 0
 metadata/_edit_group_ = true
