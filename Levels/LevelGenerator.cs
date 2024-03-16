@@ -67,6 +67,7 @@ public partial class LevelGenerator : Node2D
     [Export] string _slowRegionName = "SlowRegion";
     [Export] LavaRaiseHandler _lava;
     [Export] CameraSimulator _camera;
+    [Export] StringName _sectionToStartWith = "starter_section_2";
 
     Queue<WorldSection> _activeWorldSections;
     [Export] Godot.Collections.Array<StringName> _templates;
@@ -85,7 +86,7 @@ public partial class LevelGenerator : Node2D
         ResourceLoader.LoadThreadedRequest(PlayerTemplatePath);
         _activeWorldSections = new();
 
-        _preloader = new("starter_section_1");
+        _preloader = new(_sectionToStartWith);
 
         var newSection = _preloader.GetNextSection();
         AddChild(newSection);

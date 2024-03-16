@@ -100,8 +100,8 @@ text = "Test Text"
 [node name="CameraSimulator" type="Node" parent="Level Generator" node_paths=PackedStringArray("_camera")]
 script = ExtResource("2_2ud8y")
 _camera = NodePath("../../Camera2D")
-_lookAhead = 80.0
-_lookBehind = 60.0
+_lookAhead = 120.0
+_lookBehind = 90.0
 _maxCameraZoom = Vector2(3, 3)
 
 [node name="SlowRegion" type="Area2D" parent="Level Generator"]
@@ -154,7 +154,7 @@ script = ExtResource("3_3li4a")
 _raiseSpeed = 15.0
 _raiseAcceleration = 0.5
 _maxRaiseSpeed = 80.0
-_waitTimer = 3.0
+_waitTimer = 80.0
 _cameraSimulator = NodePath("../Level Generator/CameraSimulator")
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
