@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace Players;
@@ -30,6 +31,79 @@ public partial class ControlDisablerHandler : Node
 {
     SceneTreeTimer _curTimer = null;
     string[] _controlsToReenable;
+    Dictionary<string, float> _controlDisableTimeMap;
+
+    public override void _Ready()
+    {
+        base._Ready();
+        _controlDisableTimeMap = new();
+    }
+
+    public override void _ExitTree()
+    {
+        base._ExitTree();
+        _controlDisableTimeMap = null;
+    }
+
+    public override void _Process(double delta)
+    {
+        base._Process(delta);
+        UpdateControlDisableTimeMap((float)delta);
+    }
+
+    void UpdateControlDisableTimeMap(float deltaTime)
+    {
+        var keys = _controlDisableTimeMap.Keys.ToList();
+
+        foreach (var key in keys)
+        {
+            if (_controlDisableTimeMap[key] <= 0f)
+            {
+                var control = GetControl(key);
+                control?.SetControlState(true);
+                _controlDisableTimeMap.Remove(key);
+            }
+            else _controlDisableTimeMap[key] -= deltaTime;
+        }
+    }
+
+    public void DisableControls(float duration, params string[] controls)
+    {
+        foreach(var control in GetControlsByID(controls))
+        {
+            control.SetControlState(false);
+            SetDisableDuration(control, duration);
+        }
+    }
+
+    public void DisableControlsExcept(float duration, params string[] exceptions)
+    {
+        foreach(var control in GetControls())
+        {
+            if (!exceptions.Contains(control.ControlID))
+            {
+                control.SetControlState(false);
+                SetDisableDuration(control, duration);
+            }
+        }
+    }
+
+    public void EnableControls(params string[] controls)
+    {
+        foreach(var control in GetControlsByID(controls))
+        {
+            SetDisableDuration(control, 0f);
+        }
+    }
+
+    public void EnableControlsExcept(params string[] exceptions)
+    {
+        foreach (var control in GetControls())
+        {
+            if (!exceptions.Contains(control.ControlID))
+                SetDisableDuration(control, 0f);
+        }
+    }
 
     public void SetControlStates(bool enabled, float undoAfterTime,
         params string[] controls)
@@ -122,6 +196,58 @@ public partial class ControlDisablerHandler : Node
     void TimerCallback()
     {
         SetControlStates(true, float.NaN, _controlsToReenable);
+    }
+
+    List<IDisableableControl> GetControlsByID(IEnumerable<string> controlIDs)
+    {
+        List<IDisableableControl> returnVal = new();
+
+        foreach(var child in GetParent().GetChildren())
+        {
+            if (child is IDisableableControl control)
+            {
+                if (controlIDs.Contains(control.ControlID)) 
+                    returnVal.Add(control);
+            }
+        }
+
+        return returnVal;
+    }
+
+    List<IDisableableControl> GetControls()
+    {
+        List<IDisableableControl> returnVal = new();
+
+        foreach (var child in GetParent().GetChildren())
+        {
+            if (child is IDisableableControl control)
+            {
+                returnVal.Add(control);
+            }
+        }
+
+        return returnVal;
+    }
+
+    IDisableableControl GetControl(string controlID)
+    {
+        return GetControlsByID(new string[1] { controlID }).FirstOrDefault();
+    }
+
+    void SetDisableDuration(string controlID, float duration)
+    {
+        if (!_controlDisableTimeMap.TryAdd(controlID, duration))
+        {
+            _controlDisableTimeMap[controlID] = duration;
+        }
+    }
+
+    void SetDisableDuration(IDisableableControl control, float duration)
+    {
+        if (!_controlDisableTimeMap.TryAdd(control.ControlID, duration))
+        {
+            _controlDisableTimeMap[control.ControlID] = duration;
+        }
     }
 
     /// <summary>
