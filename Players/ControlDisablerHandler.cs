@@ -59,14 +59,21 @@ public partial class ControlDisablerHandler : Node
         {
             if (_controlDisableTimeMap[key] <= 0f)
             {
-                var control = GetControl(key);
-                control?.SetControlState(true);
+                foreach(var control in GetControlsByID(new string[1] { key }))
+                {
+                    control.SetControlState(true);
+                }
                 _controlDisableTimeMap.Remove(key);
             }
             else _controlDisableTimeMap[key] -= deltaTime;
         }
     }
 
+    /// <summary>
+    /// Disables the specified controls for the given duration.
+    /// </summary>
+    /// <param name="duration"></param>
+    /// <param name="controls">ControlID</param>
     public void DisableControls(float duration, params string[] controls)
     {
         foreach(var control in GetControlsByID(controls))
@@ -76,6 +83,11 @@ public partial class ControlDisablerHandler : Node
         }
     }
 
+    /// <summary>
+    /// Disables all controls except the exeptions for the given duration.
+    /// </summary>
+    /// <param name="duration"></param>
+    /// <param name="exceptions">ControlID</param>
     public void DisableControlsExcept(float duration, params string[] exceptions)
     {
         foreach(var control in GetControls())
@@ -88,6 +100,10 @@ public partial class ControlDisablerHandler : Node
         }
     }
 
+    /// <summary>
+    /// Enables the provided controls.
+    /// </summary>
+    /// <param name="controls">ControlID</param>
     public void EnableControls(params string[] controls)
     {
         foreach(var control in GetControlsByID(controls))
@@ -96,6 +112,10 @@ public partial class ControlDisablerHandler : Node
         }
     }
 
+    /// <summary>
+    /// Enables the controls except for the exceptions.
+    /// </summary>
+    /// <param name="exceptions">ControlID</param>
     public void EnableControlsExcept(params string[] exceptions)
     {
         foreach (var control in GetControls())
@@ -103,99 +123,6 @@ public partial class ControlDisablerHandler : Node
             if (!exceptions.Contains(control.ControlID))
                 SetDisableDuration(control, 0f);
         }
-    }
-
-    public void SetControlStates(bool enabled, float undoAfterTime,
-        params string[] controls)
-    {
-        DeleteCurTimer();
-
-        foreach (var control in controls)
-        {
-            SetControlStateByID(control, enabled);
-        }
-
-        if (!float.IsNaN(undoAfterTime) && undoAfterTime > 0f)
-        {
-            _curTimer = GetTree().CreateTimer(undoAfterTime, false);
-            _controlsToReenable = controls;
-            _curTimer.Timeout += TimerCallback;
-        }
-    }
-
-    public void SetControlStatesExcept(bool enabled, float undoAfterTime,
-        params string[] controls)
-    {
-        List<string> toSet = new();
-        foreach(var child in GetParent().GetChildren())
-        {
-            if (child is IDisableableControl control)
-            {
-                if (!controls.Contains(control.ControlID)) toSet.Add(control.ControlID);
-            }
-        }
-        SetControlStates(enabled, undoAfterTime, toSet.ToArray());
-    }
-
-    /// <summary>
-    /// Sets all the availiable controls to the desired state.
-    /// </summary>
-    /// <param name="enabled"></param>
-    /// <param name="undoAfterTime"></param>
-    public void SetControlStates(bool enabled, float undoAfterTime)
-    {
-        DeleteCurTimer();
-        string[] toReenable = new string[GetParent().GetChildren().Count];
-        int index = 0;
-
-        foreach (var child in GetParent().GetChildren())
-        {
-            if (child is IDisableableControl control)
-            {
-                control.SetControlState(enabled);
-                toReenable[index++] = control.ControlID;
-            }
-        }
-
-        if (!float.IsNaN(undoAfterTime) && undoAfterTime > 0f)
-        {
-            _curTimer = GetTree().CreateTimer(undoAfterTime, false);
-            _controlsToReenable = toReenable;
-            _curTimer.Timeout += TimerCallback;
-        }
-    }
-
-    void DeleteCurTimer()
-    {
-        if (_curTimer != null && _curTimer.TimeLeft > 0f)
-        {
-            _curTimer.Timeout -= TimerCallback;
-            foreach (var control in _controlsToReenable)
-            {
-                SetControlStateByID(control, true);
-            }
-            _curTimer = null;
-            _controlsToReenable = null;
-        }
-    }
-
-    void SetControlStateByID(string controlID, bool enabled)
-    {
-        foreach (var child in GetParent().GetChildren())
-        {
-            if (child is IDisableableControl control)
-            {
-                if (control.ControlID == controlID)
-                {
-                    control.SetControlState(enabled);
-                }
-            }
-        }
-    }
-
-    void TimerCallback()
-    {
-        SetControlStates(true, float.NaN, _controlsToReenable);
     }
 
     List<IDisableableControl> GetControlsByID(IEnumerable<string> controlIDs)
@@ -229,11 +156,6 @@ public partial class ControlDisablerHandler : Node
         return returnVal;
     }
 
-    IDisableableControl GetControl(string controlID)
-    {
-        return GetControlsByID(new string[1] { controlID }).FirstOrDefault();
-    }
-
     void SetDisableDuration(string controlID, float duration)
     {
         if (!_controlDisableTimeMap.TryAdd(controlID, duration))
@@ -249,21 +171,4 @@ public partial class ControlDisablerHandler : Node
             _controlDisableTimeMap[control.ControlID] = duration;
         }
     }
-
-    /// <summary>
-    /// Gets the first sibling matching the type T, where it returns 
-    /// null if the sibling does not exist.
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
-    public T GetFirstSiblingOfType<T>() where T : class
-    {
-        foreach (var child in GetParent().GetChildren())
-        {
-            if (child is T target) return target;
-        }
-
-        return null;
-    }
-
 }

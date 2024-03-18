@@ -1,6 +1,7 @@
 using Godot;
-using Players;
-using System;
+using Godot.NodeExtensions;
+using Godot.MathExtensions;
+using Godot.GodotExtensions;
 using System.Collections.Generic;
 using System.Linq;
 using TheFloorIsLava.Subscriptions;
@@ -18,7 +19,7 @@ public partial class CameraSimulator : Node
     [Export] Vector2 _maxCameraZoom = new(4, 4);
     [Export] float _maxZoomSpeed = 5f;
 
-    float _canvasTotalUnits = NodeExtensionMethods.GetViewportSize().Y;
+    float _canvasTotalUnits = GodotExtensions.GetViewportSize().Y;
 
     public override void _Ready()
     {
@@ -28,13 +29,13 @@ public partial class CameraSimulator : Node
     public float GetCameraUpperY()
     {
         return _camera.GetScreenCenterPosition().Y 
-            - NodeExtensionMethods.GetViewportSize().Y / _camera.Zoom.Y / 2f;
+            - GodotExtensions.GetViewportSize().Y / _camera.Zoom.Y / 2f;
     }
 
     public float GetCameraLowerY()
     {
         return _camera.GetScreenCenterPosition().Y
-            + NodeExtensionMethods.GetViewportSize().Y / _camera.Zoom.Y / 2f;
+            + GodotExtensions.GetViewportSize().Y / _camera.Zoom.Y / 2f;
     }
 
     /// <summary>

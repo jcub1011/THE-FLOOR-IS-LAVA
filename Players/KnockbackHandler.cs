@@ -1,5 +1,6 @@
 using Godot;
-using System.Reflection;
+using Godot.NodeExtensions;
+using Godot.MathExtensions;
 
 namespace Players;
 
@@ -58,7 +59,7 @@ public partial class KnockbackHandler : Node, IDisableableControl
     void DisableHandlers(float time)
     {
         //EmitSignal(SignalName.OnDisableMovementControl);
-        _disabler.SetControlStatesExcept(false,
+        _disabler.DisableControlsExcept(
             time,
             ControlIDs.INPUT,
             ControlIDs.GRAVITY);

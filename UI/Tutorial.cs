@@ -1,6 +1,5 @@
 using Godot;
-using Players;
-using System;
+using Godot.NodeExtensions;
 
 namespace Players;
 

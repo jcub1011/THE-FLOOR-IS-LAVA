@@ -1,5 +1,5 @@
 using Godot;
-using Players;
+using Godot.GodotExtensions;
 using System;
 
 namespace WorldGeneration;
@@ -13,7 +13,7 @@ public partial class CameraZoomer : Camera2D
     public override void _Ready()
     {
         base._Ready();
-        _targetSize = NodeExtensionMethods.GetViewportSize();
+        _targetSize = GodotExtensions.GetViewportSize();
         _initialZoom = Zoom;
 
         GD.Print(_targetSize);

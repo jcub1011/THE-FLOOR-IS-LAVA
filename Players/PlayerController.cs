@@ -1,5 +1,5 @@
 using Godot;
-using System.Threading;
+using Godot.NodeExtensions;
 using TheFloorIsLava.Subscriptions;
 
 namespace Players;
@@ -35,27 +35,7 @@ public partial class PlayerController : CharacterBody2D
         IsAlive = false;
         Visible = false;
 
-        foreach (var child in GetChildren())
-        {
-            if (child is ControlDisablerHandler handler)
-            {
-                handler.SetControlStates(false, float.PositiveInfinity);
-
-                //var player = GetNode<AnimationPlayer>("AnimationPlayer");
-                //player.Play("death");
-
-                //float length = player.GetAnimation("death").Length;
-
-                //var timer = GetTree().CreateTimer(length, false);
-                //timer.Timeout += () => {
-                //    GD.Print("Death animation ended.");
-                //    Visible = false;
-                //};
-                break;
-            }
-        }
-
-        //Visible = false;
+        this.GetChild<ControlDisablerHandler>().DisableControlsExcept(float.PositiveInfinity);
     }
 
     public void OnStart()
@@ -63,14 +43,7 @@ public partial class PlayerController : CharacterBody2D
         Visible = true;
         IsAlive = true;
 
-        foreach (var child in GetChildren())
-        {
-            if (child is ControlDisablerHandler handler)
-            {
-                handler.SetControlStates(true, float.PositiveInfinity);
-                break;
-            }
-        }
+        this.GetChild<ControlDisablerHandler>().EnableControls();
     }
 
     public override void _ExitTree()

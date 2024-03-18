@@ -1,7 +1,6 @@
 using Godot;
-using Godot.Collections;
+using Godot.NodeExtensions;
 using System.Collections.Generic;
-using System.Linq;
 using WorldGeneration;
 
 namespace Players;

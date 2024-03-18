@@ -1,4 +1,5 @@
 using Godot;
+using Godot.NodeExtensions;
 
 namespace Players;
 
@@ -79,7 +80,7 @@ public partial class AttackHandler : Node, IDisableableControl
             ? _crouchedDeflectAnimation : _deflectAnimation;
 
         GD.Print($"Performing {animationToUse}.");
-        _controlDisabler.SetControlStatesExcept(false,
+        _controlDisabler.DisableControlsExcept(
             _aniPlayer.GetAnimation(animationToUse).Length + 0.05f,
                 ControlIDs.GRAVITY,
                 ControlIDs.INPUT,
@@ -107,7 +108,7 @@ public partial class AttackHandler : Node, IDisableableControl
             ? _dropkickAnimation : _punchAnimation;
 
         GD.Print($"Performing {animationToUse}.");
-        _controlDisabler.SetControlStatesExcept(false,
+        _controlDisabler.DisableControlsExcept(
             _aniPlayer.GetAnimation(animationToUse).Length + 0.05f,
                 ControlIDs.GRAVITY,
                 ControlIDs.INPUT,

@@ -2,6 +2,7 @@ using Godot;
 using Players;
 using System.Collections.Generic;
 using System.Linq;
+using Godot.NodeExtensions;
 
 namespace WorldGeneration;
 

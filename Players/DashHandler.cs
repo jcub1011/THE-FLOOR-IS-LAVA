@@ -91,8 +91,8 @@ public partial class DashHandler : Node
 
         _body.Velocity = direction.Normalized() * _dashSpeed;
         _aniPlayer.Play(_dashAnimationName);
-        _disabler.SetControlStatesExcept(
-            false, _remainingDashTime,
+        _disabler.DisableControlsExcept(
+            _remainingDashTime,
             ControlIDs.INPUT,
             ControlIDs.HURTBOX,
             ControlIDs.HITBOX);
