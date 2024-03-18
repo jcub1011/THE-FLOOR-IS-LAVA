@@ -1,5 +1,6 @@
 using Godot;
 using System.Threading;
+using TheFloorIsLava.Subscriptions;
 
 namespace Players;
 
@@ -13,7 +14,7 @@ public partial class PlayerController : CharacterBody2D
     public override void _Ready()
     {
         base._Ready();
-
+        OriginShiftChannel.OriginShifted += OriginShifted;
     }
 
     public override void _Process(double delta)
@@ -25,6 +26,8 @@ public partial class PlayerController : CharacterBody2D
         Velocity = limitedVelocity;
         if (IsAlive) MoveAndSlide();
     }
+
+    void OriginShifted(Vector2 shift) => Position += shift;
 
     public void OnTouchedLava(Area2D area)
     {
@@ -74,5 +77,6 @@ public partial class PlayerController : CharacterBody2D
     {
         base._ExitTree();
         InputHandler.ReleaseInput();
+        OriginShiftChannel.OriginShifted -= OriginShifted;
     }
 }

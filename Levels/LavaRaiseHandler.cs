@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using TheFloorIsLava.Subscriptions;
 
 namespace WorldGeneration;
 
@@ -28,9 +29,23 @@ public partial class LavaRaiseHandler : Area2D
 		_raiseSpeed += _raiseAcceleration * delta;
 		if (_raiseSpeed > _maxRaiseSpeed) _raiseSpeed = _maxRaiseSpeed;
 		AddAdditionalRaiseSpeed(_cameraSimulator.GetCameraLowerY(), delta);
-	}
+    }
 
-	public void AddAdditionalRaiseSpeed(float cameraBottomPos, double deltaTime)
+    public override void _Ready()
+    {
+        base._Ready();
+        OriginShiftChannel.OriginShifted += OriginShifted;
+    }
+
+    public override void _ExitTree()
+    {
+        base._ExitTree();
+		OriginShiftChannel.OriginShifted -= OriginShifted;
+    }
+
+	void OriginShifted(Vector2 shift) => Position += shift;
+
+    public void AddAdditionalRaiseSpeed(float cameraBottomPos, double deltaTime)
 	{
 		float dist = cameraBottomPos - Position.Y;
 		if (dist > 0) return;
