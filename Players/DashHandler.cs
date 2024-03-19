@@ -90,12 +90,12 @@ public partial class DashHandler : Node
         direction = GetDashDirection();
 
         _body.Velocity = direction.Normalized() * _dashSpeed;
-        _aniPlayer.Play(_dashAnimationName);
         _disabler.DisableControlsExcept(
             _remainingDashTime,
             ControlIDs.INPUT,
             ControlIDs.HURTBOX,
             ControlIDs.HITBOX);
+        _aniPlayer.Play(_dashAnimationName);
 
         return true;
     }
@@ -116,5 +116,10 @@ public partial class DashHandler : Node
     public void OnHitLandedHandler(Node2D thingHit)
     {
         if (DashCharges <= 0) DashCharges++;
+    }
+
+    public void OverrideMovementControlDisableLength(float newDuration)
+    {
+        _disabler.DisableControls(newDuration, ControlIDs.MOVEMENT);
     }
 }
