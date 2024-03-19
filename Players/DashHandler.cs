@@ -12,6 +12,7 @@ public partial class DashHandler : Node
     [Export] FlipHandler _flip;
     [Export] float _dashSpeed = 250;
     [Export] float _dashAngleAdjustSpeed = 5f;
+    [Export] float _jumpDisableTime = 0.1f;
     [Export] StringName _dashAnimationName;
     [Export] AnimationPlayer _aniPlayer;
     [Export] ControlDisablerHandler _disabler;
@@ -52,20 +53,9 @@ public partial class DashHandler : Node
     void HandleDashNudging(float delta)
     {
         if (_upPressed == _downPressed) return;
-        //Vector2 normal;
         Vector2 moveDir = _body.Velocity;
-        //if (moveDir.Y != 0f) return;
         _body.Velocity += new Vector2(0f, (_upPressed 
             ? -_dashAngleAdjustSpeed : _dashAngleAdjustSpeed) * delta);
-        //_body.Velocity = moveDir.Rotated((_upPressed 
-        //    ? _dashAngleAdjustSpeed : -_dashAngleAdjustSpeed) * delta);
-
-        //// Get first horizontal normal.
-        //foreach(var collision in _body.GetCollisions())
-        //{
-        //    normal = collision.GetNormal();
-        //    if (normal == Vector2.Right || normal == Vector2.Left) break;
-        //}
     }
 
     public void InputEventHandler(StringName input, bool pressed)
@@ -90,12 +80,15 @@ public partial class DashHandler : Node
         direction = GetDashDirection();
 
         _body.Velocity = direction.Normalized() * _dashSpeed;
+        _aniPlayer.Play(_dashAnimationName);
         _disabler.DisableControlsExcept(
             _remainingDashTime,
             ControlIDs.INPUT,
-            ControlIDs.HURTBOX,
+            //ControlIDs.HURTBOX,
             ControlIDs.HITBOX);
-        _aniPlayer.Play(_dashAnimationName);
+        _disabler.DisableControls(
+            _jumpDisableTime,
+            ControlIDs.MOVEMENT);
 
         return true;
     }
@@ -116,10 +109,5 @@ public partial class DashHandler : Node
     public void OnHitLandedHandler(Node2D thingHit)
     {
         if (DashCharges <= 0) DashCharges++;
-    }
-
-    public void OverrideMovementControlDisableLength(float newDuration)
-    {
-        _disabler.DisableControls(newDuration, ControlIDs.MOVEMENT);
     }
 }
