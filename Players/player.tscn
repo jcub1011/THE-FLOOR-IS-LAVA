@@ -616,6 +616,7 @@ _dashHandler = NodePath("../DashHandler")
 script = ExtResource("3_vn5cb")
 _body = NodePath("..")
 _airAcceleration = 700.0
+_excessSpeedDeceleration = 0.5
 
 [node name="BallJumpHandler" type="Node" parent="." node_paths=PackedStringArray("_body")]
 script = ExtResource("4_kdm3q")
