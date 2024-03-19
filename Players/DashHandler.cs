@@ -11,8 +11,8 @@ public partial class DashHandler : Node
     [Export] KnockbackHandler _knockback;
     [Export] FlipHandler _flip;
     [Export] float _dashSpeed = 250;
-    [Export] float _dashAngleAdjustSpeed = 5f;
-    [Export] float _jumpDisableTime = 0.1f;
+    [Export] float _dashGravityDisableTime = 0.08f;
+    [Export] float _movementDisableTime = 0.1f;
     [Export] StringName _dashAnimationName;
     [Export] AnimationPlayer _aniPlayer;
     [Export] ControlDisablerHandler _disabler;
@@ -52,10 +52,10 @@ public partial class DashHandler : Node
 
     void HandleDashNudging(float delta)
     {
-        if (_upPressed == _downPressed) return;
-        Vector2 moveDir = _body.Velocity;
-        _body.Velocity += new Vector2(0f, (_upPressed 
-            ? -_dashAngleAdjustSpeed : _dashAngleAdjustSpeed) * delta);
+        //if (_upPressed == _downPressed) return;
+        //Vector2 moveDir = _body.Velocity;
+        //_body.Velocity += new Vector2(0f, (_upPressed 
+        //    ? -_dashAngleAdjustSpeed : _dashAngleAdjustSpeed) * delta);
     }
 
     public void InputEventHandler(StringName input, bool pressed)
@@ -87,8 +87,11 @@ public partial class DashHandler : Node
             //ControlIDs.HURTBOX,
             ControlIDs.HITBOX);
         _disabler.DisableControls(
-            _jumpDisableTime,
+            _movementDisableTime,
             ControlIDs.MOVEMENT);
+        _disabler.DisableControls(
+            _dashGravityDisableTime,
+            ControlIDs.GRAVITY);
 
         return true;
     }
