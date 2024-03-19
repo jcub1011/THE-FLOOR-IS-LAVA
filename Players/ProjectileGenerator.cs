@@ -33,12 +33,13 @@ public partial class ProjectileGenerator : Node2D
     public void CreateProjectile(Vector2 direction)
     {
         // TODO: Implement form of aim assist.
-        var projectile = _projectileTemplate.Instantiate<CharacterBody2D>();
+        var projectile = _projectileTemplate.Instantiate<Projectile>();
         GetTree().Root.AddChild(projectile);
         projectile.GlobalPosition = GetProjectileOutputPosition(direction);
 
-        Vector2 velocity = direction.Normalized() * _projectileSpeed;
-        velocity += _body.Velocity;
+        Vector2 velocity = direction.Normalized() * (_projectileSpeed + _body.Velocity.Length());
+        //velocity += _body.Velocity;
         projectile.Velocity = velocity;
+        projectile.RemainingLifeTime = 5f;
     }
 }

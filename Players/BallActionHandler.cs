@@ -14,6 +14,10 @@ public partial class BallActionHandler : Node, IDisableableControl
     [Export] float _blockCooldownTime = 0.3f;
     float _remainingBlockCooldown;
     bool _enabled = true;
+    InputToDirectionConverter _inputConverter = new();
+
+    [Signal]
+    public delegate void OnProjectileFiredEventHandler(Vector2 direction);
 
     public string ControlID => ControlIDs.ACTION_HANDLER;
 
@@ -30,6 +34,8 @@ public partial class BallActionHandler : Node, IDisableableControl
 
     public void InputEventHandler(StringName input, bool pressed)
     {
+        _inputConverter.UpdateDirection(input, pressed);
+
         if (!_enabled) return;
         if (!pressed) return;
 
@@ -59,6 +65,7 @@ public partial class BallActionHandler : Node, IDisableableControl
         GD.Print("Performing Block.");
         _remainingBlockCooldown = _aniPlayer.GetAnimation(_blockAnimation).Length + _blockCooldownTime;
         _aniPlayer.Play(_blockAnimation);
+        EmitSignal(SignalName.OnProjectileFired, _inputConverter.GetDirection());
         _controlDisabler.DisableControlsExcept(
             _aniPlayer.GetAnimation(_blockAnimation).Length,
             ControlIDs.GRAVITY,
