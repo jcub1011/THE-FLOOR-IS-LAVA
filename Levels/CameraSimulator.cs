@@ -1,15 +1,17 @@
 using Godot;
-using Players;
-using System;
+using Godot.NodeExtensions;
+using Godot.MathExtensions;
+using Godot.GodotExtensions;
 using System.Collections.Generic;
 using System.Linq;
+using TheFloorIsLava.Subscriptions;
 
 namespace WorldGeneration;
 
 public partial class CameraSimulator : Node
 {
     [Export] Camera2D _camera;
-    [Export] double _maxSpeed = 500;
+    [Export] double _maxSpeed = 600;
     [Export] float _paddingPercent = 0.5f;
     [Export] float _lookAhead = 100f;
     [Export] float _lookBehind = 100f;
@@ -17,7 +19,7 @@ public partial class CameraSimulator : Node
     [Export] Vector2 _maxCameraZoom = new(4, 4);
     [Export] float _maxZoomSpeed = 5f;
 
-    float _canvasTotalUnits = NodeExtensionMethods.GetViewportSize().Y;
+    float _canvasTotalUnits = GodotExtensions.GetViewportSize().Y;
 
     public override void _Ready()
     {
@@ -27,13 +29,13 @@ public partial class CameraSimulator : Node
     public float GetCameraUpperY()
     {
         return _camera.GetScreenCenterPosition().Y 
-            - NodeExtensionMethods.GetViewportSize().Y / _camera.Zoom.Y / 2f;
+            - GodotExtensions.GetViewportSize().Y / _camera.Zoom.Y / 2f;
     }
 
     public float GetCameraLowerY()
     {
         return _camera.GetScreenCenterPosition().Y
-            + NodeExtensionMethods.GetViewportSize().Y / _camera.Zoom.Y / 2f;
+            + GodotExtensions.GetViewportSize().Y / _camera.Zoom.Y / 2f;
     }
 
     /// <summary>
@@ -45,10 +47,8 @@ public partial class CameraSimulator : Node
     /// <param name="deltaTime"></param>
     /// <param name="additionalItems">Any additional 2D objects that must be moved.</param>
     public void UpdateCamera(
-        IEnumerable<Node2D> objects,
         IEnumerable<Node2D> focusPoints,
-        double deltaTime,
-        params Node2D[] additionalItems)
+        double deltaTime)
     {
         Rect2 focusBox = GetFocusBoundingBox(focusPoints);
         _camera.Zoom = GetNewZoom(focusBox, _minCameraZoom.Y, _maxCameraZoom.Y, _lookAhead, _lookBehind, (float)deltaTime);
@@ -56,23 +56,7 @@ public partial class CameraSimulator : Node
         float dist = GetNormDistFromCamCenter(GetCameraLowerY() - _lookBehind - focusBox.GetBottomY());
 
         Vector2 deltaPos = new(0f, (float)_maxSpeed * dist * (float)deltaTime);
-        foreach (var node in objects)
-        {
-            if (!IsInstanceValid(node)) continue;
-            else node.Position += deltaPos;
-        }
-
-        foreach(var node in focusPoints)
-        {
-            if (!IsInstanceValid(node)) continue;
-            else node.Position += deltaPos;
-        }
-
-        foreach(var node in additionalItems)
-        {
-            if (!IsInstanceValid(node)) continue;
-            else node.Position += deltaPos;
-        }
+        OriginShiftChannel.ShiftOrigin(deltaPos);
     }
 
     Vector2 GetFocusAvgPos(IEnumerable<Node2D> focusPoints)

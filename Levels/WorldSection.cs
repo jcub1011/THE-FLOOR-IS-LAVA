@@ -1,6 +1,7 @@
 using Godot;
-using Players;
+using Godot.NodeExtensions;
 using System.Collections.Generic;
+using TheFloorIsLava.Subscriptions;
 
 namespace WorldGeneration;
 
@@ -23,6 +24,13 @@ public partial class WorldSection : TileMap
     {
         base._Ready();
         CollisionAnimatable = false;
+        OriginShiftChannel.OriginShifted += OriginShifted;
+    }
+
+    public override void _ExitTree()
+    {
+        base._ExitTree();
+        OriginShiftChannel.OriginShifted -= OriginShifted;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -30,8 +38,14 @@ public partial class WorldSection : TileMap
         base._PhysicsProcess(delta);
         if (IsInstanceValid(this) && !IsVisible())
         {
+            GD.Print($"Deleting {Name}.");
             QueueFree();
         }
+    }
+
+    void OriginShifted(Vector2 shift)
+    {
+        Position += shift;
     }
 
     float GetWorldBottomY()

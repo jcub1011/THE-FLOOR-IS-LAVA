@@ -1,5 +1,6 @@
 using Godot;
-using System.Threading;
+using Godot.NodeExtensions;
+using TheFloorIsLava.Subscriptions;
 
 namespace Players;
 
@@ -13,7 +14,7 @@ public partial class PlayerController : CharacterBody2D
     public override void _Ready()
     {
         base._Ready();
-
+        OriginShiftChannel.OriginShifted += OriginShifted;
     }
 
     public override void _Process(double delta)
@@ -26,33 +27,15 @@ public partial class PlayerController : CharacterBody2D
         if (IsAlive) MoveAndSlide();
     }
 
+    void OriginShifted(Vector2 shift) => Position += shift;
+
     public void OnTouchedLava(Area2D area)
     {
         GD.Print($"Player {Name} touched lava.");
         IsAlive = false;
         Visible = false;
 
-        foreach (var child in GetChildren())
-        {
-            if (child is ControlDisablerHandler handler)
-            {
-                handler.SetControlStates(false, float.PositiveInfinity);
-
-                //var player = GetNode<AnimationPlayer>("AnimationPlayer");
-                //player.Play("death");
-
-                //float length = player.GetAnimation("death").Length;
-
-                //var timer = GetTree().CreateTimer(length, false);
-                //timer.Timeout += () => {
-                //    GD.Print("Death animation ended.");
-                //    Visible = false;
-                //};
-                break;
-            }
-        }
-
-        //Visible = false;
+        this.GetChild<ControlDisablerHandler>().DisableControlsExcept(float.PositiveInfinity);
     }
 
     public void OnStart()
@@ -60,19 +43,13 @@ public partial class PlayerController : CharacterBody2D
         Visible = true;
         IsAlive = true;
 
-        foreach (var child in GetChildren())
-        {
-            if (child is ControlDisablerHandler handler)
-            {
-                handler.SetControlStates(true, float.PositiveInfinity);
-                break;
-            }
-        }
+        this.GetChild<ControlDisablerHandler>().EnableControls();
     }
 
     public override void _ExitTree()
     {
         base._ExitTree();
         InputHandler.ReleaseInput();
+        OriginShiftChannel.OriginShifted -= OriginShifted;
     }
 }

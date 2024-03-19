@@ -59,8 +59,8 @@ public partial class BallActionHandler : Node, IDisableableControl
         GD.Print("Performing Block.");
         _remainingBlockCooldown = _aniPlayer.GetAnimation(_blockAnimation).Length + _blockCooldownTime;
         _aniPlayer.Play(_blockAnimation);
-        _controlDisabler.SetControlStatesExcept(
-            false, _aniPlayer.GetAnimation(_blockAnimation).Length,
+        _controlDisabler.DisableControlsExcept(
+            _aniPlayer.GetAnimation(_blockAnimation).Length,
             ControlIDs.GRAVITY,
             ControlIDs.INPUT,
             ControlIDs.HITBOX);

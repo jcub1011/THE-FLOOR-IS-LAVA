@@ -36,8 +36,10 @@ public partial class WorldHandler : Node2D
             return;
         }
 
+        RemoveChild(_existingWorld);
         _existingWorld.Free();
         _existingWorld = null;
+        GC.Collect();
     }
 
     public void OnStartGameHandler()
@@ -50,7 +52,6 @@ public partial class WorldHandler : Node2D
     public void OnRestartHandler()
     {
         //_retryScreen.Visible = false;
-        RemoveChild( _existingWorld );
         ReplaceWorld();
     }
 
