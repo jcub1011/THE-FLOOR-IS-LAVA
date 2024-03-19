@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://bfra243ouj6n3"]
+
+[ext_resource type="Texture2D" uid="uid://df3g0386ijqoa" path="res://icon.svg" id="1_1rvit"]
+[ext_resource type="Script" path="res://Players/Projectile.cs" id="1_wifet"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_3m4im"]
+radius = 7.0
+
+[node name="Projectile" type="CharacterBody2D"]
+collision_layer = 8
+collision_mask = 9
+script = ExtResource("1_wifet")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_3m4im")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.09, 0.09)
+texture = ExtResource("1_1rvit")

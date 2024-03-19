@@ -131,3 +131,4 @@ crouch_kb_r={
 2d_physics/layer_1="Ground"
 2d_physics/layer_2="Player"
 2d_physics/layer_3="Lava"
+2d_physics/layer_4="Projectile"
