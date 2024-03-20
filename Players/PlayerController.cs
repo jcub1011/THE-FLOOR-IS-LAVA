@@ -35,7 +35,7 @@ public partial class PlayerController : CharacterBody2D
         IsAlive = false;
         Visible = false;
 
-        this.GetChild<ControlDisablerHandler>().DisableControlsExcept(float.PositiveInfinity);
+        this.GetDirectChild<ControlDisablerHandler>().DisableControlsExcept(float.PositiveInfinity);
     }
 
     public void OnStart()
@@ -43,7 +43,7 @@ public partial class PlayerController : CharacterBody2D
         Visible = true;
         IsAlive = true;
 
-        this.GetChild<ControlDisablerHandler>().EnableControls();
+        this.GetDirectChild<ControlDisablerHandler>().EnableControls();
     }
 
     public override void _ExitTree()
