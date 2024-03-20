@@ -685,7 +685,7 @@ _projectileSpeed = 200.0
 _baseKnockback = 100.0
 _knockbackMultiplierPerUnitSpeed = 1.2
 _projectileTemplate = ExtResource("14_82o23")
-_body = NodePath("..")
+_body = NodePath("")
 
 [node name="ProjectileOrigin" type="Marker2D" parent="ProjectileGenerator"]
 position = Vector2(6, -6)
@@ -738,7 +738,6 @@ script = ExtResource("16_cd1ek")
 PossibleSprites = Array[Texture2D]([ExtResource("16_vhdrh")])
 
 [connection signal="area_entered" from="Lava Collider" to="." method="OnTouchedLava"]
-[connection signal="OnProjectileFired" from="BallActionHandler" to="ProjectileGenerator" method="CreateProjectile"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="BallActionHandler" method="InputEventHandler"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="BallHorizontalMovement" method="InputEventHandler"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="BallJumpHandler" method="InputEventHandler"]
