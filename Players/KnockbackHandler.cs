@@ -44,16 +44,22 @@ public partial class KnockbackHandler : Node, IDisableableControl
         DisableHandlers(recoveryTime);
         _remainingStagger = 0f;
         _body.Velocity = knockback;
+        GetParent<PlayerController>().EnableBouncing(recoveryTime);
     }
 
     public void OnApplyKnockback(float knockback, Node2D source)
     {
-        knockback *= _inStaggerState ? _staggeredKnockbackMultiplier : 1f;
+        if (source is PlayerController player)
+        {
+            knockback = player.Velocity.Length();
+        }
+        //knockback *= _inStaggerState ? _staggeredKnockbackMultiplier : 1f;
         DisableHandlers(_recoveryTime);
         Vector2 newVel = _body.GlobalPosition.RelativeTo(source.GlobalPosition)
             .Normalized() * knockback;
         if (_body.IsOnFloor()) newVel.Y = -knockback;
         _body.Velocity = newVel;
+        GetParent<PlayerController>().EnableBouncing(_recoveryTime);
     }
 
     void DisableHandlers(float time)
@@ -78,6 +84,6 @@ public partial class KnockbackHandler : Node, IDisableableControl
     {
         Vector2 direction = node.GlobalPosition.RelativeTo(_body.GlobalPosition);
         Vector2 knockback = new(direction.X < 0f ? 1f : -1f, -3f);
-        ApplyKnockback(knockback * _hitLandedKnockbackStrength, _hitLandedRecoveryTime);
+        ApplyKnockback(knockback.Normalized() * _hitLandedKnockbackStrength, _hitLandedRecoveryTime);
     }
 }

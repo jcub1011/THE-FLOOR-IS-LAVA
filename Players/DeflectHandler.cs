@@ -10,6 +10,7 @@ public partial class DeflectHandler : Node, IDisableableControl
     [Export] Sprite2D _sprite;
     [Export] CharacterBody2D _body;
     [Export] float _slomoTime = 5f;
+    [Export] float _velocityToKnockbackMultiplier = 1.2f;
     [Export] float _deflectKnockback = 100f;
     [Export] float _successfulKnockbackBounce = 30f;
     [Export] DashHandler _dashHandler;
@@ -84,7 +85,7 @@ public partial class DeflectHandler : Node, IDisableableControl
         deflectDir = deflectDir.Normalized();
 
         _bodyToRedirect.GetChild<KnockbackHandler>()
-            .ApplyKnockback(-deflectDir * _deflectKnockback);
+            .ApplyKnockback(-deflectDir * _bodyToRedirect.Velocity.Normalized() * _velocityToKnockbackMultiplier);
 
         EngineTimeManipulator.OverrideTimeTransition(new(1, 0.2));
 
