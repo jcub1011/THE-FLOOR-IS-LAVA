@@ -89,10 +89,10 @@ public partial class EngineTimeManipulator : Node
         if (Instance == this) Instance = null;
     }
 
-    public override void _PhysicsProcess(double delta)
+    public override void _Process(double delta)
     {
-        base._PhysicsProcess(delta);
-        UpdateEngineSpeed(delta, Engine.TimeScale);
+        base._Process(delta);
+        CallDeferred("UpdateEngineSpeed", delta, Engine.TimeScale);
     }
 
     void UpdateEngineSpeed(double delta, double timeScale)

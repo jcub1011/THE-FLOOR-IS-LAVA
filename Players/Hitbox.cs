@@ -1,4 +1,5 @@
 using Godot;
+using WorldGeneration;
 
 namespace Players;
 
@@ -56,6 +57,11 @@ public partial class Hitbox : Area2D, IDisableableControl
                 GD.Print($"{_body.Name} was hit by {collider.HurtboxOwner.Name}.");
                 EmitSignal(SignalName.OnReceivedDamage, collider.Knockback, collider.HurtboxOwner);
                 args.HitBy.OnHitLanded(_body);
+
+                GD.Print("Applying hitstop.");
+                EngineTimeManipulator.QueueTimeTransition(new(0.001, 0));
+                EngineTimeManipulator.QueueTimeTransition(new(0.05));
+                EngineTimeManipulator.QueueTimeTransition(new(1, 0));
             }
         }
     }

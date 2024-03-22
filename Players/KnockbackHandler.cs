@@ -88,8 +88,5 @@ public partial class KnockbackHandler : Node, IDisableableControl
         Vector2 direction = node.GlobalPosition.RelativeTo(_body.GlobalPosition);
         Vector2 knockback = new(direction.X < 0f ? 1f : -1f, -3f);
         ApplyKnockback(knockback.Normalized() * _hitLandedKnockbackStrength, _hitLandedRecoveryTime);
-        EngineTimeManipulator.QueueTimeTransition(new(0.001, 0.015));
-        EngineTimeManipulator.QueueTimeTransition(new(0.025));
-        EngineTimeManipulator.QueueTimeTransition(new(1, 0.05));
     }
 }

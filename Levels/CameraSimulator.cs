@@ -18,6 +18,7 @@ public partial class CameraSimulator : Node
     [Export] Vector2 _minCameraZoom = new(2, 2);
     [Export] Vector2 _maxCameraZoom = new(4, 4);
     [Export] float _maxZoomSpeed = 5f;
+    [Export] bool _ignoreTimeScale = true;
 
     float _canvasTotalUnits = GodotExtensions.GetViewportSize().Y;
 
@@ -50,6 +51,9 @@ public partial class CameraSimulator : Node
         IEnumerable<Node2D> focusPoints,
         double deltaTime)
     {
+        //GD.Print($"Delta Time: {deltaTime}, True Delta Time: {deltaTime / Engine.TimeScale}, Time Scale {Engine.TimeScale}");
+        if (_ignoreTimeScale) deltaTime /= Engine.TimeScale;
+
         Rect2 focusBox = GetFocusBoundingBox(focusPoints);
         _camera.Zoom = GetNewZoom(focusBox, _minCameraZoom.Y, _maxCameraZoom.Y, _lookAhead, _lookBehind, (float)deltaTime);
 
