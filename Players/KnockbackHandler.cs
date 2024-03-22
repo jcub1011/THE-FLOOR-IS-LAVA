@@ -1,6 +1,7 @@
 using Godot;
 using Godot.NodeExtensions;
 using Godot.MathExtensions;
+using WorldGeneration;
 
 namespace Players;
 
@@ -51,14 +52,16 @@ public partial class KnockbackHandler : Node, IDisableableControl
     {
         if (source is PlayerController player)
         {
-            knockback = player.Velocity.Length();
+            _body.Velocity = player.Velocity;
+        }
+        else
+        {
+            Vector2 newVel = _body.GlobalPosition.RelativeTo(source.GlobalPosition)
+                .Normalized() * knockback;
+            _body.Velocity = newVel;
         }
         //knockback *= _inStaggerState ? _staggeredKnockbackMultiplier : 1f;
         DisableHandlers(_recoveryTime);
-        Vector2 newVel = _body.GlobalPosition.RelativeTo(source.GlobalPosition)
-            .Normalized() * knockback;
-        if (_body.IsOnFloor()) newVel.Y = -knockback;
-        _body.Velocity = newVel;
         GetParent<PlayerController>().EnableBouncing(_recoveryTime);
     }
 
@@ -85,5 +88,8 @@ public partial class KnockbackHandler : Node, IDisableableControl
         Vector2 direction = node.GlobalPosition.RelativeTo(_body.GlobalPosition);
         Vector2 knockback = new(direction.X < 0f ? 1f : -1f, -3f);
         ApplyKnockback(knockback.Normalized() * _hitLandedKnockbackStrength, _hitLandedRecoveryTime);
+        EngineTimeManipulator.QueueTimeTransition(new(0.001, 0.015));
+        EngineTimeManipulator.QueueTimeTransition(new(0.025));
+        EngineTimeManipulator.QueueTimeTransition(new(1, 0.05));
     }
 }

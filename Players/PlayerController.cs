@@ -31,15 +31,22 @@ public partial class PlayerController : CharacterBody2D
 
         if (_remainingBounceTime > 0f)
         {
-            var collisionInfo = MoveAndCollide(Velocity * (float)delta);
+            var collisionInfo = MoveAndCollide(Velocity * (float)delta, true);
 
             if (collisionInfo != null)
             {
-                Velocity = Velocity.Bounce(collisionInfo.GetNormal()) * 0.3f;
+                Vector2 normal = collisionInfo.GetNormal();
+                float collisionAngle = normal.AngleTo(Velocity) * 180f / Mathf.Pi;
+                float fixedCollisionAngle = Mathf.Abs((collisionAngle - 90) % 180);
+                GD.Print($"Collision angle: {fixedCollisionAngle} deg");
+                if (fixedCollisionAngle > 30f)
+                    Velocity = Velocity.Bounce(normal) * 0.8f;
             }
-            else GD.Print("Not bouncing");
+
+            if (IsOnFloor()) ApplyFriction((float)delta);
         }
-        else MoveAndSlide();
+        
+        MoveAndSlide();
     }
 
     void OriginShifted(Vector2 shift) => Position += shift;
@@ -71,5 +78,12 @@ public partial class PlayerController : CharacterBody2D
     public void EnableBouncing(float duration)
     {
         _remainingBounceTime = duration;
+    }
+
+    void ApplyFriction(float deltaTime)
+    {
+        float speed = Velocity.Length();
+        Velocity -= Velocity.Normalized() 
+            * Mathf.Clamp(speed * 5f * (float)deltaTime, -speed, speed);
     }
 }

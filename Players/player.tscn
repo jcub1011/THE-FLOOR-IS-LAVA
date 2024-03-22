@@ -37,8 +37,7 @@ size = Vector2(20, 10)
 size = Vector2(20, 7.875)
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_e5llx"]
-radius = 8.0
-height = 20.0
+height = 24.0
 
 [sub_resource type="Animation" id="Animation_lkr48"]
 length = 0.001
@@ -720,7 +719,7 @@ shape = SubResource("RectangleShape2D_sg5v1")
 script = ExtResource("7_xohju")
 
 [node name="DashHurtbox" type="CollisionShape2D" parent="MeleeHurtboxHandler"]
-position = Vector2(2, -7)
+position = Vector2(0, -7)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_e5llx")
 script = ExtResource("7_xohju")
