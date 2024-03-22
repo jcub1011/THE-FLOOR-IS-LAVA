@@ -1,4 +1,5 @@
 using Godot;
+using Godot.NodeExtensions;
 
 namespace Players;
 
@@ -29,6 +30,9 @@ public partial class MeleeHurtboxHandler : Area2D, IDisableableControl
     public float Knockback { get; private set; }
     public AttackHeight AttackHeight { get; private set; }
 
+    float _colliderEnableDuration;
+    TimedCollider _colliderToEnable;
+
     #region Interface Implementation
     public string ControlID { get => ControlIDs.HURTBOX; }
 
@@ -47,22 +51,22 @@ public partial class MeleeHurtboxHandler : Area2D, IDisableableControl
         DisableHitboxes();
     }
 
+    public override void _PhysicsProcess(double delta)
+    {
+        base._PhysicsProcess(delta);
+        _colliderToEnable?.EnableCollider(_colliderEnableDuration);
+        _colliderToEnable = null;
+    }
+
     public void EnableHitbox(StringName hitboxName, float duration, float knockback, AttackHeight height)
     {
         Knockback = knockback;
-        foreach (var child in GetChildren())
+        _colliderEnableDuration = duration;
+        foreach(var child in this.GetDirectChildren<TimedCollider>())
         {
-            if (child is TimedCollider collider)
-            {
-                if (collider.Name != hitboxName)
-                {
-                    collider.ForceDisableCollider();
-                }
-                else
-                {
-                    collider.EnableCollider(duration);
-                }
-            }
+            child.ForceDisableCollider();
+
+            if (child.Name == hitboxName) _colliderToEnable = child;
         }
         AttackHeight = height;
     }
@@ -103,10 +107,4 @@ public partial class MeleeHurtboxHandler : Area2D, IDisableableControl
         GD.Print($"Hit landed on {thingHit}.");
         EmitSignal(SignalName.HitLanded, thingHit);
     }
-
-    //public void HandleAttackDeflected()
-    //{
-    //    GD.Print($"{HurtboxOwner.Name} emitting attack deflected.");
-    //    EmitSignal(SignalName.OnHurtboxDeflected);
-    //}
 }

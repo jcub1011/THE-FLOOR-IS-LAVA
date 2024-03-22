@@ -80,7 +80,6 @@ public partial class DashHandler : Node
         direction = GetDashDirection();
 
         _body.Velocity = direction.Normalized() * _dashSpeed;
-        _aniPlayer.Play(_dashAnimationName);
         _disabler.DisableControlsExcept(
             _remainingDashTime,
             ControlIDs.INPUT,
@@ -92,6 +91,7 @@ public partial class DashHandler : Node
         _disabler.DisableControls(
             _dashGravityDisableTime,
             ControlIDs.GRAVITY);
+        _aniPlayer.Play(_dashAnimationName);
 
         return true;
     }
