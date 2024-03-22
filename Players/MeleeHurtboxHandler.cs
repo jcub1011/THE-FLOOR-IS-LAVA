@@ -82,7 +82,6 @@ public partial class MeleeHurtboxHandler : Area2D, IDisableableControl
             else if (child is CollisionShape2D collider)
             {
                 collider.SetDeferred("disabled", true);
-                //collider.Disabled = true;
             }
         }
         _activeCollider = null;
