@@ -1,12 +1,13 @@
 using Godot;
 using System;
+using WorldGeneration;
 
 namespace Players;
 
 public partial class BallJumpHandler : Node, IDisableableControl
 {
     [Export] CharacterBody2D _body;
-    [Export] float _jumpVelocity = 2272f;
+    [Export] float _jumpVelocityInTiles = 17.75f;
     [Export] float _maxJumpTime = 0.2f;
     [Export] bool _isEnabled = true;
     [Export] float _coyoteTime = 0.05f;
@@ -57,7 +58,7 @@ public partial class BallJumpHandler : Node, IDisableableControl
             }
             if (_remainingJumpTime > 0f)
             {
-                _body.Velocity = new(_body.Velocity.X, -_jumpVelocity);
+                _body.Velocity = new(_body.Velocity.X, -_jumpVelocityInTiles.ToPixels());
             }
         }
         else if (InputBuffer.IsBuffered(_body, InputNames.JUMP, _jumpBuffer)
@@ -65,7 +66,7 @@ public partial class BallJumpHandler : Node, IDisableableControl
         {
             _coyoteTimer.ConsumeCoyoteTime();
             InputBuffer.ConsumeBuffer(_body, InputNames.JUMP);
-            _body.Velocity = new(_body.Velocity.X, -_jumpVelocity);
+            _body.Velocity = new(_body.Velocity.X, -_jumpVelocityInTiles.ToPixels());
         }
     }
 }
