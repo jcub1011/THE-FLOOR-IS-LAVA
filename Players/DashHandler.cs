@@ -1,4 +1,5 @@
 using Godot;
+using Godot.NodeExtensions;
 using System;
 using System.Linq;
 using WorldGeneration;
@@ -6,7 +7,7 @@ using static Godot.TextServer;
 
 namespace Players;
 
-public partial class DashHandler : Node
+public partial class DashHandler : Node, IDisableableControl
 {
     [Export] PlayerController _body;
     [Export] KnockbackHandler _knockback;
@@ -15,9 +16,11 @@ public partial class DashHandler : Node
     [Export] float _maxDashSpeedInTiles = 43.75f;
     [Export] float _dashGravityDisableTime = 0.08f;
     [Export] float _movementDisableTime = 0.1f;
+    [Export] float _dashSpeedFromDeflectingInTiles = 40f;
     [Export] StringName _dashAnimationName;
     [Export] AnimationPlayer _aniPlayer;
     [Export] ControlDisablerHandler _disabler;
+    bool _nextDashIsDeflectDash;
     int _dashCharges;
     public int DashCharges
     {
@@ -30,15 +33,26 @@ public partial class DashHandler : Node
         }
     }
 
-    bool _leftPressed;
-    bool _rightPressed;
-    bool _upPressed;
-    bool _downPressed;
 
     float _remainingDashHoldTime;
     const float MAX_DASH_HOLD_TIME = 0.5f;
     float _initalSpeed;
     bool _holdingDash;
+
+    #region Interface Implementation
+    string IDisableableControl.ControlID => ControlIDs.DASH;
+
+    bool _isEnabled = true;
+    void IDisableableControl.SetControlState(bool enabled)
+    {
+        _isEnabled = enabled;
+        if (!enabled)
+        {
+            _holdingDash = false;
+            _remainingDashHoldTime = 0f;
+        }
+    }
+    #endregion
 
     public override void _Process(double delta)
     {
@@ -91,12 +105,7 @@ public partial class DashHandler : Node
 
     public void InputEventHandler(StringName input, bool pressed)
     {
-        if (input == InputNames.LEFT) _leftPressed = pressed;
-        if (input == InputNames.RIGHT) _rightPressed = pressed;
-        if (input == InputNames.JUMP) _upPressed = pressed;
-        if (input == InputNames.CROUCH) _downPressed = pressed;
-
-        if (input != InputNames.ACTION) return;
+        if (input != InputNames.ACTION || !_isEnabled) return;
 
         if (!pressed)
         {
@@ -104,17 +113,16 @@ public partial class DashHandler : Node
         }
         else
         {
+            if (_nextDashIsDeflectDash) PerformInstaDash();
             StartHeldDash();
         }
     }
 
-    public bool PerformInstaDash()
+    public void PerformInstaDash()
     {
-        if (DashCharges <= 0) return false;
-        DashCharges--;
-
-        PerformDash(_dashSpeedInTiles.ToPixels(), GetDashDirection());
-        return true;
+        DashCharges = 1;
+        PerformDash(_dashSpeedFromDeflectingInTiles.ToPixels(), GetDashDirection());
+        _nextDashIsDeflectDash = false;
     }
 
     public bool StartHeldDash()
@@ -129,7 +137,8 @@ public partial class DashHandler : Node
         _body.Velocity = _body.Velocity.Normalized() * Mathf.Clamp(speed, -10f, 10f);
         _disabler.DisableControlsExcept(
             MAX_DASH_HOLD_TIME,
-            ControlIDs.HITBOX);
+            ControlIDs.HITBOX,
+            ControlIDs.DASH);
 
         return true;
     }
@@ -143,31 +152,24 @@ public partial class DashHandler : Node
         PerformDash(speed.ToPixels(), GetDashDirection());
     }
 
-    /// <summary>
-    /// Returns true if the dash was able to be performed.
-    /// </summary>
-    /// <param name="direction"></param>
-    /// <returns></returns>
-    public bool PerformDash(Vector2 direction, float duration)
-    {
-        return DashCharges > 0;
-    }
-
     Vector2 GetDashDirection()
     {
-        Vector2 direction = new();
-        if (_leftPressed) direction.X -= 0.8f;
-        if (_rightPressed) direction.X += 0.8f;
-        if (_upPressed) direction.Y -= 1;
-        if (_downPressed) direction.Y += 1;
-
-        if (direction.LengthSquared() == 0f) 
-            direction = ((_flip.FacingLeft) ? Vector2.Left : Vector2.Right);
-        return direction;
+        Vector2 inputdir = this.GetSibling<PlayerInputHandler>().InputAxis;
+        if (inputdir.LengthSquared() == 0f)
+        {
+            return new(_flip.FacingLeft ? -1f : 1f, 0f);
+        }
+        inputdir.Y *= 1.2f;
+        return inputdir.Normalized();
     }
 
     public void OnHitLandedHandler(Node2D thingHit)
     {
-        if (DashCharges <= 0) DashCharges++;
+        if (DashCharges <= 0) DashCharges = 1;
+    }
+
+    public void OnBlockLandedHandler()
+    {
+        _nextDashIsDeflectDash = true;
     }
 }

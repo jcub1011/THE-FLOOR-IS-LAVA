@@ -149,14 +149,9 @@ namespace Godot.NodeExtensions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static T GetFirstSiblingOfType<T>(this Node node) where T : class
+        public static T GetSibling<T>(this Node node) where T : class
         {
-            foreach (var child in node.GetParent().GetChildren())
-            {
-                if (child is T target) return target;
-            }
-
-            return null;
+            return node.GetParent().GetDirectChild<T>();
         }
 
         /// <summary>
@@ -165,7 +160,7 @@ namespace Godot.NodeExtensions
         /// <typeparam name="T"></typeparam>
         /// <param name="node"></param>
         /// <returns></returns>
-        public static List<T> GetSiblingsOfType<T>(this Node node) where T : class
+        public static List<T> GetSiblings<T>(this Node node) where T : class
         {
             List<T> returnVals = new();
 

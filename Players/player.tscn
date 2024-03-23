@@ -1,7 +1,6 @@
-[gd_scene load_steps=51 format=3 uid="uid://cv7g2fnqrxx7s"]
+[gd_scene load_steps=50 format=3 uid="uid://cv7g2fnqrxx7s"]
 
 [ext_resource type="Script" path="res://Players/PlayerController.cs" id="1_bukco"]
-[ext_resource type="Script" path="res://Players/BallActionHandler.cs" id="2_8sxkk"]
 [ext_resource type="Script" path="res://Players/PlayerInputHandler.cs" id="2_bjy2i"]
 [ext_resource type="Script" path="res://Players/BallHorizontalMovementHandler.cs" id="3_vn5cb"]
 [ext_resource type="Script" path="res://Players/GravityApplicator.cs" id="4_46gxe"]
@@ -605,15 +604,6 @@ position = Vector2(0, -7)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_26252")
 
-[node name="BallActionHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_aniPlayer", "_controlDisabler", "_dashHandler")]
-script = ExtResource("2_8sxkk")
-_body = NodePath("..")
-_aniPlayer = NodePath("../AnimationPlayer")
-_controlDisabler = NodePath("../ControlDisablerHandler")
-_blockAnimation = &"tank_block"
-_dashAnimation = &"tank_dash"
-_dashHandler = NodePath("../DashHandler")
-
 [node name="BallHorizontalMovement" type="Node" parent="." node_paths=PackedStringArray("_body")]
 script = ExtResource("3_vn5cb")
 _body = NodePath("..")
@@ -640,13 +630,11 @@ script = ExtResource("2_bjy2i")
 script = ExtResource("4_46gxe")
 _body = NodePath("..")
 
-[node name="DeflectHandler" type="Node" parent="." node_paths=PackedStringArray("_sprite", "_body", "_dashHandler", "_aniPlayer")]
+[node name="DeflectHandler" type="Node" parent="." node_paths=PackedStringArray("_sprite", "_body", "_aniPlayer")]
 script = ExtResource("7_bcpnl")
 _sprite = NodePath("../Sprite_New")
 _body = NodePath("..")
-_dashHandler = NodePath("../DashHandler")
 _aniPlayer = NodePath("../AnimationPlayer")
-_dashAnimationName = &"tank_dash"
 
 [node name="VelocityBasedAniSelector" type="Node" parent="." node_paths=PackedStringArray("_body", "_sprite", "_player", "_flipHandler")]
 script = ExtResource("9_igj33")
@@ -734,13 +722,13 @@ script = ExtResource("16_cd1ek")
 PossibleSprites = Array[Texture2D]([ExtResource("16_vhdrh")])
 
 [connection signal="area_entered" from="Lava Collider" to="." method="OnTouchedLava"]
-[connection signal="InputRecieved" from="PlayerInputHandler" to="BallActionHandler" method="InputEventHandler"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="BallHorizontalMovement" method="InputEventHandler"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="BallJumpHandler" method="InputEventHandler"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="DashHandler" method="InputEventHandler"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="DeflectHandler" method="InputEventHandler"]
 [connection signal="MoveLeftPressed" from="PlayerInputHandler" to="FlipHandler" method="OnFaceLeft"]
 [connection signal="MoveRightPressed" from="PlayerInputHandler" to="FlipHandler" method="OnFaceRight"]
+[connection signal="OnSuccessfulDeflect" from="DeflectHandler" to="DashHandler" method="OnBlockLandedHandler"]
 [connection signal="OnFlip" from="FlipHandler" to="MeleeHurtboxHandler" method="SetFlipState"]
 [connection signal="OnFlip" from="FlipHandler" to="Sprite_New" method="SetFlipH"]
 [connection signal="OnReceivedDamage" from="Hitbox" to="KnockbackHandler" method="OnApplyKnockback"]

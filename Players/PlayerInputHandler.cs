@@ -211,7 +211,7 @@ public static class InputBuffer
     }
 }
 
-public partial class PlayerInputHandler : Node/*, IDisableableControl*/
+public partial class PlayerInputHandler : Node
 {
     #region Static
     static readonly List<InputDevice> DevicesToUse = new();
@@ -308,10 +308,15 @@ public partial class PlayerInputHandler : Node/*, IDisableableControl*/
     #endregion
 
     /// <summary>
+    /// Current movement input axis.
+    /// </summary>
+    public Vector2 InputAxis { get => _converter.GetDirection(); }
+
+    /// <summary>
     /// Use the static methods to change device.
     /// </summary>
     InputDevice _device;
-    bool _isEnabled = true;
+    InputToDirectionConverter _converter;
 
     #region Signals
     [Signal] public delegate void MoveLeftPressedEventHandler();
@@ -329,66 +334,56 @@ public partial class PlayerInputHandler : Node/*, IDisableableControl*/
     [Signal] public delegate void InputRecievedEventHandler(StringName input, bool pressed);
     #endregion
 
-    //Dictionary<StringName, bool> _previousStateMap;
-
-    #region Interface Implementation
-    public string ControlID { get => ControlIDs.INPUT; }
-
-    public void SetControlState(bool enabled)
-    {
-        if (!enabled)
-        {
-            GD.PushWarning("Don't disable input handler.");
-            return;
-        }
-        _isEnabled = enabled;
-    }
-    #endregion
-
     public override void _Ready()
     {
         base._Ready();
+        _converter = new InputToDirectionConverter();
     }
 
     public override void _Input(InputEvent @event)
     {
         base._Input(@event);
-        if (!_isEnabled) return;
         if (!_device.IsEventForDevice(@event)) return;
 
         if (@event.IsActionPressed(InputNames.LEFT.ConvertInputName(_device.Type)))
         {
             //GD.Print($"{_device}: Left Input");
+            _converter.UpdateDirection(InputNames.LEFT, true);
             EmitSignal(SignalName.MoveLeftPressed);
             EmitSignal(SignalName.InputRecieved, InputNames.LEFT, true);
         }
         if (@event.IsActionReleased(InputNames.LEFT.ConvertInputName(_device.Type)))
         {
             //GD.Print($"{_device}: Stopped Left Input");
+            _converter.UpdateDirection(InputNames.LEFT, false);
             EmitSignal(SignalName.MoveLeftReleased);
             EmitSignal(SignalName.InputRecieved, InputNames.LEFT, false);
         }
         if (@event.IsActionPressed(InputNames.RIGHT.ConvertInputName(_device.Type)))
         {
             //GD.Print($"{_device}: Right Input");
+            _converter.UpdateDirection(InputNames.RIGHT, true);
             EmitSignal(SignalName.MoveRightPressed);
             EmitSignal(SignalName.InputRecieved, InputNames.RIGHT, true);
         }
         if (@event.IsActionReleased(InputNames.RIGHT.ConvertInputName(_device.Type)))
         {
             //GD.Print($"{_device}: Stopped Right Input");
+            _converter.UpdateDirection(InputNames.RIGHT, false);
             EmitSignal(SignalName.MoveRightReleased);
             EmitSignal(SignalName.InputRecieved, InputNames.RIGHT, false);
         }
         if (@event.IsActionPressed(InputNames.JUMP.ConvertInputName(_device.Type)))
         {
             //GD.Print($"{_device}: Jump Input");
+            _converter.UpdateDirection(InputNames.JUMP, true);
             EmitSignal(SignalName.JumpPressed);
             EmitSignal(SignalName.InputRecieved, InputNames.JUMP, true);
         }
         if (@event.IsActionReleased(InputNames.JUMP.ConvertInputName(_device.Type)))
         {
             //GD.Print($"{_device}: Stopped Jump Input");
+            _converter.UpdateDirection(InputNames.JUMP, false);
             EmitSignal(SignalName.JumpReleased);
             EmitSignal(SignalName.InputRecieved, InputNames.JUMP, false);
         }
@@ -419,12 +414,14 @@ public partial class PlayerInputHandler : Node/*, IDisableableControl*/
         if (@event.IsActionPressed(InputNames.CROUCH.ConvertInputName(_device.Type)))
         {
             //GD.Print($"{_device}: Crouch Input");
+            _converter.UpdateDirection(InputNames.CROUCH, true);
             EmitSignal(SignalName.CrouchPressed);
             EmitSignal(SignalName.InputRecieved, InputNames.CROUCH, true);
         }
         if (@event.IsActionReleased(InputNames.CROUCH.ConvertInputName(_device.Type)))
         {
             //GD.Print($"{_device}: Stopped Crouch Input");
+            _converter.UpdateDirection(InputNames.CROUCH, false);
             EmitSignal(SignalName.CrouchReleased);
             EmitSignal(SignalName.InputRecieved, InputNames.CROUCH, false);
         }
