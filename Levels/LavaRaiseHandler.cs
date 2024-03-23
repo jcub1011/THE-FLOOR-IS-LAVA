@@ -7,17 +7,13 @@ namespace WorldGeneration;
 
 public partial class LavaRaiseHandler : Area2D
 {
-	[Export] double _raiseSpeed = 20;
 	[Export] float _raiseSpeedInTiles = 1;
 	[Export] float _maxRaiseSpeedInTiles = 3;
 	[Export] float _raiseAccelerationInTiles = 0.01f;
-	[Export] double _raiseAcceleration = 1;
-	[Export] double _maxRaiseSpeed = 50;
 	[Export] float _waitTimer = 2f;
 	[Export] float _speedMultiplerPerTileOffscreen = 0.1f;
 	[Export] float _offscreenSpeedFactor = 0.1f;
 	[Export] CameraSimulator _cameraSimulator;
-	[Export] int _tileHeight = 128;
 	[Signal] public delegate void LavaDistanceFromScreenChangedEventHandler(float newDistanceTiles);
 
 	public double AdditionalVelocity { get; set; }
@@ -28,17 +24,8 @@ public partial class LavaRaiseHandler : Area2D
 		if (_waitTimer > 0f)
 		{
 			_waitTimer -= (float)delta;
-			return;
 		}
-
-		Position -= new Vector2(0f, 
-			(float)(WorldDefinition.TilesToPixels(_raiseSpeedInTiles) * delta));
-
-		_raiseSpeed += _raiseAcceleration * delta;
-		if (_raiseSpeed > _maxRaiseSpeed) _raiseSpeed = _maxRaiseSpeed;
-		_raiseSpeedInTiles += _raiseAccelerationInTiles * (float)delta;
-		if (_raiseSpeedInTiles > _maxRaiseSpeedInTiles) _raiseSpeedInTiles = _maxRaiseSpeedInTiles;
-		AddAdditionalRaiseSpeed(_cameraSimulator.GetCameraLowerY(), delta);
+		else UpdateLavaPosition((float)delta);
 
 		EmitSignal(SignalName.LavaDistanceFromScreenChanged,
             WorldDefinition.PixelsToTiles(Position.Y - _cameraSimulator.GetCameraLowerY()));
@@ -59,7 +46,7 @@ public partial class LavaRaiseHandler : Area2D
 
 	void OriginShifted(Vector2 shift) => Position += shift;
 
-    public void AddAdditionalRaiseSpeed(float cameraBottomPos, double deltaTime)
+    void AddAdditionalRaiseSpeed(float cameraBottomPos, double deltaTime)
 	{
 		float dist = cameraBottomPos - Position.Y;
 		if (dist > 0) return;
@@ -71,6 +58,13 @@ public partial class LavaRaiseHandler : Area2D
 		Position += new Vector2(0f, deltaPos);
 	}
 
-	//float PixelsToTiles(float pixels) => pixels / _tileHeight;
-	//float TilesToPixels(float tiles) => tiles * _tileHeight;
+	void UpdateLavaPosition(float deltaTime)
+    {
+        Position -= new Vector2(0f,
+            WorldDefinition.TilesToPixels(_raiseSpeedInTiles) * deltaTime);
+
+        _raiseSpeedInTiles += _raiseAccelerationInTiles * deltaTime;
+        if (_raiseSpeedInTiles > _maxRaiseSpeedInTiles) _raiseSpeedInTiles = _maxRaiseSpeedInTiles;
+        AddAdditionalRaiseSpeed(_cameraSimulator.GetCameraLowerY(), deltaTime);
+    }
 }
