@@ -6,7 +6,7 @@ namespace Players;
 public partial class BallJumpHandler : Node, IDisableableControl
 {
     [Export] CharacterBody2D _body;
-    [Export] float _jumpVelocity = 142f;
+    [Export] float _jumpVelocity = 2272f;
     [Export] float _maxJumpTime = 0.2f;
     [Export] bool _isEnabled = true;
     [Export] float _coyoteTime = 0.05f;

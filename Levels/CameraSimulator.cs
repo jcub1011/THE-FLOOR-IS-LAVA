@@ -11,12 +11,12 @@ namespace WorldGeneration;
 public partial class CameraSimulator : Node
 {
     [Export] Camera2D _camera;
-    [Export] double _maxSpeed = 600;
+    [Export] double _maxSpeed = 9600;
     [Export] float _paddingPercent = 0.5f;
-    [Export] float _lookAhead = 100f;
-    [Export] float _lookBehind = 100f;
-    [Export] Vector2 _minCameraZoom = new(2, 2);
-    [Export] Vector2 _maxCameraZoom = new(4, 4);
+    [Export] float _lookAhead = 1920f;
+    [Export] float _lookBehind = 1440f;
+    [Export] Vector2 _minCameraZoom = new(0.1f, 0.1f);
+    [Export] Vector2 _maxCameraZoom = new(0.222f, 0.222f);
     [Export] float _maxZoomSpeed = 5f;
     [Export] bool _ignoreTimeScale = true;
 

@@ -138,7 +138,8 @@ public partial class LevelGenerator : Node2D
 
         _camera.UpdateCamera(players, delta);
 
-        GetChild<LavaDistanceReadout>(0).UpdateReadout(_camera.GetCameraLowerY(), _lava.Position.Y);
+        //GetParent().GetChild<LavaDistanceReadout>(0)
+        //    .UpdateReadout(_camera.GetCameraLowerY(), _lava.Position.Y);
     }
 
     /// <summary>

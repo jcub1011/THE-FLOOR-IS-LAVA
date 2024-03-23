@@ -1,6 +1,7 @@
 using Godot;
 using Godot.NodeExtensions;
 using TheFloorIsLava.Subscriptions;
+using WorldGeneration;
 
 namespace Players;
 
@@ -8,6 +9,7 @@ public partial class PlayerController : CharacterBody2D
 {
     [Export] PlayerInputHandler InputHandler;
     [Export] public Vector2 SpeedLimit { get; private set; } = new(400, 400);
+    [Export] public Vector2 SpeedLimitInTiles { get; private set; } = new(50, 50);
     float _remainingBounceTime;
 
     public bool IsAlive { get; private set; } = true;
@@ -24,29 +26,44 @@ public partial class PlayerController : CharacterBody2D
         if (!IsAlive) return;
         _remainingBounceTime -= (float)delta;
 
-        Vector2 limitedVelocity = Velocity;
-        limitedVelocity.X = Mathf.Clamp(Velocity.X, -SpeedLimit.X, SpeedLimit.X);
-        limitedVelocity.Y = Mathf.Clamp(Velocity.Y, -SpeedLimit.Y, SpeedLimit.Y);
-        Velocity = limitedVelocity;
+        //Vector2 limitedVelocity = Velocity;
+        //limitedVelocity.X = Mathf.Clamp(Velocity.X, -SpeedLimit.X, SpeedLimit.X);
+        //limitedVelocity.Y = Mathf.Clamp(Velocity.Y, -SpeedLimit.Y, SpeedLimit.Y);
+        //Velocity = limitedVelocity;
+        LimitVelocity();
 
         if (_remainingBounceTime > 0f)
         {
-            var collisionInfo = MoveAndCollide(Velocity * (float)delta, true);
-
-            if (collisionInfo != null)
-            {
-                Vector2 normal = collisionInfo.GetNormal();
-                float collisionAngle = normal.AngleTo(Velocity) * 180f / Mathf.Pi;
-                float fixedCollisionAngle = Mathf.Abs((collisionAngle - 90) % 180);
-                GD.Print($"Collision angle: {fixedCollisionAngle} deg");
-                if (fixedCollisionAngle > 30f)
-                    Velocity = Velocity.Bounce(normal) * 0.8f;
-            }
-
+            ApplyBounceIfApplicable((float)delta);
             if (IsOnFloor()) ApplyFriction((float)delta);
         }
         
         MoveAndSlide();
+    }
+
+    void LimitVelocity()
+    {
+        Vector2 newVel = Velocity;
+        Vector2 speedLim = SpeedLimitInTiles.ToPixels();
+
+        newVel.X = Mathf.Clamp(Velocity.X, -speedLim.X, speedLim.X);
+        newVel.Y = Mathf.Clamp(Velocity.Y, -speedLim.Y, speedLim.Y);
+        Velocity = newVel;
+    }
+
+    void ApplyBounceIfApplicable(float delta)
+    {
+        var collisionInfo = MoveAndCollide(Velocity * delta, true);
+
+        if (collisionInfo != null)
+        {
+            Vector2 normal = collisionInfo.GetNormal();
+            float collisionAngle = normal.AngleTo(Velocity) * 180f / Mathf.Pi;
+            float fixedCollisionAngle = Mathf.Abs((collisionAngle - 90) % 180);
+            GD.Print($"Collision angle: {fixedCollisionAngle} deg");
+            if (fixedCollisionAngle > 30f)
+                Velocity = Velocity.Bounce(normal) * 0.8f;
+        }
     }
 
     void OriginShifted(Vector2 shift) => Position += shift;

@@ -1,17 +1,18 @@
 using Godot;
 using System;
+using WorldGeneration;
 
 namespace Players;
 
 public partial class BallHorizontalMovementHandler : Node, IDisableableControl
 {
     [Export] PlayerController _body;
-    [Export] float _moveSpeed = 80;
+    [Export] float _moveSpeedInTiles = 10;
     [Export] bool _isEnabled = true;
-    [Export] float _groundAcceleration = 1200f;
-    [Export] float _airAcceleration = 900f;
+    [Export] float _groundAccelerationInTiles = 150;
+    [Export] float _airAccelerationInTiles = 87.5f;
     [Export] float _airExcessSpeedDeceleration = 0.4f;
-    [Export] float _groundExcessSpeedDeceleration = 2f;
+    [Export] float _groundExcessSpeedDeceleration = 3f;
     bool _isLeftButtonDown;
     bool _isRightButtonDown;
 
@@ -28,62 +29,120 @@ public partial class BallHorizontalMovementHandler : Node, IDisableableControl
         if (input == InputNames.RIGHT) _isRightButtonDown = pressed;
     }
 
-    public override void _Process(double delta)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="delta"></param>
+    /// <param name="curVelX">In Pixels/S</param>
+    /// <param name="moveSpeed">In Pixels/S</param>
+    /// <returns></returns>
+    float GetNewVelX(float delta, float curVelX, float moveSpeed)
     {
-        base._Process(delta);
-        if (!_isEnabled) return;
-        Vector2 newVel = _body.Velocity;
-        float speedLim = _body.SpeedLimit.X;
-
-        float deltaX = _body.IsOnFloor() ?
-            _groundAcceleration : _airAcceleration;
-        float excessSpeedDeceleration = _body.IsOnFloor() ?
+        float deltaV = _body.IsOnFloor() ? 
+            _groundAccelerationInTiles.ToPixels() : _airAccelerationInTiles.ToPixels();
+        float excessSpeedDeceleration = _body.IsOnFloor() ? 
             _groundExcessSpeedDeceleration : _airExcessSpeedDeceleration;
-        deltaX *= (float)delta;
+        deltaV *= delta;
 
         if (_isLeftButtonDown == _isRightButtonDown)
         {
-            if (deltaX > Mathf.Abs(_body.Velocity.X))
+            if (deltaV > Mathf.Abs(curVelX))
             {
-                newVel.X = 0f;
+                curVelX = 0f;
             }
             else
             {
-                newVel.X += _body.Velocity.X < 0f ? deltaX : -deltaX;
+                curVelX += curVelX < 0f ? deltaV : -deltaV;
             }
         }
         else if (_isLeftButtonDown)
         {
             // If not already going past max movement speed.
-            if (!(newVel.X < -_moveSpeed))
+            if (!(curVelX < -moveSpeed))
             {
-                newVel.X = Mathf.Clamp(newVel.X - deltaX,
-                    -_moveSpeed, _moveSpeed);
+                curVelX = Mathf.Clamp(curVelX - deltaV,
+                    -moveSpeed, moveSpeed);
             }
             else
             {
                 // Apply deceleration.
-                newVel.X -= newVel.X * excessSpeedDeceleration * (float)delta;
-                newVel.X = Mathf.Clamp(newVel.X, float.NegativeInfinity, -_moveSpeed);
+                curVelX -= curVelX * excessSpeedDeceleration * delta;
+                curVelX = Mathf.Clamp(curVelX, float.NegativeInfinity, -moveSpeed);
             }
         }
         else if (_isRightButtonDown)
         {
             // If not already going past max movement speed.
-            if (!(newVel.X > _moveSpeed))
+            if (!(curVelX > moveSpeed))
             {
-                newVel.X = Mathf.Clamp(newVel.X + deltaX,
-                    -_moveSpeed, _moveSpeed);
+                curVelX = Mathf.Clamp(curVelX + deltaV,
+                    -moveSpeed, moveSpeed);
             }
             else
             {
                 // Apply deceleration.
-                newVel.X -= newVel.X * excessSpeedDeceleration * (float)delta;
-                newVel.X = Mathf.Clamp(newVel.X, _moveSpeed, float.PositiveInfinity);
+                curVelX -= curVelX * excessSpeedDeceleration * delta;
+                curVelX = Mathf.Clamp(curVelX, moveSpeed, float.PositiveInfinity);
             }
         }
 
-        newVel.X = Mathf.Clamp(newVel.X, -speedLim, speedLim);
+        return curVelX;
+    }
+
+    public override void _Process(double delta)
+    {
+        base._Process(delta);
+        if (!_isEnabled) return;
+        Vector2 newVel = _body.Velocity;
+        newVel.X = GetNewVelX((float)delta, newVel.X, _moveSpeedInTiles.ToPixels());
+        //float deltaX = _body.IsOnFloor() ?
+        //    _groundAcceleration : _airAcceleration;
+        //float excessSpeedDeceleration = _body.IsOnFloor() ?
+        //    _groundExcessSpeedDeceleration : _airExcessSpeedDeceleration;
+        //deltaX *= (float)delta;
+
+        //if (_isLeftButtonDown == _isRightButtonDown)
+        //{
+        //    if (deltaX > Mathf.Abs(_body.Velocity.X))
+        //    {
+        //        newVel.X = 0f;
+        //    }
+        //    else
+        //    {
+        //        newVel.X += _body.Velocity.X < 0f ? deltaX : -deltaX;
+        //    }
+        //}
+        //else if (_isLeftButtonDown)
+        //{
+        //    // If not already going past max movement speed.
+        //    if (!(newVel.X < -_moveSpeed))
+        //    {
+        //        newVel.X = Mathf.Clamp(newVel.X - deltaX,
+        //            -_moveSpeed, _moveSpeed);
+        //    }
+        //    else
+        //    {
+        //        // Apply deceleration.
+        //        newVel.X -= newVel.X * excessSpeedDeceleration * (float)delta;
+        //        newVel.X = Mathf.Clamp(newVel.X, float.NegativeInfinity, -_moveSpeed);
+        //    }
+        //}
+        //else if (_isRightButtonDown)
+        //{
+        //    // If not already going past max movement speed.
+        //    if (!(newVel.X > _moveSpeed))
+        //    {
+        //        newVel.X = Mathf.Clamp(newVel.X + deltaX,
+        //            -_moveSpeed, _moveSpeed);
+        //    }
+        //    else
+        //    {
+        //        // Apply deceleration.
+        //        newVel.X -= newVel.X * excessSpeedDeceleration * (float)delta;
+        //        newVel.X = Mathf.Clamp(newVel.X, _moveSpeed, float.PositiveInfinity);
+        //    }
+        //}
+
         _body.Velocity = newVel;
     }
 }

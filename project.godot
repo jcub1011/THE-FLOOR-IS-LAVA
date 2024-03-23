@@ -19,8 +19,9 @@ config/icon="res://icon.svg"
 
 [display]
 
-window/size/viewport_width=1600
-window/size/viewport_height=900
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/mode=2
 window/stretch/mode="canvas_items"
 window/vsync/vsync_mode=0
 
@@ -132,3 +133,8 @@ crouch_kb_r={
 2d_physics/layer_2="Player"
 2d_physics/layer_3="Lava"
 2d_physics/layer_4="Projectile"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=2
+anti_aliasing/quality/use_taa=true

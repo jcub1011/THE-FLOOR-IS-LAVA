@@ -6,7 +6,7 @@ namespace Physics;
 public partial class GravityApplicator : Node, IDisableableControl
 {
     [Export] CharacterBody2D _body;
-    [Export] public float Gravity { get; private set; } = 2000f;
+    [Export] public float Gravity { get; private set; } = 12000f;
     [Export] bool _isEnabled = true;
 
     #region Interface Implementation

@@ -10,8 +10,8 @@ public partial class DashHandler : Node
     [Export] PlayerController _body;
     [Export] KnockbackHandler _knockback;
     [Export] FlipHandler _flip;
-    [Export] float _dashSpeed = 250;
-    [Export] float _maxDashSpeed = 350f;
+    [Export] float _dashSpeed = 3520;
+    [Export] float _maxDashSpeed = 5600;
     [Export] float _dashGravityDisableTime = 0.08f;
     [Export] float _movementDisableTime = 0.1f;
     [Export] StringName _dashAnimationName;
