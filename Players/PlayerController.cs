@@ -8,7 +8,6 @@ namespace Players;
 public partial class PlayerController : CharacterBody2D
 {
     [Export] PlayerInputHandler InputHandler;
-    [Export] public Vector2 SpeedLimit { get; private set; } = new(400, 400);
     [Export] public Vector2 SpeedLimitInTiles { get; private set; } = new(50, 50);
     float _remainingBounceTime;
 
@@ -26,10 +25,6 @@ public partial class PlayerController : CharacterBody2D
         if (!IsAlive) return;
         _remainingBounceTime -= (float)delta;
 
-        //Vector2 limitedVelocity = Velocity;
-        //limitedVelocity.X = Mathf.Clamp(Velocity.X, -SpeedLimit.X, SpeedLimit.X);
-        //limitedVelocity.Y = Mathf.Clamp(Velocity.Y, -SpeedLimit.Y, SpeedLimit.Y);
-        //Velocity = limitedVelocity;
         LimitVelocity();
 
         if (_remainingBounceTime > 0f)
@@ -60,7 +55,7 @@ public partial class PlayerController : CharacterBody2D
             Vector2 normal = collisionInfo.GetNormal();
             float collisionAngle = normal.AngleTo(Velocity) * 180f / Mathf.Pi;
             float fixedCollisionAngle = Mathf.Abs((collisionAngle - 90) % 180);
-            GD.Print($"Collision angle: {fixedCollisionAngle} deg");
+            //GD.Print($"Collision angle: {fixedCollisionAngle} deg");
             if (fixedCollisionAngle > 30f)
                 Velocity = Velocity.Bounce(normal) * 0.8f;
         }

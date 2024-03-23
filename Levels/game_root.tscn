@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://cqo406ylddtw"]
+[gd_scene load_steps=6 format=3 uid="uid://cqo406ylddtw"]
 
 [ext_resource type="PackedScene" uid="uid://bo5qmavr2vpky" path="res://UI/MainMenu.tscn" id="1_61eq2"]
 [ext_resource type="Script" path="res://Levels/WorldHandler.cs" id="1_h67c7"]
 [ext_resource type="PackedScene" uid="uid://c8kmg6tapbydx" path="res://UI/RetryScreen.tscn" id="1_yo80m"]
 [ext_resource type="PackedScene" uid="uid://c6vxsfrvbssc6" path="res://Levels/world.tscn" id="2_3l788"]
+[ext_resource type="Script" path="res://Levels/EngineTimeManipulator.cs" id="5_6itjv"]
 
 [node name="GameRoot" type="Node2D" node_paths=PackedStringArray("_retryScreen", "_mainMenu")]
 script = ExtResource("1_h67c7")
@@ -19,6 +20,9 @@ visible = false
 
 [node name="MainMenu" parent="CanvasLayer" instance=ExtResource("1_61eq2")]
 layout_direction = 2
+
+[node name="EngineTimeManipulator" type="Node" parent="."]
+script = ExtResource("5_6itjv")
 
 [connection signal="OnPressedWithTimer" from="CanvasLayer/RetryScreen/VBoxContainer/Home" to="." method="OnGoToMainMenu"]
 [connection signal="OnPressedWithTimer" from="CanvasLayer/RetryScreen/VBoxContainer/Button" to="." method="OnRestartHandler"]

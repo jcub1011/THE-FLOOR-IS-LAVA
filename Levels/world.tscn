@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://c6vxsfrvbssc6"]
+[gd_scene load_steps=19 format=3 uid="uid://c6vxsfrvbssc6"]
 
 [ext_resource type="Script" path="res://Levels/WorldDefinition.cs" id="1_g3se5"]
 [ext_resource type="Script" path="res://Levels/CameraSimulator.cs" id="2_2ud8y"]
@@ -10,7 +10,6 @@
 [ext_resource type="Texture2D" uid="uid://b1qjldpvjx1k0" path="res://Levels/Tilemaps/Lava_Frames/AnimatedFloorLava_2.png" id="6_52op3"]
 [ext_resource type="Texture2D" uid="uid://ba2hidy511r65" path="res://Levels/Border.png" id="6_l6d0l"]
 [ext_resource type="TileSet" uid="uid://3yu3d8s3tqmi" path="res://Levels/Tilemaps/developer_tilemap_HD.tres" id="6_q4vxi"]
-[ext_resource type="Script" path="res://Levels/EngineTimeManipulator.cs" id="7_jnn1u"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ayxn6"]
 size = Vector2(399, 37)
@@ -177,9 +176,6 @@ texture = ExtResource("6_l6d0l")
 position = Vector2(831.5, 2506.67)
 scale = Vector2(77.7313, 53.1629)
 texture = ExtResource("6_l6d0l")
-
-[node name="EngineTimeManipulator" type="Node" parent="."]
-script = ExtResource("7_jnn1u")
 
 [node name="Section Bounds2" type="Node2D" parent="."]
 

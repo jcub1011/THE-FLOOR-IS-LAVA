@@ -591,7 +591,6 @@ collision_layer = 2
 slide_on_ceiling = false
 script = ExtResource("1_bukco")
 InputHandler = NodePath("PlayerInputHandler")
-SpeedLimit = Vector2(6400, 6400)
 
 [node name="Lava Collider" type="Area2D" parent="."]
 collision_layer = 0

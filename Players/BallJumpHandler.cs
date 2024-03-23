@@ -4,6 +4,38 @@ using WorldGeneration;
 
 namespace Players;
 
+internal class CoyoteTimer
+{
+    float _coyoteTime;
+    float _remainingCoyoteTime;
+    bool _isCurrentlyOnGround;
+
+    public CoyoteTimer(float coyoteTime)
+    {
+        _coyoteTime = coyoteTime;
+    }
+
+    public void UpdateTimer(float deltaTime, bool isOnGround)
+    {
+        _remainingCoyoteTime -= deltaTime;
+        _isCurrentlyOnGround = isOnGround;
+        if (_isCurrentlyOnGround)
+        {
+            _remainingCoyoteTime = _coyoteTime;
+        }
+    }
+
+    public bool IsOnGround()
+    {
+        return _isCurrentlyOnGround || _remainingCoyoteTime > 0f;
+    }
+
+    public void ConsumeCoyoteTime()
+    {
+        _remainingCoyoteTime = 0f;
+    }
+}
+
 public partial class BallJumpHandler : Node, IDisableableControl
 {
     [Export] CharacterBody2D _body;

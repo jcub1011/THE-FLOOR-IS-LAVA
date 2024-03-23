@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Godot.NodeExtensions
@@ -175,6 +176,37 @@ namespace Godot.NodeExtensions
 
             return returnVals;
         }
+
+        /// <summary>
+        /// Inserts the given child at the given index. 
+        /// NOTE: The given node cannot be an existing child of this node. 
+        /// If you want to change the order of children make sure to remove 
+        /// the node you are moving beforehand.
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="child"></param>
+        /// <param name="index"></param>
+        /// <exception cref="ArgumentException"></exception>
+        //public static void InsertChild(this Node parent, Node child, int index)
+        //{
+        //    var children = parent.GetChildren();
+
+        //    foreach(var oldChild in children)
+        //    {
+        //        if (child.Equals(oldChild)) 
+        //            throw new ArgumentException($"Node {child.Name} is already a child of this node.");
+        //        parent.RemoveChild(oldChild);
+        //    }
+
+        //    for (int i = 0; i < children.Count; i++)
+        //    {
+        //        if (i == index)
+        //        {
+        //            parent.AddChild(child);
+        //        }
+        //        parent.AddChild(children[i]);
+        //    }
+        //}
         #endregion
 
         #region Node2D Extensions

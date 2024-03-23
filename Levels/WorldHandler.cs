@@ -1,4 +1,5 @@
 using Godot;
+using Godot.NodeExtensions;
 using Players;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,10 @@ public partial class WorldHandler : Node2D
         DeleteExistingWorld();
 
         _existingWorld = _world.Instantiate<Node2D>();
-        AddChild( _existingWorld );
+        var timeManip = this.GetDirectChild<EngineTimeManipulator>();
+        RemoveChild(timeManip);
+        AddChild(_existingWorld);
+        AddChild(timeManip);
     }
 
     void DeleteExistingWorld()

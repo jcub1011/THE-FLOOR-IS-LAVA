@@ -113,19 +113,20 @@ public partial class EngineTimeManipulator : Node
         }
 
         double trueDelta = delta / timeScale;
-
         _remainingTransitionTime -= trueDelta;
 
         if (double.IsNaN(_targetTimescale)) return;
-        Engine.TimeScale -= _timescaleROC * trueDelta;
+        timeScale -= _timescaleROC * trueDelta;
         if (_timescaleROC < 0)
         {
-            if (Engine.TimeScale > _targetTimescale) Engine.TimeScale = _targetTimescale;
+            if (timeScale > _targetTimescale) timeScale = _targetTimescale;
         }
         else
         {
-            if (Engine.TimeScale < _targetTimescale) Engine.TimeScale = _targetTimescale;
+            if (timeScale < _targetTimescale) timeScale = _targetTimescale;
         }
-        Engine.TimeScale = Mathf.Clamp(Engine.TimeScale, 0.0001, 1);
+        timeScale = Mathf.Clamp(timeScale, 0.0001, 1);
+        GD.Print($"NewTimeScale: {timeScale}");
+        Engine.TimeScale = timeScale;
     }
 }
