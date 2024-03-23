@@ -26,8 +26,12 @@ public partial class LavaRaiseHandler : Area2D
 			_waitTimer -= (float)delta;
 		}
 		else UpdateLavaPosition((float)delta);
+    }
 
-		EmitSignal(SignalName.LavaDistanceFromScreenChanged,
+    public override void _PhysicsProcess(double delta)
+    {
+        base._PhysicsProcess(delta);
+        EmitSignal(SignalName.LavaDistanceFromScreenChanged,
             WorldDefinition.PixelsToTiles(Position.Y - _cameraSimulator.GetCameraLowerY()));
     }
 

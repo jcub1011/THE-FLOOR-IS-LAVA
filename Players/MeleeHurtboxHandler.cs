@@ -13,7 +13,6 @@ public partial class MeleeHurtboxHandler : Area2D, IDisableableControl
 {
     [Signal] public delegate void OnHurtboxDeflectedEventHandler(CharacterBody2D deflector);
     [Signal] public delegate void HitLandedEventHandler(Node2D thingHit);
-    //[Signal] public delegate void OnHurtboxDeflectedEventHandler();
 
     /// <summary>
     /// Defaults to length of frame @ 24fps.
