@@ -93,56 +93,8 @@ public partial class BallHorizontalMovementHandler : Node, IDisableableControl
     {
         base._Process(delta);
         if (!_isEnabled) return;
-        Vector2 newVel = _body.Velocity;
-        newVel.X = GetNewVelX((float)delta, newVel.X, _moveSpeedInTiles.ToPixels());
-        //float deltaX = _body.IsOnFloor() ?
-        //    _groundAcceleration : _airAcceleration;
-        //float excessSpeedDeceleration = _body.IsOnFloor() ?
-        //    _groundExcessSpeedDeceleration : _airExcessSpeedDeceleration;
-        //deltaX *= (float)delta;
-
-        //if (_isLeftButtonDown == _isRightButtonDown)
-        //{
-        //    if (deltaX > Mathf.Abs(_body.Velocity.X))
-        //    {
-        //        newVel.X = 0f;
-        //    }
-        //    else
-        //    {
-        //        newVel.X += _body.Velocity.X < 0f ? deltaX : -deltaX;
-        //    }
-        //}
-        //else if (_isLeftButtonDown)
-        //{
-        //    // If not already going past max movement speed.
-        //    if (!(newVel.X < -_moveSpeed))
-        //    {
-        //        newVel.X = Mathf.Clamp(newVel.X - deltaX,
-        //            -_moveSpeed, _moveSpeed);
-        //    }
-        //    else
-        //    {
-        //        // Apply deceleration.
-        //        newVel.X -= newVel.X * excessSpeedDeceleration * (float)delta;
-        //        newVel.X = Mathf.Clamp(newVel.X, float.NegativeInfinity, -_moveSpeed);
-        //    }
-        //}
-        //else if (_isRightButtonDown)
-        //{
-        //    // If not already going past max movement speed.
-        //    if (!(newVel.X > _moveSpeed))
-        //    {
-        //        newVel.X = Mathf.Clamp(newVel.X + deltaX,
-        //            -_moveSpeed, _moveSpeed);
-        //    }
-        //    else
-        //    {
-        //        // Apply deceleration.
-        //        newVel.X -= newVel.X * excessSpeedDeceleration * (float)delta;
-        //        newVel.X = Mathf.Clamp(newVel.X, _moveSpeed, float.PositiveInfinity);
-        //    }
-        //}
-
-        _body.Velocity = newVel;
+        _body.Velocity = new Vector2(
+            GetNewVelX((float)delta, _body.Velocity.X, _moveSpeedInTiles.ToPixels()), 
+            _body.Velocity.Y);
     }
 }
