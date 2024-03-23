@@ -11,8 +11,6 @@ public partial class DeflectHandler : Node, IDisableableControl
     [Export] CharacterBody2D _body;
     [Export] float _slomoTime = 5f;
     [Export] float _velocityToKnockbackMultiplier = 1.2f;
-    [Export] float _deflectKnockback = 100f;
-    [Export] float _successfulKnockbackBounce = 30f;
     [Export] DashHandler _dashHandler;
     [Export] AnimationPlayer _aniPlayer;
     [Export] StringName _dashAnimationName;
@@ -89,10 +87,6 @@ public partial class DeflectHandler : Node, IDisableableControl
 
         EngineTimeManipulator.OverrideTimeTransition(new(1, 0.2));
 
-        Vector2 dir = deflectDir;
-
-        _body.Velocity = dir * _successfulKnockbackBounce;
-
         _remainingSlomoTime = 0f;
         _bodyToRedirect = null;
     }
@@ -105,23 +99,6 @@ public partial class DeflectHandler : Node, IDisableableControl
             GD.Print("Performing dash after block.");
             EngineTimeManipulator.OverrideTimeTransition(new(1, 0.2));
             _dashHandler.DashCharges = 2;
-            _dashHandler.PerformDash(new Vector2(), _aniPlayer.GetAnimation(_dashAnimationName).Length);
         }
-
-        //if (pressed)
-        //{
-        //    _activeInputsForRedirection.Add(input);
-        //    if (_activeInputsForRedirection.Count >= 2)
-        //    {
-        //        RedirectDeflectedEnemy(_activeInputsForRedirection.ToArray());
-        //    }
-        //}
-        //else
-        //{
-        //    if (_activeInputsForRedirection.Remove(input))
-        //    {
-        //        RedirectDeflectedEnemy(input);
-        //    }
-        //}
     }
 }
