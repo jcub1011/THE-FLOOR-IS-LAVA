@@ -25,7 +25,7 @@ size = Vector2(256, 205)
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_26252"]
 radius = 103.0
-height = 256.0
+height = 208.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_f5o2s"]
 size = Vector2(256, 205)
@@ -628,7 +628,6 @@ script = ExtResource("13_c0kft")
 _body = NodePath("..")
 _knockback = NodePath("../KnockbackHandler")
 _flip = NodePath("../FlipHandler")
-_dashSpeed = 3000.0
 _dashGravityDisableTime = 0.06
 _movementDisableTime = 0.08
 _dashAnimationName = &"tank_dash"

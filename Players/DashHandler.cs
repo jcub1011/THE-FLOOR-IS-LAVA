@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Linq;
+using WorldGeneration;
 using static Godot.TextServer;
 
 namespace Players;
@@ -10,8 +11,8 @@ public partial class DashHandler : Node
     [Export] PlayerController _body;
     [Export] KnockbackHandler _knockback;
     [Export] FlipHandler _flip;
-    [Export] float _dashSpeed = 3520;
-    [Export] float _maxDashSpeed = 5600;
+    [Export] float _dashSpeedInTiles = 27.5f;
+    [Export] float _maxDashSpeedInTiles = 43.75f;
     [Export] float _dashGravityDisableTime = 0.08f;
     [Export] float _movementDisableTime = 0.1f;
     [Export] StringName _dashAnimationName;
@@ -34,8 +35,6 @@ public partial class DashHandler : Node
     bool _upPressed;
     bool _downPressed;
 
-    //float _remainingDashTime;
-
     float _remainingDashHoldTime;
     const float MAX_DASH_HOLD_TIME = 0.5f;
     float _initalSpeed;
@@ -48,12 +47,6 @@ public partial class DashHandler : Node
         {
             if (DashCharges <= 0) DashCharges = 1;
         }
-
-        //_remainingDashTime -= (float)delta;
-        //if (_remainingDashTime > 0f)
-        //{
-        //    HandleDashNudging((float)delta);
-        //}
     }
 
     public override void _PhysicsProcess(double delta)
@@ -70,9 +63,6 @@ public partial class DashHandler : Node
             }
             else
             {
-                //_body.Velocity = _body.Velocity.Normalized() 
-                //    * (_remainingDashHoldTime / MAX_DASH_HOLD_TIME) * _initalSpeed;
-
                 float newSpeed = Mathf.Clamp(
                     Mathf.Pow(
                         Mathf.Clamp(_remainingDashHoldTime / MAX_DASH_HOLD_TIME, 0f, 1f), 3f) 
@@ -99,14 +89,6 @@ public partial class DashHandler : Node
         _aniPlayer.Play(_dashAnimationName);
     }
 
-    void HandleDashNudging(float delta)
-    {
-        //if (_upPressed == _downPressed) return;
-        //Vector2 moveDir = _body.Velocity;
-        //_body.Velocity += new Vector2(0f, (_upPressed 
-        //    ? -_dashAngleAdjustSpeed : _dashAngleAdjustSpeed) * delta);
-    }
-
     public void InputEventHandler(StringName input, bool pressed)
     {
         if (input == InputNames.LEFT) _leftPressed = pressed;
@@ -131,7 +113,7 @@ public partial class DashHandler : Node
         if (DashCharges <= 0) return false;
         DashCharges--;
 
-        PerformDash(_dashSpeed, GetDashDirection());
+        PerformDash(_dashSpeedInTiles.ToPixels(), GetDashDirection());
         return true;
     }
 
@@ -155,8 +137,10 @@ public partial class DashHandler : Node
     void CompleteHeldDash()
     {
         _holdingDash = false;
-        float speed = _dashSpeed + (_maxDashSpeed - _dashSpeed) * (MAX_DASH_HOLD_TIME - _remainingDashHoldTime) / MAX_DASH_HOLD_TIME;
-        PerformDash(speed, GetDashDirection());
+        float speed = _dashSpeedInTiles 
+            + (_maxDashSpeedInTiles - _dashSpeedInTiles) 
+            * (MAX_DASH_HOLD_TIME - _remainingDashHoldTime) / MAX_DASH_HOLD_TIME;
+        PerformDash(speed.ToPixels(), GetDashDirection());
     }
 
     /// <summary>
@@ -167,27 +151,6 @@ public partial class DashHandler : Node
     public bool PerformDash(Vector2 direction, float duration)
     {
         return DashCharges > 0;
-        return StartHeldDash();
-        if (DashCharges <= 0) return false;
-        DashCharges--;
-
-        float speed = _body.Velocity.Length();
-        _body.Velocity = _body.Velocity.Normalized() * Mathf.Clamp(speed, -30f, 30f);
-        _disabler.DisableControlsExcept(
-            1f,
-            ControlIDs.INPUT,
-            //ControlIDs.HURTBOX,
-            ControlIDs.HITBOX);
-        _disabler.DisableControls(
-            _movementDisableTime,
-            ControlIDs.MOVEMENT);
-        _disabler.DisableControls(
-            _dashGravityDisableTime,
-            ControlIDs.GRAVITY);
-
-        _remainingDashHoldTime = 0.05f;
-
-        return true;
     }
 
     Vector2 GetDashDirection()
