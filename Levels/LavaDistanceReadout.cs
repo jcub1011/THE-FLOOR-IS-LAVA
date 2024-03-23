@@ -21,6 +21,6 @@ public partial class LavaDistanceReadout : PanelContainer
         }
         else Visible = true;
 
-        GetChild<Label>(0).Text = $"Lava is {Mathf.CeilToInt(newLavaDistanceTiles)} tiles away.";
+        GetChild(0).GetChild<Label>(0).Text = $"Lava is {Mathf.CeilToInt(newLavaDistanceTiles)} tiles away.";
     }
 }

@@ -670,7 +670,6 @@ _body = NodePath("..")
 _disabler = NodePath("../ControlDisablerHandler")
 _aniPlayer = NodePath("../AnimationPlayer")
 _staggerAnimationName = &"tank_stagger"
-_hitLandedKnockbackStrength = 130.0
 
 [node name="ControlDisablerHandler" type="Node" parent="."]
 script = ExtResource("10_t2a0i")

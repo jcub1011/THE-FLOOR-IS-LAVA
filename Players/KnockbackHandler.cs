@@ -12,8 +12,6 @@ public partial class KnockbackHandler : Node, IDisableableControl
     [Export] ControlDisablerHandler _disabler;
     [Export] AnimationPlayer _aniPlayer;
     [Export] StringName _staggerAnimationName = "stagger";
-    [Export] float _staggeredKnockbackMultiplier = 2f;
-    [Export] float _hitLandedKnockbackStrength = 80f;
     [Export] float _hitLandedRecoveryTime = 0.08f;
     bool _inStaggerState = false;
     float _remainingStagger;
@@ -60,14 +58,12 @@ public partial class KnockbackHandler : Node, IDisableableControl
                 .Normalized() * knockback;
             _body.Velocity = newVel;
         }
-        //knockback *= _inStaggerState ? _staggeredKnockbackMultiplier : 1f;
         DisableHandlers(_recoveryTime);
         GetParent<PlayerController>().EnableBouncing(_recoveryTime);
     }
 
     void DisableHandlers(float time)
     {
-        //EmitSignal(SignalName.OnDisableMovementControl);
         _disabler.DisableControlsExcept(
             time,
             ControlIDs.INPUT,
@@ -85,8 +81,9 @@ public partial class KnockbackHandler : Node, IDisableableControl
 
     public void OnHitLanded(Node2D node)
     {
+        GD.Print("Calling hit landed but it is not defined.");
         Vector2 direction = node.GlobalPosition.RelativeTo(_body.GlobalPosition);
         Vector2 knockback = new(direction.X < 0f ? 1f : -1f, -3f);
-        ApplyKnockback(knockback.Normalized() * _hitLandedKnockbackStrength, _hitLandedRecoveryTime);
+        ApplyKnockback(knockback.Normalized() * _body.Velocity.Length() / 2, _hitLandedRecoveryTime);
     }
 }
