@@ -76,9 +76,9 @@ public partial class EngineTimeManipulator : Node
     }
     #endregion
 
-    public override void _Ready()
+    public override void _EnterTree()
     {
-        base._Ready();
+        base._EnterTree();
         Instance = this;
     }
 
@@ -126,7 +126,7 @@ public partial class EngineTimeManipulator : Node
             if (timeScale < _targetTimescale) timeScale = _targetTimescale;
         }
         timeScale = Mathf.Clamp(timeScale, 0.0001, 1);
-        GD.Print($"NewTimeScale: {timeScale}");
+        //GD.Print($"NewTimeScale: {timeScale}");
         Engine.TimeScale = timeScale;
     }
 }

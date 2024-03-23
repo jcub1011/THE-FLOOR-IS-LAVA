@@ -67,7 +67,7 @@ public partial class DeflectHandler : Node, IDisableableControl
     {
         _activeInputsForRedirection.Clear();
         _remainingSlomoTime = _slomoTime;
-        EngineTimeManipulator.QueueTimeTransition(new(0.01, 0));
+        EngineTimeManipulator.OverrideTimeTransition(new(0.01, 0));
         EngineTimeManipulator.QueueTimeTransition(new(_slomoTime));
         EngineTimeManipulator.QueueTimeTransition(new(1, 0.2));
     }
