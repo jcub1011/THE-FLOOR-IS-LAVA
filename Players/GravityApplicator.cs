@@ -1,12 +1,14 @@
 using Godot;
 using Players;
+using WorldGeneration;
 
 namespace Physics;
 
 public partial class GravityApplicator : Node, IDisableableControl
 {
     [Export] CharacterBody2D _body;
-    [Export] public float Gravity { get; private set; } = 12000f;
+    [Export] public float GravityInTiles { get; private set; } = 93.75f;
+    float _gravity = 12000f;
     [Export] bool _isEnabled = true;
 
     #region Interface Implementation
@@ -21,6 +23,7 @@ public partial class GravityApplicator : Node, IDisableableControl
     public override void _Ready()
     {
         base._Ready();
+        _gravity = GravityInTiles.ToPixels();
         _body ??= GetParent() as CharacterBody2D;
     }
 
@@ -28,7 +31,7 @@ public partial class GravityApplicator : Node, IDisableableControl
     {
         base._Process(delta);
         if (!_isEnabled) return;
-        _body.Velocity += new Vector2(0f, Gravity * (float)delta);
+        _body.Velocity += new Vector2(0f, _gravity * (float)delta);
     }
 
     public void SetIfEnabled(bool enabled) => _isEnabled = enabled;
