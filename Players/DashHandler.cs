@@ -20,6 +20,7 @@ public partial class DashHandler : Node, IDisableableControl
     [Export] StringName _dashAnimationName;
     [Export] AnimationPlayer _aniPlayer;
     [Export] ControlDisablerHandler _disabler;
+    [Export] float _dashBufferTime = 0.15f;
     bool _nextDashIsDeflectDash;
     int _dashCharges;
     public int DashCharges
@@ -38,6 +39,7 @@ public partial class DashHandler : Node, IDisableableControl
     const float MAX_DASH_HOLD_TIME = 0.5f;
     float _initalSpeed;
     bool _holdingDash;
+    bool _isActionPressed;
 
     #region Interface Implementation
     string IDisableableControl.ControlID => ControlIDs.DASH;
@@ -61,6 +63,19 @@ public partial class DashHandler : Node, IDisableableControl
         {
             if (DashCharges <= 0) DashCharges = 1;
         }
+        
+        if (InputBuffer.IsBuffered(_body, InputNames.ACTION, _dashBufferTime)
+            && DashCharges > 0)
+        {
+            InputBuffer.ConsumeBuffer(_body, InputNames.ACTION);
+            GD.Print("Performing buffered dash.");
+            if (_nextDashIsDeflectDash) PerformInstaDash();
+            else
+            {
+                StartHeldDash();
+                if (!_isActionPressed) CompleteHeldDash();
+            }
+        }
     }
 
     public override void _PhysicsProcess(double delta)
@@ -73,7 +88,6 @@ public partial class DashHandler : Node, IDisableableControl
             if (!float.IsNaN(_remainingDashHoldTime) && _remainingDashHoldTime <= 0)
             {
                 CompleteHeldDash();
-                _remainingDashHoldTime = float.NaN;
             }
             else
             {
@@ -105,7 +119,14 @@ public partial class DashHandler : Node, IDisableableControl
 
     public void InputEventHandler(StringName input, bool pressed)
     {
-        if (input != InputNames.ACTION || !_isEnabled) return;
+        if (input != InputNames.ACTION) return;
+        _isActionPressed = pressed;
+        if (pressed && DashCharges <= 0)
+        {
+            InputBuffer.BufferInput(_body, InputNames.ACTION);
+            return;
+        }
+        else if (!_isEnabled) return;
 
         if (!pressed)
         {
@@ -113,8 +134,9 @@ public partial class DashHandler : Node, IDisableableControl
         }
         else
         {
+            InputBuffer.ConsumeBuffer(_body, InputNames.ACTION);
             if (_nextDashIsDeflectDash) PerformInstaDash();
-            StartHeldDash();
+            else StartHeldDash();
         }
     }
 
@@ -122,6 +144,7 @@ public partial class DashHandler : Node, IDisableableControl
     {
         DashCharges = 1;
         PerformDash(_dashSpeedFromDeflectingInTiles.ToPixels(), GetDashDirection());
+        _holdingDash = false;
         _nextDashIsDeflectDash = false;
     }
 
@@ -150,6 +173,7 @@ public partial class DashHandler : Node, IDisableableControl
             + (_maxDashSpeedInTiles - _dashSpeedInTiles) 
             * (MAX_DASH_HOLD_TIME - _remainingDashHoldTime) / MAX_DASH_HOLD_TIME;
         PerformDash(speed.ToPixels(), GetDashDirection());
+        _remainingDashHoldTime = float.NaN;
     }
 
     Vector2 GetDashDirection()
@@ -170,6 +194,7 @@ public partial class DashHandler : Node, IDisableableControl
 
     public void OnBlockLandedHandler()
     {
+        _disabler.EnableControls(ControlIDs.DASH);
         _nextDashIsDeflectDash = true;
     }
 }
