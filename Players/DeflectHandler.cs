@@ -79,12 +79,11 @@ public partial class DeflectHandler : Node, IDisableableControl
         EngineTimeManipulator.QueueTimeTransition(new(1, 0.2));
     }
 
-    public void RedirectDeflectedEnemy()
+    public void OnDashHandler(Vector2 dashVelocity)
     {
-        Vector2 dashDir = this.GetSibling<PlayerInputHandler>().InputAxis;
-
+        if (_bodyToRedirect == null) return;
         _bodyToRedirect.GetChild<KnockbackHandler>()
-            .ApplyKnockback(-dashDir * _bodyToRedirect.Velocity.Normalized() * _velocityToKnockbackMultiplier);
+            .ApplyKnockback(-dashVelocity * _velocityToKnockbackMultiplier);
 
         EngineTimeManipulator.OverrideTimeTransition(new(1, 0.2));
 
@@ -99,12 +98,6 @@ public partial class DeflectHandler : Node, IDisableableControl
         if (_remainingSlomoTime <= 0f && input == InputNames.BLOCK)
         {
             RequestBlock();
-        }
-        else if (_remainingSlomoTime > 0f && input == InputNames.ACTION)
-        {
-            GD.Print("Performing dash after block.");
-            RedirectDeflectedEnemy();
-            EngineTimeManipulator.OverrideTimeTransition(new(1, 0.2));
         }
     }
 

@@ -722,6 +722,7 @@ script = ExtResource("16_cd1ek")
 PossibleSprites = Array[Texture2D]([ExtResource("16_vhdrh")])
 
 [connection signal="area_entered" from="Lava Collider" to="." method="OnTouchedLava"]
+[connection signal="DashPerformed" from="DashHandler" to="DeflectHandler" method="OnDashHandler"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="BallHorizontalMovement" method="InputEventHandler"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="BallJumpHandler" method="InputEventHandler"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="DashHandler" method="InputEventHandler"]

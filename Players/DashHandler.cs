@@ -21,6 +21,7 @@ public partial class DashHandler : Node, IDisableableControl
     [Export] AnimationPlayer _aniPlayer;
     [Export] ControlDisablerHandler _disabler;
     [Export] float _dashBufferTime = 0.15f;
+    [Signal] public delegate void DashPerformedEventHandler(Vector2 dashVelocity);
     bool _nextDashIsDeflectDash;
     int _dashCharges;
     public int DashCharges
@@ -115,6 +116,7 @@ public partial class DashHandler : Node, IDisableableControl
             _dashGravityDisableTime,
             ControlIDs.GRAVITY);
         _aniPlayer.Play(_dashAnimationName);
+        EmitSignal(SignalName.DashPerformed, _body.Velocity);
     }
 
     public void InputEventHandler(StringName input, bool pressed)
