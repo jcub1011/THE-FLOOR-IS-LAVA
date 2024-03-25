@@ -6,7 +6,7 @@ namespace Players;
 
 public partial class BallHorizontalMovementHandler : Node, IDisableableControl
 {
-    [Export] PlayerController _body;
+    PlayerController _body;
     [Export] float _moveSpeedInTiles = 10;
     [Export] bool _isEnabled = true;
     [Export] float _groundAccelerationInTiles = 150;
@@ -17,6 +17,12 @@ public partial class BallHorizontalMovementHandler : Node, IDisableableControl
     bool _isRightButtonDown;
 
     public string ControlID => ControlIDs.MOVEMENT;
+
+    public override void _Ready()
+    {
+        base._Ready();
+        _body = GetParent<PlayerController>();
+    }
 
     public void SetControlState(bool enabled)
     {

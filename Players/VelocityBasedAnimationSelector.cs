@@ -6,11 +6,11 @@ namespace Players;
 public partial class VelocityBasedAnimationSelector : Node, IDisableableControl
 {
     [Export] public bool IsEnabled { get; set; } = true;
-    [Export] CharacterBody2D _body;
-    [Export] Sprite2D _sprite;
-    [Export] AnimationPlayer _player;
+    CharacterBody2D _body;
+    Sprite2D _sprite;
+    AnimationPlayer _player;
     //[Export] CrouchHandler _crouchHandler;
-    [Export] FlipHandler _flipHandler;
+    FlipHandler _flipHandler;
     [Export] float _walkToRunTransitionThreshold = 300f;
     [ExportGroup("Animation Names")]
     [Export] StringName _idleAnimation = "idle";
@@ -28,6 +28,15 @@ public partial class VelocityBasedAnimationSelector : Node, IDisableableControl
         SetIfEnabled(enabled);
     }
     #endregion
+
+    public override void _Ready()
+    {
+        base._Ready();
+        _body = GetParent<CharacterBody2D>();
+        _sprite = this.GetSibling<Sprite2D>();
+        _player = this.GetSibling<AnimationPlayer>();
+        _flipHandler = this.GetSibling<FlipHandler>();
+    }
 
     public override void _PhysicsProcess(double delta)
     {

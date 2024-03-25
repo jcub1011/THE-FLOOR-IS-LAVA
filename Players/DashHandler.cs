@@ -85,10 +85,10 @@ internal readonly struct DashInfo
 
 public partial class DashHandler : Node, IDisableableControl
 {
-    [Export] PlayerController _body;
-    [Export] KnockbackHandler _knockback;
-    [Export] FlipHandler _flip;
-    [Export] MeleeHurtboxHandler _meleeHurtbox;
+    PlayerController _body;
+    KnockbackHandler _knockback;
+    FlipHandler _flip;
+    MeleeHurtboxHandler _meleeHurtbox;
     //[Export] float _dashSpeedInTiles = 27.5f;
     //[Export] float _maxDashSpeedInTiles = 43.75f;
     // X is dash speed, Y is how long you have to hold to reach the tier, and Z is how long the dash hurtbox is active.
@@ -152,8 +152,11 @@ public partial class DashHandler : Node, IDisableableControl
     public override void _Ready()
     {
         base._Ready();
-        //Array.Sort(_dashTiers, (x, y) => x.Y == y.Y ? 0 : (x.Y < y.Y ? -1 : 1));
         _processedDashInfo = DashInfo.GenerateDashInfo(_dashTiers, _dashTierPerformAnimations, _dashTierChargeAnimations);
+        _body = GetParent<PlayerController>();
+        _knockback = this.GetSibling<KnockbackHandler>();
+        _flip = this.GetSibling<FlipHandler>();
+        _meleeHurtbox = this.GetSibling<MeleeHurtboxHandler>();
     }
 
     public override void _Process(double delta)

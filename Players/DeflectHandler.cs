@@ -7,12 +7,12 @@ namespace Players;
 
 public partial class DeflectHandler : Node, IDisableableControl
 {
-    [Export] Sprite2D _sprite;
-    [Export] CharacterBody2D _body;
+    Sprite2D _sprite;
+    CharacterBody2D _body;
     [Export] float _slomoTime = 5f;
     [Export] float _blockCooldownTime = 0.3f;
     [Export] float _velocityToKnockbackMultiplier = 1.2f;
-    [Export] AnimationPlayer _aniPlayer;
+    AnimationPlayer _aniPlayer;
     [Export] StringName _blockAnimation = "tank_block";
     [Signal] public delegate void OnSuccessfulDeflectEventHandler();
     float _remainingSlomoTime;
@@ -34,6 +34,9 @@ public partial class DeflectHandler : Node, IDisableableControl
     public override void _Ready()
     {
         base._Ready();
+        _sprite = this.GetSibling<Sprite2D>();
+        _body = GetParent<CharacterBody2D>();
+        _aniPlayer = this.GetSibling<AnimationPlayer>();
     }
 
     public void EnableDeflect(float duration)

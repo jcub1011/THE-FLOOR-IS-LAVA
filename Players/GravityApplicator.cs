@@ -6,7 +6,7 @@ namespace Physics;
 
 public partial class GravityApplicator : Node, IDisableableControl
 {
-    [Export] CharacterBody2D _body;
+    CharacterBody2D _body;
     [Export] public float GravityInTiles { get; private set; } = 93.75f;
     float _gravity = 12000f;
     [Export] bool _isEnabled = true;
@@ -24,7 +24,7 @@ public partial class GravityApplicator : Node, IDisableableControl
     {
         base._Ready();
         _gravity = GravityInTiles.ToPixels();
-        _body ??= GetParent() as CharacterBody2D;
+        _body  = GetParent<CharacterBody2D>();
     }
 
     public override void _Process(double delta)

@@ -38,7 +38,7 @@ internal class CoyoteTimer
 
 public partial class BallJumpHandler : Node, IDisableableControl
 {
-    [Export] CharacterBody2D _body;
+    CharacterBody2D _body;
     [Export] float _jumpVelocityInTiles = 17.75f;
     [Export] float _maxJumpTime = 0.2f;
     [Export] bool _isEnabled = true;
@@ -58,7 +58,7 @@ public partial class BallJumpHandler : Node, IDisableableControl
     public override void _Ready()
     {
         base._Ready();
-        _body ??= GetParent() as CharacterBody2D;
+        _body = GetParent<CharacterBody2D>();
         _coyoteTimer = new(_coyoteTime);
     }
 

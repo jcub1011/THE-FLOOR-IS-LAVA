@@ -7,7 +7,6 @@ namespace Players;
 
 public partial class PlayerController : CharacterBody2D
 {
-    [Export] PlayerInputHandler InputHandler;
     [Export] public Vector2 SpeedLimitInTiles { get; private set; } = new(50, 50);
     float _remainingBounceTime;
 
@@ -83,7 +82,7 @@ public partial class PlayerController : CharacterBody2D
     public override void _ExitTree()
     {
         base._ExitTree();
-        InputHandler.ReleaseInput();
+        this.GetChild<PlayerInputHandler>().ReleaseInput();
         OriginShiftChannel.OriginShifted -= OriginShifted;
     }
 

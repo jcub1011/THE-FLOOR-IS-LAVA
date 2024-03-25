@@ -1,4 +1,4 @@
-[gd_scene load_steps=53 format=3 uid="uid://cv7g2fnqrxx7s"]
+[gd_scene load_steps=51 format=3 uid="uid://cv7g2fnqrxx7s"]
 
 [ext_resource type="Script" path="res://Players/PlayerController.cs" id="1_bukco"]
 [ext_resource type="Script" path="res://Players/PlayerInputHandler.cs" id="2_bjy2i"]
@@ -13,9 +13,7 @@
 [ext_resource type="Script" path="res://Players/VelocityBasedAnimationSelector.cs" id="9_igj33"]
 [ext_resource type="Script" path="res://Players/ControlDisablerHandler.cs" id="10_t2a0i"]
 [ext_resource type="Script" path="res://Players/FlipHandler.cs" id="11_t7grp"]
-[ext_resource type="Script" path="res://Players/ProjectileGenerator.cs" id="13_1puao"]
 [ext_resource type="Script" path="res://Players/DashHandler.cs" id="13_c0kft"]
-[ext_resource type="PackedScene" uid="uid://bfra243ouj6n3" path="res://Players/projectile.tscn" id="14_82o23"]
 [ext_resource type="Script" path="res://Players/SpriteControls.cs" id="16_cd1ek"]
 [ext_resource type="Texture2D" uid="uid://bku360yeedwdj" path="res://Players/Sprite Sheets/Medieval Tank PixelArt Shrunk With Stagger and Dash Charging.png" id="17_vuhhc"]
 
@@ -649,11 +647,10 @@ _data = {
 "tank_stagger": SubResource("Animation_m1jeo")
 }
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("InputHandler")]
+[node name="Player" type="CharacterBody2D"]
 collision_layer = 2
 slide_on_ceiling = false
 script = ExtResource("1_bukco")
-InputHandler = NodePath("PlayerInputHandler")
 
 [node name="Lava Collider" type="Area2D" parent="."]
 collision_layer = 0
@@ -668,20 +665,14 @@ position = Vector2(0, -7)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_26252")
 
-[node name="BallHorizontalMovement" type="Node" parent="." node_paths=PackedStringArray("_body")]
+[node name="BallHorizontalMovement" type="Node" parent="."]
 script = ExtResource("3_vn5cb")
-_body = NodePath("..")
 
-[node name="BallJumpHandler" type="Node" parent="." node_paths=PackedStringArray("_body")]
+[node name="BallJumpHandler" type="Node" parent="."]
 script = ExtResource("4_kdm3q")
-_body = NodePath("..")
 
-[node name="DashHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_knockback", "_flip", "_meleeHurtbox", "_aniPlayer", "_disabler")]
+[node name="DashHandler" type="Node" parent="." node_paths=PackedStringArray("_aniPlayer", "_disabler")]
 script = ExtResource("13_c0kft")
-_body = NodePath("..")
-_knockback = NodePath("../KnockbackHandler")
-_flip = NodePath("../FlipHandler")
-_meleeHurtbox = NodePath("../MeleeHurtboxHandler")
 _dashTierPerformAnimations = PackedStringArray("tank_dash", "tank_dash_big")
 _dashTierChargeAnimations = PackedStringArray("tank_charge_light", "tank_charge_strong")
 _aniPlayer = NodePath("../AnimationPlayer")
@@ -690,22 +681,14 @@ _disabler = NodePath("../ControlDisablerHandler")
 [node name="PlayerInputHandler" type="Node" parent="."]
 script = ExtResource("2_bjy2i")
 
-[node name="GravityApplicator" type="Node" parent="." node_paths=PackedStringArray("_body")]
+[node name="GravityApplicator" type="Node" parent="."]
 script = ExtResource("4_46gxe")
-_body = NodePath("..")
 
-[node name="DeflectHandler" type="Node" parent="." node_paths=PackedStringArray("_sprite", "_body", "_aniPlayer")]
+[node name="DeflectHandler" type="Node" parent="."]
 script = ExtResource("7_bcpnl")
-_sprite = NodePath("../Sprite_New")
-_body = NodePath("..")
-_aniPlayer = NodePath("../AnimationPlayer")
 
-[node name="VelocityBasedAniSelector" type="Node" parent="." node_paths=PackedStringArray("_body", "_sprite", "_player", "_flipHandler")]
+[node name="VelocityBasedAniSelector" type="Node" parent="."]
 script = ExtResource("9_igj33")
-_body = NodePath("..")
-_sprite = NodePath("../Sprite_New")
-_player = NodePath("../AnimationPlayer")
-_flipHandler = NodePath("../FlipHandler")
 _walkToRunTransitionThreshold = 100.0
 _idleAnimation = &"tank_idle"
 _walkAnimation = &"tank_drive"
@@ -714,12 +697,9 @@ _fallAnimation = &"tank_fall"
 _riseAnimation = &"tank_rise"
 _crouch = &"tank_idle"
 
-[node name="KnockbackHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_disabler", "_aniPlayer")]
+[node name="KnockbackHandler" type="Node" parent="."]
 script = ExtResource("9_ad621")
 _recoveryTime = 0.5
-_body = NodePath("..")
-_disabler = NodePath("../ControlDisablerHandler")
-_aniPlayer = NodePath("../AnimationPlayer")
 _staggerAnimationName = &"tank_stagger"
 
 [node name="ControlDisablerHandler" type="Node" parent="."]
@@ -728,22 +708,8 @@ script = ExtResource("10_t2a0i")
 [node name="FlipHandler" type="Node" parent="."]
 script = ExtResource("11_t7grp")
 
-[node name="ProjectileGenerator" type="Node2D" parent="."]
-script = ExtResource("13_1puao")
-_projectileSpeed = 200.0
-_baseKnockback = 100.0
-_knockbackMultiplierPerUnitSpeed = 1.2
-_projectileTemplate = ExtResource("14_82o23")
-
-[node name="ProjectileOrigin" type="Marker2D" parent="ProjectileGenerator"]
-position = Vector2(6, -6)
-
-[node name="ProjectileRotationPoint" type="Marker2D" parent="ProjectileGenerator"]
-position = Vector2(0, -6)
-
-[node name="Hitbox" type="Area2D" parent="." node_paths=PackedStringArray("_deflectHandler")]
+[node name="Hitbox" type="Area2D" parent="."]
 script = ExtResource("9_4xjwb")
-_deflectHandler = NodePath("../DeflectHandler")
 
 [node name="HitboxCollider" type="CollisionShape2D" parent="Hitbox"]
 position = Vector2(0, -6.5)

@@ -1,4 +1,5 @@
 using Godot;
+using Godot.NodeExtensions;
 using WorldGeneration;
 
 namespace Players;
@@ -17,7 +18,7 @@ public partial class Hitbox : Area2D, IDisableableControl
     {
         get => GetParent<CharacterBody2D>();
     }
-    [Export] DeflectHandler _deflectHandler;
+    DeflectHandler _deflectHandler;
 
     #region Interface Implementation
     public string ControlID { get => ControlIDs.HITBOX; }
@@ -33,6 +34,7 @@ public partial class Hitbox : Area2D, IDisableableControl
     {
         base._Ready();
         AreaEntered += OnAreaEntered;
+        _deflectHandler = this.GetSibling<DeflectHandler>();
     }
 
     void OnAreaEntered(Area2D area)

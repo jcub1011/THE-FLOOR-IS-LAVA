@@ -8,9 +8,9 @@ namespace Players;
 public partial class KnockbackHandler : Node, IDisableableControl
 {
     [Export] float _recoveryTime = 0.2f;
-    [Export] CharacterBody2D _body;
-    [Export] ControlDisablerHandler _disabler;
-    [Export] AnimationPlayer _aniPlayer;
+    CharacterBody2D _body;
+    ControlDisablerHandler _disabler;
+    AnimationPlayer _aniPlayer;
     [Export] StringName _staggerAnimationName = "stagger";
     [Export] float _hitLandedRecoveryTime = 0.08f;
     bool _inStaggerState = false;
@@ -25,6 +25,14 @@ public partial class KnockbackHandler : Node, IDisableableControl
         //    $"is not implemented.");
     }
     #endregion
+
+    public override void _Ready()
+    {
+        base._Ready();
+        _body = GetParent<CharacterBody2D>();
+        _disabler = this.GetSibling<ControlDisablerHandler>();
+        _aniPlayer = this.GetSibling<AnimationPlayer>();
+    }
 
     public override void _PhysicsProcess(double delta)
     {
