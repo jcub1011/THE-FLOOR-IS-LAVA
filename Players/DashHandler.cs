@@ -1,11 +1,87 @@
 using Godot;
 using Godot.NodeExtensions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using WorldGeneration;
-using static Godot.TextServer;
 
 namespace Players;
+
+internal readonly struct DashInfo
+{
+    /// <summary>
+    /// How fast the dash is.
+    /// </summary>
+    public readonly float Speed;
+    /// <summary>
+    /// How long the dash hurtbox should be enabled.
+    /// </summary>
+    public readonly float HurtboxEnabledTime;
+    /// <summary>
+    /// How long the dash button should be held to execute.
+    /// </summary>
+    public readonly float HoldTimeNeeded;
+    /// <summary>
+    /// The dash animation to use.
+    /// </summary>
+    public readonly StringName PerformAnimation;
+    /// <summary>
+    /// The dash charge animation to use.
+    /// </summary>
+    public readonly StringName ChargeAnimation;
+
+    public DashInfo(float speed, float hurtboxEneabledTime, float holdTimeNeeded, StringName performAnimation, StringName chargeAnimation)
+    {
+        Speed = speed;
+        HurtboxEnabledTime = hurtboxEneabledTime;
+        HoldTimeNeeded = holdTimeNeeded;
+        PerformAnimation = performAnimation;
+        ChargeAnimation = chargeAnimation;
+    }
+
+    /// <summary>
+    /// All values default to NaN and null.
+    /// </summary>
+    public DashInfo()
+    {
+        Speed = float.NaN;
+        HurtboxEnabledTime = float.NaN;
+        HoldTimeNeeded = float.NaN;
+        PerformAnimation = null;
+        ChargeAnimation = null;
+    }
+
+    public static List<DashInfo> GenerateDashInfo(Vector3[] dashTiers, string[] dashTierPerformAnimations, string[] dashTierChargeAnimations)
+    {
+        var newInfo = new List<DashInfo>();
+        for(int i = 0; i < dashTiers.Length; i++)
+        {
+            newInfo.Add(
+                new(dashTiers[i].X, dashTiers[i].Z, dashTiers[i].Y, 
+                dashTierPerformAnimations[Mathf.Clamp(i, 0, dashTierPerformAnimations.Length - 1)],
+                dashTierChargeAnimations[Mathf.Clamp(i, 0, dashTierChargeAnimations.Length - 1)]));
+        }
+        return newInfo;
+    }
+
+    public static DashInfo GetBestDashInfo(float timeDashButtonHeld, IEnumerable<DashInfo> dashInfos)
+    {
+        DashInfo best = default;
+        float bestTime = float.NegativeInfinity;
+
+        foreach(var info in dashInfos)
+        {
+            if (float.IsNaN(info.HoldTimeNeeded)) continue;
+
+            if (info.HoldTimeNeeded < timeDashButtonHeld && info.HoldTimeNeeded > bestTime)
+            {
+                best = info;
+            }
+        }
+
+        return best;
+    }
+}
 
 public partial class DashHandler : Node, IDisableableControl
 {
@@ -14,10 +90,14 @@ public partial class DashHandler : Node, IDisableableControl
     [Export] FlipHandler _flip;
     [Export] float _dashSpeedInTiles = 27.5f;
     [Export] float _maxDashSpeedInTiles = 43.75f;
+    // X is dash speed, Y is how long you have to hold to reach the tier, and Z is how long the dash hurtbox is active.
+    [Export] Vector3[] _dashTiers = { new(25, 0f, 0.15f), new(40, 0.4f, 0.4f) };
+    [Export] string[] _dashTierPerformAnimations = { "tank_dash" };
+    [Export] string[] _dashTierChargeAnimations = { "tank_dash" };
     [Export] float _dashGravityDisableTime = 0.08f;
     [Export] float _movementDisableTime = 0.1f;
     [Export] float _dashSpeedFromDeflectingInTiles = 40f;
-    [Export] StringName _dashAnimationName;
+    //[Export] StringName _dashAnimationName;
     [Export] AnimationPlayer _aniPlayer;
     [Export] ControlDisablerHandler _disabler;
     [Export] float _dashBufferTime = 0.15f;
@@ -29,16 +109,18 @@ public partial class DashHandler : Node, IDisableableControl
         get => _dashCharges;
         set
         {
-            GD.Print($"{GetParent().Name} - " +
-                $"Setting dash charges to {value} from {_dashCharges}.");
+            //GD.Print($"{GetParent().Name} - " +
+            //    $"Setting dash charges to {value} from {_dashCharges}.");
             _dashCharges = value;
         }
     }
+    List<DashInfo> _processedDashInfo;
 
 
     float _remainingDashHoldTime;
     const float MAX_DASH_HOLD_TIME = 0.5f;
     float _initalSpeed;
+    Vector2 _initialVelocity;
     bool _holdingDash;
     bool _isActionPressed;
 
@@ -56,6 +138,13 @@ public partial class DashHandler : Node, IDisableableControl
         }
     }
     #endregion
+
+    public override void _Ready()
+    {
+        base._Ready();
+        //Array.Sort(_dashTiers, (x, y) => x.Y == y.Y ? 0 : (x.Y < y.Y ? -1 : 1));
+        _processedDashInfo = DashInfo.GenerateDashInfo(_dashTiers, _dashTierAnimations);
+    }
 
     public override void _Process(double delta)
     {
@@ -102,10 +191,19 @@ public partial class DashHandler : Node, IDisableableControl
         }
     }
 
-    void PerformDash(float speed, Vector2 direction)
+    void PerformDash(DashInfo info, Vector2 direction)
     {
-        float dashLength = _aniPlayer.GetAnimation(_dashAnimationName).Length;
-        _body.Velocity = direction.Normalized() * speed;
+        float dashLength = _aniPlayer.GetAnimation(info.PerformAnimation).Length;
+        Vector2 dashVelocity = direction.Normalized() * info.Speed.ToPixels();
+
+        // To maintain momentum.
+        if (dashVelocity.X != 0f && 
+            Mathf.Abs(dashVelocity.X) < Mathf.Abs(_initialVelocity.X))
+        {
+            dashVelocity.X = dashVelocity.X < 0f ? -Mathf.Abs(_initialVelocity.X) : Mathf.Abs(_initialVelocity.X);
+        }
+
+        _body.Velocity = direction.Normalized() * info.Speed.ToPixels();
         _disabler.DisableControlsExcept(
             dashLength,
             ControlIDs.HITBOX);
@@ -115,7 +213,7 @@ public partial class DashHandler : Node, IDisableableControl
         _disabler.DisableControls(
             _dashGravityDisableTime,
             ControlIDs.GRAVITY);
-        _aniPlayer.Play(_dashAnimationName);
+        _aniPlayer.Play(info.PerformAnimation);
         EmitSignal(SignalName.DashPerformed, _body.Velocity);
     }
 
@@ -145,7 +243,7 @@ public partial class DashHandler : Node, IDisableableControl
     public void PerformInstaDash()
     {
         DashCharges = 1;
-        PerformDash(_dashSpeedFromDeflectingInTiles.ToPixels(), GetDashDirection());
+        PerformDash(DashInfo.GetBestDashInfo(MAX_DASH_HOLD_TIME, _processedDashInfo), GetDashDirection());
         _holdingDash = false;
         _nextDashIsDeflectDash = false;
     }
@@ -158,6 +256,7 @@ public partial class DashHandler : Node, IDisableableControl
         _remainingDashHoldTime = MAX_DASH_HOLD_TIME;
 
         float speed = _body.Velocity.Length();
+        _initialVelocity = _body.Velocity;
         _initalSpeed = speed;
         _body.Velocity = _body.Velocity.Normalized() * Mathf.Clamp(speed, -10f, 10f);
         _disabler.DisableControlsExcept(
@@ -171,10 +270,7 @@ public partial class DashHandler : Node, IDisableableControl
     void CompleteHeldDash()
     {
         _holdingDash = false;
-        float speed = _dashSpeedInTiles 
-            + (_maxDashSpeedInTiles - _dashSpeedInTiles) 
-            * (MAX_DASH_HOLD_TIME - _remainingDashHoldTime) / MAX_DASH_HOLD_TIME;
-        PerformDash(speed.ToPixels(), GetDashDirection());
+        PerformDash(DashInfo.GetBestDashInfo(MAX_DASH_HOLD_TIME - _remainingDashHoldTime, _processedDashInfo), GetDashDirection());
         _remainingDashHoldTime = float.NaN;
     }
 

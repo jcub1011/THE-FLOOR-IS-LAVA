@@ -81,9 +81,9 @@ public partial class KnockbackHandler : Node, IDisableableControl
 
     public void OnHitLanded(Node2D node)
     {
-        GD.Print("Calling hit landed but it is not defined.");
+        //GD.Print("Calling hit landed but it is not defined.");
         Vector2 direction = node.GlobalPosition.RelativeTo(_body.GlobalPosition);
-        Vector2 knockback = new(direction.X < 0f ? 1f : -1f, -3f);
-        ApplyKnockback(knockback.Normalized() * _body.Velocity.Length() / 2, _hitLandedRecoveryTime);
+        Vector2 knockback = new(direction.X < 0f ? 1f : -1f, -1f);
+        ApplyKnockback(knockback.Normalized() * _body.Velocity.Length(), 0f);
     }
 }

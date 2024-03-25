@@ -466,7 +466,7 @@ tracks/0/keys = {
 }
 tracks/1/type = "method"
 tracks/1/imported = false
-tracks/1/enabled = true
+tracks/1/enabled = false
 tracks/1/path = NodePath("MeleeHurtboxHandler")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
@@ -617,9 +617,7 @@ script = ExtResource("13_c0kft")
 _body = NodePath("..")
 _knockback = NodePath("../KnockbackHandler")
 _flip = NodePath("../FlipHandler")
-_dashGravityDisableTime = 0.06
-_movementDisableTime = 0.08
-_dashAnimationName = &"tank_dash"
+_dashTiers = PackedVector3Array(25, 0, 0.15, 40, 0.3, 0.4)
 _aniPlayer = NodePath("../AnimationPlayer")
 _disabler = NodePath("../ControlDisablerHandler")
 
