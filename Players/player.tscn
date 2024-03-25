@@ -1,4 +1,4 @@
-[gd_scene load_steps=50 format=3 uid="uid://cv7g2fnqrxx7s"]
+[gd_scene load_steps=53 format=3 uid="uid://cv7g2fnqrxx7s"]
 
 [ext_resource type="Script" path="res://Players/PlayerController.cs" id="1_bukco"]
 [ext_resource type="Script" path="res://Players/PlayerInputHandler.cs" id="2_bjy2i"]
@@ -17,7 +17,7 @@
 [ext_resource type="Script" path="res://Players/DashHandler.cs" id="13_c0kft"]
 [ext_resource type="PackedScene" uid="uid://bfra243ouj6n3" path="res://Players/projectile.tscn" id="14_82o23"]
 [ext_resource type="Script" path="res://Players/SpriteControls.cs" id="16_cd1ek"]
-[ext_resource type="Texture2D" uid="uid://c83ud5he4rggx" path="res://Players/Sprite Sheets/Medieval Tank PixelArt Shrunk With Stagger.png" id="16_vhdrh"]
+[ext_resource type="Texture2D" uid="uid://bku360yeedwdj" path="res://Players/Sprite Sheets/Medieval Tank PixelArt Shrunk With Stagger and Dash Charging.png" id="17_vuhhc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pi3oo"]
 size = Vector2(256, 205)
@@ -448,6 +448,21 @@ tracks/1/keys = {
 }]
 }
 
+[sub_resource type="Animation" id="Animation_v5fng"]
+resource_name = "tank_charge_light"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [36]
+}
+
 [sub_resource type="Animation" id="Animation_wchel"]
 resource_name = "tank_dash"
 length = 0.0500025
@@ -463,6 +478,37 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [Vector2i(1, 2), Vector2i(5, 2), Vector2i(3, 2), Vector2i(0, 2), Vector2i(2, 2), Vector2i(4, 2)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = false
+tracks/1/path = NodePath("MeleeHurtboxHandler")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [&"DashHurtbox", 0.15, 100.0, 0],
+"method": &"EnableHitbox"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_v56ma"]
+resource_name = "tank_dash_big"
+length = 0.100003
+step = 0.025
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.025, 0.05, 0.075, 0.1875, 0.21875),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2i(0, 2), Vector2i(1, 2), Vector2i(3, 2), Vector2i(5, 2), Vector2i(2, 2), Vector2i(4, 2)]
 }
 tracks/1/type = "method"
 tracks/1/imported = false
@@ -557,6 +603,21 @@ tracks/0/keys = {
 "values": [Vector2i(1, 5), Vector2i(0, 5), Vector2i(1, 5), Vector2i(0, 5), Vector2i(1, 5)]
 }
 
+[sub_resource type="Animation" id="Animation_aufwr"]
+resource_name = "tank_charge_strong"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [42]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_r5udm"]
 _data = {
 "RESET": SubResource("Animation_lkr48"),
@@ -577,7 +638,10 @@ _data = {
 "run": SubResource("Animation_qxqf1"),
 "stagger": SubResource("Animation_s8rat"),
 "tank_block": SubResource("Animation_n12j8"),
+"tank_charge_light": SubResource("Animation_v5fng"),
+"tank_charge_strong": SubResource("Animation_aufwr"),
 "tank_dash": SubResource("Animation_wchel"),
+"tank_dash_big": SubResource("Animation_v56ma"),
 "tank_drive": SubResource("Animation_6su6g"),
 "tank_fall": SubResource("Animation_m3j8w"),
 "tank_idle": SubResource("Animation_d8hkb"),
@@ -612,12 +676,14 @@ _body = NodePath("..")
 script = ExtResource("4_kdm3q")
 _body = NodePath("..")
 
-[node name="DashHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_knockback", "_flip", "_aniPlayer", "_disabler")]
+[node name="DashHandler" type="Node" parent="." node_paths=PackedStringArray("_body", "_knockback", "_flip", "_meleeHurtbox", "_aniPlayer", "_disabler")]
 script = ExtResource("13_c0kft")
 _body = NodePath("..")
 _knockback = NodePath("../KnockbackHandler")
 _flip = NodePath("../FlipHandler")
-_dashTiers = PackedVector3Array(25, 0, 0.15, 40, 0.3, 0.4)
+_meleeHurtbox = NodePath("../MeleeHurtboxHandler")
+_dashTierPerformAnimations = PackedStringArray("tank_dash", "tank_dash_big")
+_dashTierChargeAnimations = PackedStringArray("tank_charge_light", "tank_charge_strong")
 _aniPlayer = NodePath("../AnimationPlayer")
 _disabler = NodePath("../ControlDisablerHandler")
 
@@ -713,21 +779,19 @@ libraries = {
 texture_filter = 3
 position = Vector2(0, -6.4)
 scale = Vector2(12.8, 12.8)
-texture = ExtResource("16_vhdrh")
+texture = ExtResource("17_vuhhc")
 hframes = 6
-vframes = 6
+vframes = 8
 script = ExtResource("16_cd1ek")
-PossibleSprites = Array[Texture2D]([ExtResource("16_vhdrh")])
+PossibleSprites = Array[Texture2D]([ExtResource("17_vuhhc")])
 
 [connection signal="area_entered" from="Lava Collider" to="." method="OnTouchedLava"]
-[connection signal="DashPerformed" from="DashHandler" to="DeflectHandler" method="OnDashHandler"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="BallHorizontalMovement" method="InputEventHandler"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="BallJumpHandler" method="InputEventHandler"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="DashHandler" method="InputEventHandler"]
 [connection signal="InputRecieved" from="PlayerInputHandler" to="DeflectHandler" method="InputEventHandler"]
 [connection signal="MoveLeftPressed" from="PlayerInputHandler" to="FlipHandler" method="OnFaceLeft"]
 [connection signal="MoveRightPressed" from="PlayerInputHandler" to="FlipHandler" method="OnFaceRight"]
-[connection signal="OnSuccessfulDeflect" from="DeflectHandler" to="DashHandler" method="OnBlockLandedHandler"]
 [connection signal="OnFlip" from="FlipHandler" to="MeleeHurtboxHandler" method="SetFlipState"]
 [connection signal="OnFlip" from="FlipHandler" to="Sprite_New" method="SetFlipH"]
 [connection signal="OnReceivedDamage" from="Hitbox" to="KnockbackHandler" method="OnApplyKnockback"]

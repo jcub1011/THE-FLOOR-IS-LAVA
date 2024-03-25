@@ -213,5 +213,3 @@ theme_override_constants/margin_left = 50
 layout_mode = 2
 theme_override_font_sizes/font_size = 90
 text = "Test Text"
-
-[connection signal="LavaDistanceFromScreenChanged" from="LAVA" to="CanvasLayer/PanelContainer" method="UpdateReadout"]

@@ -12,7 +12,7 @@ public partial class OnHitArgs : GodotObject
 public partial class Hitbox : Area2D, IDisableableControl
 {
     [Signal] public delegate void OnReceivedHitEventHandler(OnHitArgs args);
-    [Signal] public delegate void OnReceivedDamageEventHandler(float knockback, Node2D source);
+    [Signal] public delegate void OnReceivedDamageEventHandler(Node2D source);
     CharacterBody2D _body
     {
         get => GetParent<CharacterBody2D>();
@@ -55,7 +55,7 @@ public partial class Hitbox : Area2D, IDisableableControl
             else
             {
                 GD.Print($"{_body.Name} was hit by {collider.HurtboxOwner.Name}.");
-                EmitSignal(SignalName.OnReceivedDamage, collider.Knockback, collider.HurtboxOwner);
+                EmitSignal(SignalName.OnReceivedDamage, collider.HurtboxOwner);
                 args.HitBy.OnHitLanded(_body);
 
                 GD.Print("Applying hitstop.");

@@ -46,18 +46,18 @@ public partial class KnockbackHandler : Node, IDisableableControl
         GetParent<PlayerController>().EnableBouncing(recoveryTime);
     }
 
-    public void OnApplyKnockback(float knockback, Node2D source)
+    public void OnApplyKnockback(Node2D source)
     {
         if (source is PlayerController player)
         {
             _body.Velocity = player.Velocity;
         }
-        else
-        {
-            Vector2 newVel = _body.GlobalPosition.RelativeTo(source.GlobalPosition)
-                .Normalized() * knockback;
-            _body.Velocity = newVel;
-        }
+        //else
+        //{
+        //    Vector2 newVel = _body.GlobalPosition.RelativeTo(source.GlobalPosition)
+        //        .Normalized() * knockback;
+        //    _body.Velocity = newVel;
+        //}
         DisableHandlers(_recoveryTime);
         GetParent<PlayerController>().EnableBouncing(_recoveryTime);
     }

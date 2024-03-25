@@ -73,7 +73,7 @@ internal readonly struct DashInfo
         {
             if (float.IsNaN(info.HoldTimeNeeded)) continue;
 
-            if (info.HoldTimeNeeded < timeDashButtonHeld && info.HoldTimeNeeded > bestTime)
+            if (info.HoldTimeNeeded <= timeDashButtonHeld && info.HoldTimeNeeded > bestTime)
             {
                 best = info;
             }
@@ -88,12 +88,14 @@ public partial class DashHandler : Node, IDisableableControl
     [Export] PlayerController _body;
     [Export] KnockbackHandler _knockback;
     [Export] FlipHandler _flip;
+    [Export] MeleeHurtboxHandler _meleeHurtbox;
     [Export] float _dashSpeedInTiles = 27.5f;
     [Export] float _maxDashSpeedInTiles = 43.75f;
     // X is dash speed, Y is how long you have to hold to reach the tier, and Z is how long the dash hurtbox is active.
     [Export] Vector3[] _dashTiers = { new(25, 0f, 0.15f), new(40, 0.4f, 0.4f) };
     [Export] string[] _dashTierPerformAnimations = { "tank_dash" };
     [Export] string[] _dashTierChargeAnimations = { "tank_dash" };
+    [Export] StringName _hurtboxName = "DashHurtbox";
     [Export] float _dashGravityDisableTime = 0.08f;
     [Export] float _movementDisableTime = 0.1f;
     [Export] float _dashSpeedFromDeflectingInTiles = 40f;
@@ -143,7 +145,7 @@ public partial class DashHandler : Node, IDisableableControl
     {
         base._Ready();
         //Array.Sort(_dashTiers, (x, y) => x.Y == y.Y ? 0 : (x.Y < y.Y ? -1 : 1));
-        _processedDashInfo = DashInfo.GenerateDashInfo(_dashTiers, _dashTierAnimations);
+        _processedDashInfo = DashInfo.GenerateDashInfo(_dashTiers, _dashTierPerformAnimations, _dashTierChargeAnimations);
     }
 
     public override void _Process(double delta)
@@ -175,6 +177,7 @@ public partial class DashHandler : Node, IDisableableControl
 
         if (_holdingDash)
         {
+            _aniPlayer.PlayIfNotPlaying(DashInfo.GetBestDashInfo(MAX_DASH_HOLD_TIME - _remainingDashHoldTime, _processedDashInfo).ChargeAnimation);
             if (!float.IsNaN(_remainingDashHoldTime) && _remainingDashHoldTime <= 0)
             {
                 CompleteHeldDash();
@@ -214,6 +217,7 @@ public partial class DashHandler : Node, IDisableableControl
             _dashGravityDisableTime,
             ControlIDs.GRAVITY);
         _aniPlayer.Play(info.PerformAnimation);
+        _meleeHurtbox.EnableHitbox(_hurtboxName, info.HurtboxEnabledTime);
         EmitSignal(SignalName.DashPerformed, _body.Velocity);
     }
 
