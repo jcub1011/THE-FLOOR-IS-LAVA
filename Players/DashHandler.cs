@@ -104,6 +104,8 @@ public partial class DashHandler : Node, IDisableableControl
     [Export] ControlDisablerHandler _disabler;
     [Export] float _dashBufferTime = 0.15f;
     [Signal] public delegate void DashPerformedEventHandler(Vector2 dashVelocity);
+    [Signal] public delegate void DashChargeStartedEventHandler(StringName chargeAnimation);
+    [Signal] public delegate void DashCanceledEventHandler();
     bool _nextDashIsDeflectDash;
     int _dashCharges;
     public int DashCharges
@@ -125,6 +127,7 @@ public partial class DashHandler : Node, IDisableableControl
     Vector2 _initialVelocity;
     bool _holdingDash;
     bool _isActionPressed;
+    StringName _currentChargeAnimation;
 
     #region Interface Implementation
     string IDisableableControl.ControlID => ControlIDs.DASH;
@@ -135,6 +138,11 @@ public partial class DashHandler : Node, IDisableableControl
         _isEnabled = enabled;
         if (!enabled)
         {
+            _currentChargeAnimation = null;
+            if (_holdingDash)
+            {
+                EmitSignal(SignalName.DashCanceled);
+            }
             _holdingDash = false;
             _remainingDashHoldTime = 0f;
         }
@@ -177,7 +185,7 @@ public partial class DashHandler : Node, IDisableableControl
 
         if (_holdingDash)
         {
-            _aniPlayer.PlayIfNotPlaying(DashInfo.GetBestDashInfo(MAX_DASH_HOLD_TIME - _remainingDashHoldTime, _processedDashInfo).ChargeAnimation);
+            SetChargeAnimation(MAX_DASH_HOLD_TIME - _remainingDashHoldTime);
             if (!float.IsNaN(_remainingDashHoldTime) && _remainingDashHoldTime <= 0)
             {
                 CompleteHeldDash();
@@ -194,8 +202,20 @@ public partial class DashHandler : Node, IDisableableControl
         }
     }
 
+    void SetChargeAnimation(float timeDashHeld)
+    {
+        StringName dashAnimation = DashInfo.GetBestDashInfo(timeDashHeld, _processedDashInfo).ChargeAnimation;
+        if (dashAnimation != _currentChargeAnimation)
+        {
+            _currentChargeAnimation = dashAnimation;
+            EmitSignal(SignalName.DashChargeStarted);
+        }
+        _aniPlayer.PlayIfNotPlaying(dashAnimation);
+    }
+
     void PerformDash(DashInfo info, Vector2 direction)
     {
+        _currentChargeAnimation = null;
         float dashLength = _aniPlayer.GetAnimation(info.PerformAnimation).Length;
         Vector2 dashVelocity = direction.Normalized() * info.Speed.ToPixels();
 
