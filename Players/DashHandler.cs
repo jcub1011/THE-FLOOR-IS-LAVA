@@ -89,10 +89,10 @@ public partial class DashHandler : Node, IDisableableControl
     [Export] KnockbackHandler _knockback;
     [Export] FlipHandler _flip;
     [Export] MeleeHurtboxHandler _meleeHurtbox;
-    [Export] float _dashSpeedInTiles = 27.5f;
-    [Export] float _maxDashSpeedInTiles = 43.75f;
+    //[Export] float _dashSpeedInTiles = 27.5f;
+    //[Export] float _maxDashSpeedInTiles = 43.75f;
     // X is dash speed, Y is how long you have to hold to reach the tier, and Z is how long the dash hurtbox is active.
-    [Export] Vector3[] _dashTiers = { new(25, 0f, 0.15f), new(40, 0.4f, 0.4f) };
+    [Export] Vector3[] _dashTiers = { new(25, 0f, 0.15f), new(38, 0.3f, 0.4f) };
     [Export] string[] _dashTierPerformAnimations = { "tank_dash" };
     [Export] string[] _dashTierChargeAnimations = { "tank_dash" };
     [Export] StringName _hurtboxName = "DashHurtbox";
@@ -266,6 +266,7 @@ public partial class DashHandler : Node, IDisableableControl
 
     public void PerformInstaDash()
     {
+        EngineTimeManipulator.OverrideTimeTransition(new(1, 0.1));
         DashCharges = 1;
         PerformDash(DashInfo.GetBestDashInfo(MAX_DASH_HOLD_TIME, _processedDashInfo), GetDashDirection());
         _holdingDash = false;

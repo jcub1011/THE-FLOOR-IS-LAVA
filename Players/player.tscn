@@ -463,6 +463,21 @@ tracks/0/keys = {
 "values": [36]
 }
 
+[sub_resource type="Animation" id="Animation_aufwr"]
+resource_name = "tank_charge_strong"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite_New:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [42]
+}
+
 [sub_resource type="Animation" id="Animation_wchel"]
 resource_name = "tank_dash"
 length = 0.0500025
@@ -601,21 +616,6 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 1,
 "values": [Vector2i(1, 5), Vector2i(0, 5), Vector2i(1, 5), Vector2i(0, 5), Vector2i(1, 5)]
-}
-
-[sub_resource type="Animation" id="Animation_aufwr"]
-resource_name = "tank_charge_strong"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite_New:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [42]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_r5udm"]
@@ -792,6 +792,7 @@ PossibleSprites = Array[Texture2D]([ExtResource("17_vuhhc")])
 [connection signal="InputRecieved" from="PlayerInputHandler" to="DeflectHandler" method="InputEventHandler"]
 [connection signal="MoveLeftPressed" from="PlayerInputHandler" to="FlipHandler" method="OnFaceLeft"]
 [connection signal="MoveRightPressed" from="PlayerInputHandler" to="FlipHandler" method="OnFaceRight"]
+[connection signal="OnSuccessfulDeflect" from="DeflectHandler" to="DashHandler" method="OnBlockLandedHandler"]
 [connection signal="OnFlip" from="FlipHandler" to="MeleeHurtboxHandler" method="SetFlipState"]
 [connection signal="OnFlip" from="FlipHandler" to="Sprite_New" method="SetFlipH"]
 [connection signal="OnReceivedDamage" from="Hitbox" to="KnockbackHandler" method="OnApplyKnockback"]
