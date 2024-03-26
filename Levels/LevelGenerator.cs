@@ -12,17 +12,13 @@ public static class ListExtensions
     {
         int count = list.Count();
         if (count == 0) return default;
-
-        var rand = new RandomNumberGenerator();
-
-        return list.ElementAt((System.Index)(rand.Randi() % count));
+        return list.ElementAt((System.Index)(GD.Randi() % count));
     }
 
     public static T PickRandom<T>(this IEnumerable<T> list, RandomNumberGenerator rand)
     {
         int count = list.Count();
         if (count == 0) return default;
-
         return list.ElementAt((System.Index)(rand.Randi() % count));
     }
 }
@@ -138,7 +134,8 @@ public partial class LevelGenerator : Node2D
 
         _camera.UpdateCamera(players, delta);
 
-        GetChild<LavaDistanceReadout>(0).UpdateReadout(_camera.GetCameraLowerY(), _lava.Position.Y);
+        //GetParent().GetChild<LavaDistanceReadout>(0)
+        //    .UpdateReadout(_camera.GetCameraLowerY(), _lava.Position.Y);
     }
 
     /// <summary>

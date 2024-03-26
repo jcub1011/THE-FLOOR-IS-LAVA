@@ -7,22 +7,20 @@ namespace Players;
 
 public partial class DeflectHandler : Node, IDisableableControl
 {
-    [Export] Sprite2D _sprite;
-    [Export] CharacterBody2D _body;
+    Sprite2D _sprite;
+    CharacterBody2D _body;
     [Export] float _slomoTime = 5f;
+    [Export] float _blockCooldownTime = 0.3f;
     [Export] float _velocityToKnockbackMultiplier = 1.2f;
-    [Export] float _deflectKnockback = 100f;
-    [Export] float _successfulKnockbackBounce = 30f;
-    [Export] DashHandler _dashHandler;
-    [Export] AnimationPlayer _aniPlayer;
-    [Export] StringName _dashAnimationName;
+    AnimationPlayer _aniPlayer;
+    [Export] StringName _blockAnimation = "tank_block";
+    [Signal] public delegate void OnSuccessfulDeflectEventHandler();
     float _remainingSlomoTime;
+    float _remainingBlockCooldown;
     public bool IsActive => _remainingDeflectTime > 0f;
     float _remainingDeflectTime;
     bool _isEnabled;
     CharacterBody2D _bodyToRedirect;
-
-    HashSet<StringName> _activeInputsForRedirection = new();
 
     #region Interface Implementation
     public string ControlID { get => ControlIDs.DEFLECT; }
@@ -32,6 +30,14 @@ public partial class DeflectHandler : Node, IDisableableControl
         _remainingDeflectTime = 0f;
     }
     #endregion
+
+    public override void _Ready()
+    {
+        base._Ready();
+        _sprite = this.GetSibling<Sprite2D>();
+        _body = GetParent<CharacterBody2D>();
+        _aniPlayer = this.GetSibling<AnimationPlayer>();
+    }
 
     public void EnableDeflect(float duration)
     {
@@ -54,6 +60,8 @@ public partial class DeflectHandler : Node, IDisableableControl
             _remainingDeflectTime = 0f;
         }
         else _bodyToRedirect = null;
+
+        _remainingBlockCooldown -= (float)delta;
     }
 
     public void OnReceivedHitHandler(OnHitArgs args)
@@ -63,35 +71,24 @@ public partial class DeflectHandler : Node, IDisableableControl
         _bodyToRedirect = args.HitBy.HurtboxOwner as CharacterBody2D;
         GD.Print("Deflecting.");
         SlowTime();
+        EmitSignal(SignalName.OnSuccessfulDeflect);
     }
 
     public void SlowTime()
     {
-        _activeInputsForRedirection.Clear();
         _remainingSlomoTime = _slomoTime;
-        EngineTimeManipulator.QueueTimeTransition(new(0.01, 0));
+        EngineTimeManipulator.OverrideTimeTransition(new(0.01, 0));
         EngineTimeManipulator.QueueTimeTransition(new(_slomoTime));
         EngineTimeManipulator.QueueTimeTransition(new(1, 0.2));
     }
 
-    public void RedirectDeflectedEnemy(params StringName[] inputs)
+    public void OnDashHandler(Vector2 dashVelocity)
     {
-        Vector2 deflectDir = new();
-
-        foreach(var input in inputs)
-        {
-            deflectDir += input.ToDirection();
-        }
-        deflectDir = deflectDir.Normalized();
-
+        if (_bodyToRedirect == null) return;
         _bodyToRedirect.GetChild<KnockbackHandler>()
-            .ApplyKnockback(-deflectDir * _bodyToRedirect.Velocity.Normalized() * _velocityToKnockbackMultiplier);
+            .ApplyKnockback(-dashVelocity * _velocityToKnockbackMultiplier);
 
         EngineTimeManipulator.OverrideTimeTransition(new(1, 0.2));
-
-        Vector2 dir = deflectDir;
-
-        _body.Velocity = dir * _successfulKnockbackBounce;
 
         _remainingSlomoTime = 0f;
         _bodyToRedirect = null;
@@ -99,29 +96,24 @@ public partial class DeflectHandler : Node, IDisableableControl
 
     public void InputEventHandler(StringName input, bool pressed)
     {
-        if (_remainingSlomoTime <= 0f) return;
-        if (pressed && input == InputNames.ACTION)
-        {
-            GD.Print("Performing dash after block.");
-            EngineTimeManipulator.OverrideTimeTransition(new(1, 0.2));
-            _dashHandler.DashCharges = 2;
-            _dashHandler.PerformDash(new Vector2(), _aniPlayer.GetAnimation(_dashAnimationName).Length);
-        }
+        if (!pressed) return;
 
-        //if (pressed)
-        //{
-        //    _activeInputsForRedirection.Add(input);
-        //    if (_activeInputsForRedirection.Count >= 2)
-        //    {
-        //        RedirectDeflectedEnemy(_activeInputsForRedirection.ToArray());
-        //    }
-        //}
-        //else
-        //{
-        //    if (_activeInputsForRedirection.Remove(input))
-        //    {
-        //        RedirectDeflectedEnemy(input);
-        //    }
-        //}
+        if (_remainingSlomoTime <= 0f && input == InputNames.BLOCK)
+        {
+            RequestBlock();
+        }
+    }
+
+    public void RequestBlock()
+    {
+        if (_remainingBlockCooldown > 0f) return;
+        GD.Print("Performing Block.");
+        _remainingBlockCooldown = _aniPlayer.GetAnimation(_blockAnimation).Length + _blockCooldownTime;
+        _aniPlayer.Play(_blockAnimation);
+        GetParent().GetDirectChild<ControlDisablerHandler>().DisableControlsExcept(
+            _aniPlayer.GetAnimation(_blockAnimation).Length,
+            ControlIDs.GRAVITY,
+            ControlIDs.INPUT,
+            ControlIDs.HITBOX);
     }
 }

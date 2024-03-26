@@ -1,14 +1,17 @@
-[gd_scene load_steps=5 format=3 uid="uid://cqo406ylddtw"]
+[gd_scene load_steps=7 format=3 uid="uid://cqo406ylddtw"]
 
 [ext_resource type="PackedScene" uid="uid://bo5qmavr2vpky" path="res://UI/MainMenu.tscn" id="1_61eq2"]
 [ext_resource type="Script" path="res://Levels/WorldHandler.cs" id="1_h67c7"]
 [ext_resource type="PackedScene" uid="uid://c8kmg6tapbydx" path="res://UI/RetryScreen.tscn" id="1_yo80m"]
 [ext_resource type="PackedScene" uid="uid://c6vxsfrvbssc6" path="res://Levels/world.tscn" id="2_3l788"]
+[ext_resource type="Script" path="res://Levels/EngineTimeManipulator.cs" id="5_6itjv"]
+[ext_resource type="PackedScene" uid="uid://ddrvtdp0npoib" path="res://UI/PauseScreen.tscn" id="5_hq8t5"]
 
-[node name="GameRoot" type="Node2D" node_paths=PackedStringArray("_retryScreen", "_mainMenu")]
+[node name="GameRoot" type="Node2D" node_paths=PackedStringArray("_retryScreen", "_mainMenu", "_pauseScreen")]
 script = ExtResource("1_h67c7")
 _retryScreen = NodePath("CanvasLayer/RetryScreen")
 _mainMenu = NodePath("CanvasLayer/MainMenu")
+_pauseScreen = NodePath("CanvasLayer/PauseScreen")
 _world = ExtResource("2_3l788")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
@@ -20,9 +23,17 @@ visible = false
 [node name="MainMenu" parent="CanvasLayer" instance=ExtResource("1_61eq2")]
 layout_direction = 2
 
+[node name="PauseScreen" parent="CanvasLayer" instance=ExtResource("5_hq8t5")]
+visible = false
+
+[node name="EngineTimeManipulator" type="Node" parent="."]
+script = ExtResource("5_6itjv")
+
 [connection signal="OnPressedWithTimer" from="CanvasLayer/RetryScreen/VBoxContainer/Home" to="." method="OnGoToMainMenu"]
 [connection signal="OnPressedWithTimer" from="CanvasLayer/RetryScreen/VBoxContainer/Button" to="." method="OnRestartHandler"]
 [connection signal="OnPressedWithTimer" from="CanvasLayer/MainMenu/HBoxContainer/VBoxContainer/Button" to="." method="OnStartGameHandler"]
+[connection signal="OnMainMenuPressed" from="CanvasLayer/PauseScreen" to="." method="OnGoToMainMenu"]
+[connection signal="OnRestartPressed" from="CanvasLayer/PauseScreen" to="." method="OnRestartHandler"]
 
 [editable path="CanvasLayer/RetryScreen"]
 [editable path="CanvasLayer/MainMenu"]

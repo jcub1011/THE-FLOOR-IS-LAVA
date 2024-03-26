@@ -14,7 +14,6 @@ public partial class BallActionHandler : Node, IDisableableControl
     [Export] float _blockCooldownTime = 0.3f;
     float _remainingBlockCooldown;
     bool _enabled = true;
-    InputToDirectionConverter _inputConverter = new();
 
     [Signal]
     public delegate void OnProjectileFiredEventHandler(Vector2 direction);
@@ -34,42 +33,40 @@ public partial class BallActionHandler : Node, IDisableableControl
 
     public void InputEventHandler(StringName input, bool pressed)
     {
-        _inputConverter.UpdateDirection(input, pressed);
-
         if (!_enabled) return;
         if (!pressed) return;
 
         if (input == InputNames.ACTION)
         {
-            PerformDash();
+            //PerformDash();
         }
         else if (input == InputNames.BLOCK
             && _remainingBlockCooldown <= 0f)
         {
-            PerformBlock();
+            //PerformBlock();
         }
     }
 
     void PerformDash()
     {
-        GD.Print("Performing Dash.");
-        float aniDuration = _aniPlayer.GetAnimation(_dashAnimation).Length;
-        if (!_dashHandler.PerformDash(_body.Velocity, aniDuration))
-        {
-            GD.Print("Insufficient dash charges.");
-        }
+    //    GD.Print("Performing Dash.");
+    //    float aniDuration = _aniPlayer.GetAnimation(_dashAnimation).Length;
+    //    if (!_dashHandler.PerformDash(_body.Velocity, aniDuration))
+    //    {
+    //        GD.Print("Insufficient dash charges.");
+    //    }
     }
 
     void PerformBlock()
     {
-        GD.Print("Performing Block.");
-        _remainingBlockCooldown = _aniPlayer.GetAnimation(_blockAnimation).Length + _blockCooldownTime;
-        _aniPlayer.Play(_blockAnimation);
-        EmitSignal(SignalName.OnProjectileFired, _inputConverter.GetDirection());
-        _controlDisabler.DisableControlsExcept(
-            _aniPlayer.GetAnimation(_blockAnimation).Length,
-            ControlIDs.GRAVITY,
-            ControlIDs.INPUT,
-            ControlIDs.HITBOX);
+        //GD.Print("Performing Block.");
+        //_remainingBlockCooldown = _aniPlayer.GetAnimation(_blockAnimation).Length + _blockCooldownTime;
+        //_aniPlayer.Play(_blockAnimation);
+        //EmitSignal(SignalName.OnProjectileFired, _inputConverter.GetDirection());
+        //_controlDisabler.DisableControlsExcept(
+        //    _aniPlayer.GetAnimation(_blockAnimation).Length,
+        //    ControlIDs.GRAVITY,
+        //    ControlIDs.INPUT,
+        //    ControlIDs.HITBOX);
     }
 }

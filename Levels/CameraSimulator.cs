@@ -8,17 +8,39 @@ using TheFloorIsLava.Subscriptions;
 
 namespace WorldGeneration;
 
+public readonly struct FocusBox
+{
+    public readonly Vector2 FocusPoint;
+    public readonly Vector2 Size;
+
+    public FocusBox(Vector2 focusPoint, Vector2 size)
+    {
+        FocusPoint = focusPoint;
+        Size = size;
+    }
+
+    public float TopY() => FocusPoint.Y - Size.Y / 2f;
+    public float BottomY() => FocusPoint.Y + Size.Y / 2f;
+
+    public override string ToString()
+    {
+        return $"{FocusPoint}: {Size.X} x {Size.Y}";
+    }
+}
+
 public partial class CameraSimulator : Node
 {
     [Export] Camera2D _camera;
-    [Export] double _maxSpeed = 600;
+    [Export] double _maxSpeed = 9600;
     [Export] float _paddingPercent = 0.5f;
-    [Export] float _lookAhead = 100f;
-    [Export] float _lookBehind = 100f;
-    [Export] Vector2 _minCameraZoom = new(2, 2);
-    [Export] Vector2 _maxCameraZoom = new(4, 4);
+    [Export] float _lookAhead = 20f;
+    [Export] float _lookBehind = 10f;
+    [Export] Vector2 _minCameraZoom = new(0.1f, 0.1f);
+    [Export] Vector2 _maxCameraZoom = new(0.222f, 0.222f);
     [Export] float _maxZoomSpeed = 5f;
     [Export] bool _ignoreTimeScale = true;
+
+    public FocusBox FocusBox { get; private set; }
 
     float _canvasTotalUnits = GodotExtensions.GetViewportSize().Y;
 
@@ -54,12 +76,13 @@ public partial class CameraSimulator : Node
         //GD.Print($"Delta Time: {deltaTime}, True Delta Time: {deltaTime / Engine.TimeScale}, Time Scale {Engine.TimeScale}");
         if (_ignoreTimeScale) deltaTime /= Engine.TimeScale;
 
-        Rect2 focusBox = GetFocusBoundingBox(focusPoints);
-        _camera.Zoom = GetNewZoom(focusBox, _minCameraZoom.Y, _maxCameraZoom.Y, _lookAhead, _lookBehind, (float)deltaTime);
+        var focusBox = GetFocusBoundingBox(focusPoints);
+        FocusBox = focusBox;
+        _camera.Zoom = GetNewZoom(focusBox, _minCameraZoom.Y, _maxCameraZoom.Y, _lookAhead.ToPixels(), _lookBehind.ToPixels(), (float)deltaTime);
 
-        float dist = GetNormDistFromCamCenter(GetCameraLowerY() - _lookBehind - focusBox.GetBottomY());
+        float dist = -GetNormDistFromCamCenter(focusBox.BottomY() + _lookBehind.ToPixels() - GetCameraLowerY());
 
-        Vector2 deltaPos = new(0f, (float)_maxSpeed * dist * (float)deltaTime);
+        Vector2 deltaPos = new(0f, (float)_maxSpeed.ToPixels() * dist * (float)deltaTime);
         OriginShiftChannel.ShiftOrigin(deltaPos);
     }
 
@@ -94,13 +117,10 @@ public partial class CameraSimulator : Node
         else return new(Mathf.Abs(maxX - minX), Mathf.Abs(maxY - minY));
     }
 
-    Rect2 GetFocusBoundingBox(IEnumerable<Node2D> focusPoints)
+    FocusBox GetFocusBoundingBox(IEnumerable<Node2D> focusPoints)
     {
-        return new()
-        {
-            Size = GetFocusBox(focusPoints),
-            Position = GetFocusAvgPos(focusPoints)
-        };
+        FocusBox box = new(GetFocusAvgPos(focusPoints), GetFocusBox(focusPoints));
+        return box;
     }
 
     float GetNormDistFromCamCenter(float yPos)
@@ -114,11 +134,11 @@ public partial class CameraSimulator : Node
         return coverage;
     }
 
-    Vector2 GetNewZoom(Rect2 focusBox, float minZoom, float maxZoom,
+    Vector2 GetNewZoom(FocusBox focusBox, float minZoom, float maxZoom,
         float topPadding, float bottomPadding, float deltaTime)
     {
         float padding = topPadding + bottomPadding;
-        float coverage = Mathf.Abs(focusBox.GetTopY() - focusBox.GetBottomY()) + padding;
+        float coverage = Mathf.Abs(focusBox.TopY() - focusBox.BottomY()) + padding;
         if (coverage <= 0) coverage = 1;
 
         float requiredZoom = _canvasTotalUnits / coverage;

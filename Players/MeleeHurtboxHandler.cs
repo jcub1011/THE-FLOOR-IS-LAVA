@@ -13,7 +13,6 @@ public partial class MeleeHurtboxHandler : Area2D, IDisableableControl
 {
     [Signal] public delegate void OnHurtboxDeflectedEventHandler(CharacterBody2D deflector);
     [Signal] public delegate void HitLandedEventHandler(Node2D thingHit);
-    //[Signal] public delegate void OnHurtboxDeflectedEventHandler();
 
     /// <summary>
     /// Defaults to length of frame @ 24fps.
@@ -27,8 +26,8 @@ public partial class MeleeHurtboxHandler : Area2D, IDisableableControl
     {
         get => GetParent<CharacterBody2D>();
     }
-    public float Knockback { get; private set; }
-    public AttackHeight AttackHeight { get; private set; }
+    //public float Knockback { get; private set; }
+    //public AttackHeight AttackHeight { get; private set; }
 
     float _colliderEnableDuration;
     TimedCollider _colliderToEnable;
@@ -58,9 +57,8 @@ public partial class MeleeHurtboxHandler : Area2D, IDisableableControl
         _colliderToEnable = null;
     }
 
-    public void EnableHitbox(StringName hitboxName, float duration, float knockback, AttackHeight height)
+    public void EnableHitbox(StringName hitboxName, float duration)
     {
-        Knockback = knockback;
         _colliderEnableDuration = duration;
         foreach(var child in this.GetDirectChildren<TimedCollider>())
         {
@@ -68,7 +66,6 @@ public partial class MeleeHurtboxHandler : Area2D, IDisableableControl
 
             if (child.Name == hitboxName) _colliderToEnable = child;
         }
-        AttackHeight = height;
     }
 
     void DisableHitboxes()

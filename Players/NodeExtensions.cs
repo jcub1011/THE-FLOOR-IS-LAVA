@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Godot.NodeExtensions
@@ -148,14 +149,9 @@ namespace Godot.NodeExtensions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static T GetFirstSiblingOfType<T>(this Node node) where T : class
+        public static T GetSibling<T>(this Node node) where T : class
         {
-            foreach (var child in node.GetParent().GetChildren())
-            {
-                if (child is T target) return target;
-            }
-
-            return null;
+            return node.GetParent().GetDirectChild<T>();
         }
 
         /// <summary>
@@ -164,7 +160,7 @@ namespace Godot.NodeExtensions
         /// <typeparam name="T"></typeparam>
         /// <param name="node"></param>
         /// <returns></returns>
-        public static List<T> GetSiblingsOfType<T>(this Node node) where T : class
+        public static List<T> GetSiblings<T>(this Node node) where T : class
         {
             List<T> returnVals = new();
 
@@ -175,6 +171,37 @@ namespace Godot.NodeExtensions
 
             return returnVals;
         }
+
+        /// <summary>
+        /// Inserts the given child at the given index. 
+        /// NOTE: The given node cannot be an existing child of this node. 
+        /// If you want to change the order of children make sure to remove 
+        /// the node you are moving beforehand.
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="child"></param>
+        /// <param name="index"></param>
+        /// <exception cref="ArgumentException"></exception>
+        //public static void InsertChild(this Node parent, Node child, int index)
+        //{
+        //    var children = parent.GetChildren();
+
+        //    foreach(var oldChild in children)
+        //    {
+        //        if (child.Equals(oldChild)) 
+        //            throw new ArgumentException($"Node {child.Name} is already a child of this node.");
+        //        parent.RemoveChild(oldChild);
+        //    }
+
+        //    for (int i = 0; i < children.Count; i++)
+        //    {
+        //        if (i == index)
+        //        {
+        //            parent.AddChild(child);
+        //        }
+        //        parent.AddChild(children[i]);
+        //    }
+        //}
         #endregion
 
         #region Node2D Extensions
@@ -236,7 +263,7 @@ namespace Godot.NodeExtensions
         /// <param name="rect"></param>
         /// <returns></returns>
         public static float GetBottomY(this Rect2 rect)
-            => rect.Position.Y + rect.Size.Y / 2f;
+            => rect.Position.Y + rect.Size.Y;
 
         /// <summary>
         /// Gets the top y position of the rectangle.
@@ -244,7 +271,25 @@ namespace Godot.NodeExtensions
         /// <param name="rect"></param>
         /// <returns></returns>
         public static float GetTopY(this Rect2 rect)
-            => rect.Position.Y - rect.Size.Y / 2f;
+            => rect.Position.Y;
+
+        /// <summary>
+        /// Gets the midpoint of the rectangle.
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <returns></returns>
+        public static Vector2 GetMidpoint(this Rect2 rect)
+            => rect.Position + rect.Size / 2f;
+
+        /// <summary>
+        /// Size must be set before hand. This does not update when size is changed.
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <param name="midpoint"></param>
+        public static void SetMidpoint(this Rect2 rect, Vector2 midpoint)
+        {
+            rect.Position = midpoint - rect.Size / 2f;
+        }
         #endregion
     }
 }

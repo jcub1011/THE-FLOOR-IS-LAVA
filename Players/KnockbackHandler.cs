@@ -8,12 +8,10 @@ namespace Players;
 public partial class KnockbackHandler : Node, IDisableableControl
 {
     [Export] float _recoveryTime = 0.2f;
-    [Export] CharacterBody2D _body;
-    [Export] ControlDisablerHandler _disabler;
-    [Export] AnimationPlayer _aniPlayer;
+    CharacterBody2D _body;
+    ControlDisablerHandler _disabler;
+    AnimationPlayer _aniPlayer;
     [Export] StringName _staggerAnimationName = "stagger";
-    [Export] float _staggeredKnockbackMultiplier = 2f;
-    [Export] float _hitLandedKnockbackStrength = 80f;
     [Export] float _hitLandedRecoveryTime = 0.08f;
     bool _inStaggerState = false;
     float _remainingStagger;
@@ -27,6 +25,14 @@ public partial class KnockbackHandler : Node, IDisableableControl
         //    $"is not implemented.");
     }
     #endregion
+
+    public override void _Ready()
+    {
+        base._Ready();
+        _body = GetParent<CharacterBody2D>();
+        _disabler = this.GetSibling<ControlDisablerHandler>();
+        _aniPlayer = this.GetSibling<AnimationPlayer>();
+    }
 
     public override void _PhysicsProcess(double delta)
     {
@@ -48,26 +54,24 @@ public partial class KnockbackHandler : Node, IDisableableControl
         GetParent<PlayerController>().EnableBouncing(recoveryTime);
     }
 
-    public void OnApplyKnockback(float knockback, Node2D source)
+    public void OnApplyKnockback(Node2D source)
     {
         if (source is PlayerController player)
         {
             _body.Velocity = player.Velocity;
         }
-        else
-        {
-            Vector2 newVel = _body.GlobalPosition.RelativeTo(source.GlobalPosition)
-                .Normalized() * knockback;
-            _body.Velocity = newVel;
-        }
-        //knockback *= _inStaggerState ? _staggeredKnockbackMultiplier : 1f;
+        //else
+        //{
+        //    Vector2 newVel = _body.GlobalPosition.RelativeTo(source.GlobalPosition)
+        //        .Normalized() * knockback;
+        //    _body.Velocity = newVel;
+        //}
         DisableHandlers(_recoveryTime);
         GetParent<PlayerController>().EnableBouncing(_recoveryTime);
     }
 
     void DisableHandlers(float time)
     {
-        //EmitSignal(SignalName.OnDisableMovementControl);
         _disabler.DisableControlsExcept(
             time,
             ControlIDs.INPUT,
@@ -85,8 +89,9 @@ public partial class KnockbackHandler : Node, IDisableableControl
 
     public void OnHitLanded(Node2D node)
     {
+        //GD.Print("Calling hit landed but it is not defined.");
         Vector2 direction = node.GlobalPosition.RelativeTo(_body.GlobalPosition);
-        Vector2 knockback = new(direction.X < 0f ? 1f : -1f, -3f);
-        ApplyKnockback(knockback.Normalized() * _hitLandedKnockbackStrength, _hitLandedRecoveryTime);
+        Vector2 knockback = new(direction.X < 0f ? 1f : -1f, -1f);
+        ApplyKnockback(knockback.Normalized() * _body.Velocity.Length(), 0f);
     }
 }

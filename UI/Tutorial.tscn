@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://dwer2a4rvtn5a"]
+[gd_scene load_steps=24 format=3 uid="uid://dwer2a4rvtn5a"]
 
 [ext_resource type="Theme" uid="uid://bp1bagmcfevk7" path="res://UI/Styles/MenuTheme.tres" id="1_4fro4"]
 [ext_resource type="Script" path="res://UI/Tutorial.cs" id="1_oy248"]
@@ -19,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://bgbo6wb3r5gkb" path="res://UI/Keyboard & Mouse/Dark/Slash_Key_Dark.png" id="12_10tnk"]
 [ext_resource type="Texture2D" uid="uid://bkclmvafvg821" path="res://UI/Others/Positional Prompts/Positional_Prompts_Left.png" id="13_r2xa3"]
 [ext_resource type="Texture2D" uid="uid://e3gfqa7qejg8" path="res://UI/Others/Positional Prompts/Positional_Prompts_Down.png" id="14_2hpin"]
+[ext_resource type="Script" path="res://Levels/WorldDefinition.cs" id="20_clgfi"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_475ow"]
 distance = -889.0
@@ -419,6 +420,7 @@ fit_content = true
 
 [node name="Node2D" type="Node2D" parent="."]
 position = Vector2(781, 619)
+script = ExtResource("20_clgfi")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="Node2D"]
 position = Vector2(-780, -616)
@@ -427,13 +429,14 @@ collision_mask = 0
 metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Node2D/StaticBody2D"]
+position = Vector2(0, 165)
 shape = SubResource("WorldBoundaryShape2D_475ow")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Node2D/StaticBody2D"]
 shape = SubResource("WorldBoundaryShape2D_p5b3x")
 
 [node name="CollisionShape2D3" type="CollisionShape2D" parent="Node2D/StaticBody2D"]
-position = Vector2(1600, 0)
+position = Vector2(1920, 0)
 shape = SubResource("WorldBoundaryShape2D_r4ya8")
 
 [node name="Button" type="Button" parent="."]

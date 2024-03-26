@@ -28,7 +28,6 @@ public partial class Tutorial : Control
             var newPlayer = _player.Instantiate<Node2D>();
             var input = newPlayer.GetChild<PlayerInputHandler>();
             PlayerInputHandler.SetDevice(input, device);
-            newPlayer.Scale = new(_playerScale, _playerScale);
             node.AddChild(newPlayer);
         }
         node.GetChild<StaticBody2D>().SetCollisionLayerValue(1, true);
