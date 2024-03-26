@@ -41,6 +41,7 @@ public partial class WorldDefinition : Node2D
     public override void _ExitTree()
     {
         base._ExitTree();
+        GetTree().Paused = false;
         PauseEventChannel.OnPauseEvent -= HandlePauseEvent;
     }
 
