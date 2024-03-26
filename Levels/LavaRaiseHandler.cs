@@ -13,7 +13,7 @@ public partial class LavaRaiseHandler : Area2D
 	[Export] float _waitTimer = 2f;
 	[Export] float _speedMultiplerPerTileOffscreen = 0.1f;
 	[Export] float _offscreenSpeedFactor = 0.1f;
-	[Export] CameraSimulator _cameraSimulator;
+	CameraSimulator _cameraSimulator;
 	[Signal] public delegate void LavaDistanceFromScreenChangedEventHandler(float newDistanceTiles);
 
 	public double AdditionalVelocity { get; set; }
@@ -38,8 +38,9 @@ public partial class LavaRaiseHandler : Area2D
     public override void _Ready()
     {
         base._Ready();
+		_cameraSimulator = GetParent().GetChild<CameraSimulator>();
         OriginShiftChannel.OriginShifted += OriginShifted;
-		Position = new Vector2(Position.X, GetParent().GetChild<CameraSimulator>().GetCameraLowerY() - 64);
+		Position = new Vector2(Position.X, GetParent().GetChild<CameraSimulator>().GetCameraLowerY());
     }
 
     public override void _ExitTree()

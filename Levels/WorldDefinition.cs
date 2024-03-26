@@ -8,6 +8,8 @@ public static class WorldCoordExtensions
 {
     public static float ToTiles(this float val) => val / WorldDefinition.TileHeightInPixels;
     public static float ToPixels(this float val) => val * WorldDefinition.TileHeightInPixels;
+    public static double ToTiles(this double val) => val / WorldDefinition.TileHeightInPixels;
+    public static double ToPixels(this double val) => val * WorldDefinition.TileHeightInPixels;
     public static Vector2 ToTiles(this Vector2 val) => val / WorldDefinition.TileHeightInPixels;
     public static Vector2 ToPixels(this Vector2 val) => val * WorldDefinition.TileHeightInPixels;
 }

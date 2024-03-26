@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://c6vxsfrvbssc6"]
+[gd_scene load_steps=20 format=3 uid="uid://c6vxsfrvbssc6"]
 
 [ext_resource type="Script" path="res://Levels/WorldDefinition.cs" id="1_g3se5"]
 [ext_resource type="Script" path="res://Levels/CameraSimulator.cs" id="2_2ud8y"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://b1qjldpvjx1k0" path="res://Levels/Tilemaps/Lava_Frames/AnimatedFloorLava_2.png" id="6_52op3"]
 [ext_resource type="Texture2D" uid="uid://ba2hidy511r65" path="res://Levels/Border.png" id="6_l6d0l"]
 [ext_resource type="TileSet" uid="uid://3yu3d8s3tqmi" path="res://Levels/Tilemaps/developer_tilemap_HD.tres" id="6_q4vxi"]
+[ext_resource type="Script" path="res://UI/DistanceReadout.cs" id="11_o4s1l"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ayxn6"]
 size = Vector2(399, 37)
@@ -58,6 +59,7 @@ _templates = Array[StringName]([&"res://Levels/Test Type/starter_section_1.tscn"
 [node name="CameraSimulator" type="Node" parent="Level Generator" node_paths=PackedStringArray("_camera")]
 script = ExtResource("2_2ud8y")
 _camera = NodePath("../../Camera2D")
+_maxSpeed = 75.0
 _maxZoomSpeed = 0.313
 
 [node name="SlowRegion" type="Area2D" parent="Level Generator"]
@@ -100,19 +102,19 @@ position = Vector2(267, 150)
 zoom = Vector2(0.222, 0.222)
 script = ExtResource("2_7kig3")
 
-[node name="LAVA" type="Area2D" parent="." node_paths=PackedStringArray("_cameraSimulator")]
+[node name="LAVA" type="Area2D" parent="."]
 z_index = 11
 texture_filter = 4
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("3_3li4a")
 _waitTimer = 80.0
-_cameraSimulator = NodePath("../Level Generator/CameraSimulator")
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
 [node name="TileMap" type="TileMap" parent="LAVA"]
 texture_filter = 5
+position = Vector2(0, -64)
 tile_set = ExtResource("6_q4vxi")
 rendering_quadrant_size = 8
 format = 2
@@ -193,25 +195,40 @@ position = Vector2(4352, 2432)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer"]
+[node name="Lava Readout" type="PanelContainer" parent="CanvasLayer"]
 z_index = 10
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -92.0
-offset_right = 1144.0
-offset_bottom = 64.0
+offset_top = -114.0
+offset_right = 606.0
+offset_bottom = -30.0
 grow_vertical = 0
-scale = Vector2(0.5, 0.5)
 script = ExtResource("2_nxvow")
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Lava Readout"]
 layout_mode = 2
 theme_override_constants/margin_left = 50
 
-[node name="Label" type="Label" parent="CanvasLayer/PanelContainer/MarginContainer"]
+[node name="Label" type="Label" parent="CanvasLayer/Lava Readout/MarginContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 90
-text = "Test Text"
+theme_override_font_sizes/font_size = 45
+text = "Lava is 5000 tiles away."
 
-[connection signal="LavaDistanceFromScreenChanged" from="LAVA" to="CanvasLayer/PanelContainer" method="UpdateReadout"]
+[node name="Distance Readout" type="PanelContainer" parent="CanvasLayer"]
+z_index = 10
+offset_top = 30.0
+offset_right = 820.0
+offset_bottom = 114.0
+script = ExtResource("11_o4s1l")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Distance Readout"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+
+[node name="Label" type="Label" parent="CanvasLayer/Distance Readout/MarginContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 45
+text = "Dist Traveled: 100000000000 tiles"
+
+[connection signal="LavaDistanceFromScreenChanged" from="LAVA" to="CanvasLayer/Lava Readout" method="UpdateReadout"]

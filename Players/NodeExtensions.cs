@@ -263,7 +263,7 @@ namespace Godot.NodeExtensions
         /// <param name="rect"></param>
         /// <returns></returns>
         public static float GetBottomY(this Rect2 rect)
-            => rect.Position.Y + rect.Size.Y / 2f;
+            => rect.Position.Y + rect.Size.Y;
 
         /// <summary>
         /// Gets the top y position of the rectangle.
@@ -271,7 +271,25 @@ namespace Godot.NodeExtensions
         /// <param name="rect"></param>
         /// <returns></returns>
         public static float GetTopY(this Rect2 rect)
-            => rect.Position.Y - rect.Size.Y / 2f;
+            => rect.Position.Y;
+
+        /// <summary>
+        /// Gets the midpoint of the rectangle.
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <returns></returns>
+        public static Vector2 GetMidpoint(this Rect2 rect)
+            => rect.Position + rect.Size / 2f;
+
+        /// <summary>
+        /// Size must be set before hand. This does not update when size is changed.
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <param name="midpoint"></param>
+        public static void SetMidpoint(this Rect2 rect, Vector2 midpoint)
+        {
+            rect.Position = midpoint - rect.Size / 2f;
+        }
         #endregion
     }
 }
