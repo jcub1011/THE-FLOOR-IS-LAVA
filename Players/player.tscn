@@ -679,6 +679,7 @@ _aniPlayer = NodePath("../AnimationPlayer")
 _disabler = NodePath("../ControlDisablerHandler")
 
 [node name="PlayerInputHandler" type="Node" parent="."]
+process_mode = 3
 script = ExtResource("2_bjy2i")
 
 [node name="GravityApplicator" type="Node" parent="."]

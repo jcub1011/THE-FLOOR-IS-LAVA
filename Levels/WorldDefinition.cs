@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Reflection.Metadata.Ecma335;
+using UI;
 
 namespace WorldGeneration;
 
@@ -30,4 +31,21 @@ public partial class WorldDefinition : Node2D
     }
 
     [Export] public int _tileHeightInPixels = 128;
+
+    public override void _EnterTree()
+    {
+        base._EnterTree();
+        PauseEventChannel.OnPauseEvent += HandlePauseEvent;
+    }
+
+    public override void _ExitTree()
+    {
+        base._ExitTree();
+        PauseEventChannel.OnPauseEvent -= HandlePauseEvent;
+    }
+
+    void HandlePauseEvent(bool pause)
+    {
+        GetTree().Paused = pause;
+    }
 }
