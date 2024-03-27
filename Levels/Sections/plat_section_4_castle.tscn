@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://d1tnbww1vv66c"]
+
+[ext_resource type="TileSet" uid="uid://3yu3d8s3tqmi" path="res://Levels/Tilemaps/developer_tilemap_HD.tres" id="1_2co2e"]
+[ext_resource type="Script" path="res://Levels/WorldSection.cs" id="2_chxy3"]
+
+[node name="TileMap" type="TileMap" node_paths=PackedStringArray("_sectionUpperBound", "_sectionLowerBound")]
+tile_set = ExtResource("1_2co2e")
+format = 2
+layer_0/tile_data = PackedInt32Array(655333, 0, 0, 720869, 0, 0, 720870, 0, 0, 786406, 0, 0, 786407, 0, 0, 851943, 0, 0, 851944, 0, 0, 851945, 0, 0, 917482, 0, 0, 917483, 0, 0, 917484, 0, 0, 917485, 0, 0, 917486, 0, 0, 851950, 0, 0, 851951, 0, 0, 851952, 0, 0, 786416, 0, 0, 786417, 0, 0, 720881, 0, 0, 720882, 0, 0, 655346, 0, 0, 655347, 0, 0, 589811, 0, 0, 524275, 0, 0, 458739, 0, 0, 458740, 0, 0, 393204, 0, 0, -655350, 0, 0, -655349, 0, 0, -589813, 0, 0, -524277, 0, 0, -458740, 0, 0, -393204, 0, 0, -327668, 0, 0, -327667, 0, 0, -262131, 0, 0, -262130, 0, 0, -262129, 0, 0, -262128, 0, 0, -196592, 0, 0, -196591, 0, 0, -196590, 0, 0, -262126, 0, 0, -262125, 0, 0, -262124, 0, 0, -327660, 0, 0, -327659, 0, 0, -393195, 0, 0, -393194, 0, 0, -458729, 0, 0, -458766, 0, 0, -524302, 0, 0, -524303, 0, 0, -524304, 0, 0, -524305, 0, 0, -524306, 0, 0, -524307, 0, 0, -589844, 0, 0, -589845, 0, 0, -589846, 0, 0, -589847, 0, 0, -655384, 0, 0, -655385, 0, 0, -720922, 0, 0, -720923, 0, 0, -786460, 0, 0, 786445, 0, 0, 851981, 0, 0, 851982, 0, 0, 851983, 0, 0, 851984, 0, 0, 851985, 0, 0, 851986, 0, 0, 851987, 0, 0, 851988, 0, 0, 851989, 0, 0, 786453, 0, 0, 786454, 0, 0, 786455, 0, 0, 720919, 0, 0, -196607, 0, 0, -131072, 0, 0, -65536, 0, 0, 65535, 0, 0, 131071, 0, 0)
+script = ExtResource("2_chxy3")
+_sectionUpperBound = NodePath("True_Top")
+_sectionLowerBound = NodePath("True_Bottom")
+PossibleContinuations = Array[StringName]([&"plat_section_4_castle"])
+
+[node name="True_Top" type="Marker2D" parent="."]
+position = Vector2(0, -2432)
+
+[node name="True_Bottom" type="Marker2D" parent="."]
+position = Vector2(0, 2432)
+
+[node name="Section Bounds" type="Node2D" parent="."]
+
+[node name="Upper_L" type="Marker2D" parent="Section Bounds"]
+position = Vector2(-4352, -2432)
+
+[node name="Upper_R" type="Marker2D" parent="Section Bounds"]
+position = Vector2(4352, -2432)
+
+[node name="Lower_L" type="Marker2D" parent="Section Bounds"]
+position = Vector2(-4352, 2432)
+
+[node name="Lower_R" type="Marker2D" parent="Section Bounds"]
+position = Vector2(4352, 2432)
