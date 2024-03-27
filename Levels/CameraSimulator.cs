@@ -134,7 +134,6 @@ public partial class CameraSimulator : Node
         if (val > 0)
         {
             val = Mathf.Pow(val, 1.8f) * 4f;
-            //if (val > 1) val = 1;
         }
         return val;
     }
