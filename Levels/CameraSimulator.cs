@@ -80,7 +80,7 @@ public partial class CameraSimulator : Node
         FocusBox = focusBox;
         _camera.Zoom = GetNewZoom(focusBox, _minCameraZoom.Y, _maxCameraZoom.Y, _lookAhead.ToPixels(), _lookBehind.ToPixels(), (float)deltaTime);
 
-        float dist = -GetNormDistFromCamCenter(focusBox.BottomY() + _lookBehind.ToPixels() - GetCameraLowerY());
+        float dist = -GetNormDistFromCamCenterBiased(focusBox.BottomY() + _lookBehind.ToPixels() - GetCameraLowerY());
 
         Vector2 deltaPos = new(0f, (float)_maxSpeed.ToPixels() * dist * (float)deltaTime);
         OriginShiftChannel.ShiftOrigin(deltaPos);
@@ -126,6 +126,17 @@ public partial class CameraSimulator : Node
     float GetNormDistFromCamCenter(float yPos)
     {
         return MathExtensions.GetNormalizedValInRange(yPos, GetCameraUpperY(), GetCameraLowerY());
+    }
+
+    float GetNormDistFromCamCenterBiased(float yPos)
+    {
+        float val = MathExtensions.GetNormalizedValInRange(yPos, GetCameraUpperY(), GetCameraLowerY());
+        if (val > 0)
+        {
+            val = Mathf.Pow(val, 1.8f) * 4f;
+            //if (val > 1) val = 1;
+        }
+        return val;
     }
 
     float GetCameraYCoverage(float cameraPaddingPercent)

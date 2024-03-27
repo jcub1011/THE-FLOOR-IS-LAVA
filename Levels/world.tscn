@@ -60,6 +60,7 @@ _templates = Array[StringName]([&"res://Levels/Test Type/starter_section_1.tscn"
 script = ExtResource("2_2ud8y")
 _camera = NodePath("../../Camera2D")
 _maxSpeed = 75.0
+_lookBehind = 13.0
 _maxZoomSpeed = 0.313
 
 [node name="SlowRegion" type="Area2D" parent="Level Generator"]
