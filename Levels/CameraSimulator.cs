@@ -39,6 +39,10 @@ public partial class CameraSimulator : Node
     [Export] Vector2 _maxCameraZoom = new(0.222f, 0.222f);
     [Export] float _maxZoomSpeed = 5f;
     [Export] bool _ignoreTimeScale = true;
+    /// <summary>
+    /// In tiles.
+    /// </summary>
+    [Export] Vector2 _cameraOffset = new(0f, 0f);
 
     public FocusBox FocusBox { get; private set; }
 
@@ -79,11 +83,12 @@ public partial class CameraSimulator : Node
         var focusBox = GetFocusBoundingBox(focusPoints);
         FocusBox = focusBox;
         _camera.Zoom = GetNewZoom(focusBox, _minCameraZoom.Y, _maxCameraZoom.Y, _lookAhead.ToPixels(), _lookBehind.ToPixels(), (float)deltaTime);
+        //GetDesiredCameraOffset(focusPoints, (float)deltaTime);
+        float dist = -GetNormDistFromCamCenterBiased(focusBox.BottomY() + _lookBehind.ToPixels() - GetCameraLowerY() - _cameraOffset.Y.ToPixels());
 
-        float dist = -GetNormDistFromCamCenterBiased(focusBox.BottomY() + _lookBehind.ToPixels() - GetCameraLowerY());
+        Vector2 originVel = new(0f, (float)_maxSpeed.ToPixels() * dist);
 
-        Vector2 deltaPos = new(0f, (float)_maxSpeed.ToPixels() * dist * (float)deltaTime);
-        OriginShiftChannel.ShiftOrigin(deltaPos);
+        OriginShiftChannel.ShiftOrigin(originVel * (float)deltaTime);
     }
 
     Vector2 GetFocusAvgPos(IEnumerable<Node2D> focusPoints)
@@ -95,6 +100,24 @@ public partial class CameraSimulator : Node
             sum += node.GlobalPosition;
         }
         return sum / focusPoints.Count();
+    }
+
+
+    static float _continuousTimeFalling;
+    void GetDesiredCameraOffset(IEnumerable<Node2D> focusPoints, float delta)
+    {
+        Vector2 avgVel = GetFocusPointAvgVel(focusPoints);
+        if (avgVel.Y > 20f.ToPixels())
+        {
+            _continuousTimeFalling += delta;
+        }
+        else _continuousTimeFalling = 0f;
+
+        if (_continuousTimeFalling > 0.25f)
+        {
+            _cameraOffset.Y = -20f * Mathf.Pow(Mathf.Clamp((_continuousTimeFalling - 0.25f) / 0.5f, 0f, 1f), 1.8f);
+        }
+        else _cameraOffset.Y = 0f;
     }
 
     Vector2 GetFocusBox(IEnumerable<Node2D> focusPoints)
@@ -115,6 +138,17 @@ public partial class CameraSimulator : Node
 
         if (float.IsInfinity(minY)) return Vector2.Zero;
         else return new(Mathf.Abs(maxX - minX), Mathf.Abs(maxY - minY));
+    }
+
+    Vector2 GetFocusPointAvgVel(IEnumerable<Node2D> focusPoints)
+    {
+        Vector2 sum = Vector2.Zero;
+        foreach(var point in  focusPoints)
+        {
+            if (point is CharacterBody2D body) sum += body.Velocity;
+        }
+
+        return sum / focusPoints.Count();
     }
 
     FocusBox GetFocusBoundingBox(IEnumerable<Node2D> focusPoints)
