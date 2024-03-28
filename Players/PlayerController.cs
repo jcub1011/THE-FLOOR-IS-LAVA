@@ -1,6 +1,8 @@
 using Godot;
 using Godot.NodeExtensions;
+using System.Linq;
 using TheFloorIsLava.Subscriptions;
+using UI;
 using WorldGeneration;
 
 namespace Players;
@@ -12,10 +14,12 @@ public partial class PlayerController : CharacterBody2D
 
     public bool IsAlive { get; private set; } = true;
 
-    public override void _Ready()
+    public override void _Ready()          
     {
         base._Ready();
         OriginShiftChannel.OriginShifted += OriginShifted;
+        PlayerInputHandler.SetDevice(this.GetDirectChild<PlayerInputHandler>(), new(DeviceType.KeyboardLeft, 0));
+        PauseEventChannel.SetPauseState(false);
     }
 
     public override void _Process(double delta)
