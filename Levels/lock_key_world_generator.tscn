@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://dvu50mblkf2uk"]
+
+[ext_resource type="Script" path="res://Levels/NewWorldGenerator.cs" id="1_ys215"]
+[ext_resource type="Script" path="res://Levels/WorldDefinition.cs" id="2_3ecyl"]
+
+[node name="Lock Key World Generator" type="Node2D"]
+script = ExtResource("1_ys215")
+_starterSections = PackedStringArray("res://Levels/Easy Levels/test_world.tscn")
+
+[node name="WorldDefinition" type="Node2D" parent="."]
+script = ExtResource("2_3ecyl")

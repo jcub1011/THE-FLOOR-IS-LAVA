@@ -3,11 +3,19 @@ using Players;
 using System.Collections.Generic;
 using System.Linq;
 using Godot.NodeExtensions;
+using WorldGeneration.Sections;
+using System.IO;
 
 namespace WorldGeneration;
 
 public static class ListExtensions
 {
+    /// <summary>
+    /// Selects an item in the list at random. If the list is empty it returns default.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="list"></param>
+    /// <returns></returns>
     public static T PickRandom<T>(this IEnumerable<T> list)
     {
         int count = list.Count();
@@ -23,10 +31,8 @@ public static class ListExtensions
     }
 }
 
-internal class SectionPreloader
+public class SectionPreloader
 {
-    const string SECTION_PATH = "res://Levels/Sections/";
-
     string _sectionToLoad;
 
     public SectionPreloader(string sectionStarter)
@@ -34,25 +40,23 @@ internal class SectionPreloader
         StartNextSection(sectionStarter);
     }
 
-    void StartNextSection(string sectionName)
+    void StartNextSection(string sectionPath)
     {
-        _sectionToLoad = ToPath(sectionName);
+        _sectionToLoad = sectionPath;
         ResourceLoader.LoadThreadedRequest(_sectionToLoad);
         //GD.Print("Printing orphaned nodes.");
         //Node.PrintOrphanNodes();
     }
 
-    public WorldSection GetNextSection()
+    public T GetNextSection<T>() where T : Node
     {
         var section = ResourceLoader.LoadThreadedGet(_sectionToLoad) as PackedScene;
-        var worldSection = section.Instantiate<WorldSection>();
-        StartNextSection(worldSection.PossibleContinuations.PickRandom());
-        return worldSection;
-    }
-
-    static string ToPath(string name)
-    {
-        return SECTION_PATH + name + ".tscn";
+        var worldSection = section.Instantiate();
+        if (worldSection is IContinuableSection ws)
+        {
+            StartNextSection(ws.GetNextSection());
+        }
+        return (T)worldSection;
     }
 }
 
@@ -62,7 +66,7 @@ public partial class LevelGenerator : Node2D
     [Export] StringName PlayerTemplatePath;
     [Export] LavaRaiseHandler _lava;
     [Export] CameraSimulator _camera;
-    [Export] StringName _sectionToStartWith = "starter_section_2";
+    [Export] string _sectionToStartWith = "starter_section_2";
 
     WorldSection _latestSection;
     [Export] Godot.Collections.Array<StringName> _templates;
@@ -82,7 +86,7 @@ public partial class LevelGenerator : Node2D
 
         _preloader = new(_sectionToStartWith);
 
-        var newSection = _preloader.GetNextSection();
+        var newSection = _preloader.GetNextSection<WorldSection>();
         AddChild(newSection);
         newSection.Position = new(0f, - newSection.LowerBoundary + _camera.GetCameraLowerY());
         _latestSection = newSection;
@@ -156,7 +160,7 @@ public partial class LevelGenerator : Node2D
 
         if (_latestSection.Position.Y + _latestSection.UpperBoundary >= _camera.GetCameraUpperY())
         {
-            var newSection = _preloader.GetNextSection();
+            var newSection = _preloader.GetNextSection<WorldSection>();
             Vector2 newPos = Vector2.Zero;
             newPos.Y = _latestSection.Position.Y + _latestSection.UpperBoundary - newSection.LowerBoundary;
             newSection.Position = newPos;

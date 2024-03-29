@@ -7,6 +7,8 @@ namespace WorldGeneration;
 
 public static class WorldCoordExtensions
 {
+    public static int ToTiles(this int val) => val / WorldDefinition.TileHeightInPixels;
+    public static int ToPixels(this int val) => val * WorldDefinition.TileHeightInPixels;
     public static float ToTiles(this float val) => val / WorldDefinition.TileHeightInPixels;
     public static float ToPixels(this float val) => val * WorldDefinition.TileHeightInPixels;
     public static double ToTiles(this double val) => val / WorldDefinition.TileHeightInPixels;
