@@ -683,7 +683,7 @@ script = ExtResource("13_c0kft")
 _dashTiers = PackedVector3Array(20, 0, 0.4, 20, 0.25, 0.4)
 _dashTierPerformAnimations = PackedStringArray("tank_dash", "tank_dash_big")
 _dashTierChargeAnimations = PackedStringArray("tank_charge_light", "tank_charge_strong")
-_movementDisableTime = 0.2
+_movementDisableTime = 0.04
 _aniPlayer = NodePath("../AnimationPlayer")
 _disabler = NodePath("../ControlDisablerHandler")
 
