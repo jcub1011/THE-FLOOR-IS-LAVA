@@ -652,7 +652,7 @@ collision_layer = 2
 slide_on_ceiling = false
 floor_max_angle = 0.523599
 script = ExtResource("1_bukco")
-SpeedLimitInTiles = Vector2(20, 20)
+SpeedLimitInTiles = Vector2(35, 35)
 
 [node name="Lava Collider" type="Area2D" parent="."]
 collision_layer = 0

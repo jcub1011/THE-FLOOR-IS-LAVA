@@ -5,6 +5,23 @@ using TheFloorIsLava.Subscriptions;
 
 namespace WorldGeneration;
 
+public static class LavaSpeedChangedChannel
+{
+	/// <summary>
+	/// Float is new speed. Units are in tiles/s.
+	/// </summary>
+	public static event Action<float> LavaRiseSpeedChanged;
+
+	/// <summary>
+	/// Tiles/s.
+	/// </summary>
+	/// <param name="newSpeed"></param>
+	public static void SetNewLavaRiseSpeed(float newSpeed)
+	{
+		LavaRiseSpeedChanged?.Invoke(newSpeed);
+	}
+}
+
 public partial class LavaRaiseHandler : Area2D
 {
 	[Export] float _raiseSpeedInTiles = 1;
@@ -31,13 +48,21 @@ public partial class LavaRaiseHandler : Area2D
     public override void _PhysicsProcess(double delta)
     {
         base._PhysicsProcess(delta);
+		return;
         EmitSignal(SignalName.LavaDistanceFromScreenChanged,
             WorldDefinition.PixelsToTiles(Position.Y - _cameraSimulator.GetCameraLowerY()));
     }
 
+	void OnLavaRiseSpeedChanged(float newSpeed)
+	{
+		_raiseSpeedInTiles = newSpeed;
+	}
+
     public override void _Ready()
     {
         base._Ready();
+		LavaSpeedChangedChannel.LavaRiseSpeedChanged += OnLavaRiseSpeedChanged;
+		return;
 		_cameraSimulator = GetParent().GetChild<CameraSimulator>();
         OriginShiftChannel.OriginShifted += OriginShifted;
 		Position = new Vector2(Position.X, GetParent().GetChild<CameraSimulator>().GetCameraLowerY());
@@ -47,6 +72,7 @@ public partial class LavaRaiseHandler : Area2D
     {
         base._ExitTree();
 		OriginShiftChannel.OriginShifted -= OriginShifted;
+        LavaSpeedChangedChannel.LavaRiseSpeedChanged -= OnLavaRiseSpeedChanged;
     }
 
 	void OriginShifted(Vector2 shift) => Position += shift;
@@ -70,6 +96,7 @@ public partial class LavaRaiseHandler : Area2D
 
         _raiseSpeedInTiles += _raiseAccelerationInTiles * deltaTime;
         if (_raiseSpeedInTiles > _maxRaiseSpeedInTiles) _raiseSpeedInTiles = _maxRaiseSpeedInTiles;
+		return;
         AddAdditionalRaiseSpeed(_cameraSimulator.GetCameraLowerY(), deltaTime);
     }
 }
