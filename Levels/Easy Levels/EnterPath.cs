@@ -26,6 +26,7 @@ public partial class EnterPath : Area2D
 
     void OnBodyEnter(Node body)
     {
+        GD.Print(body);
         if (body is PlayerController controller)
         {
             _playersInArea.Add(controller);

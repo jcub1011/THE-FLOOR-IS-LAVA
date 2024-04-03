@@ -103,6 +103,7 @@ public partial class DashHandler : Node, IDisableableControl
     [Export] AnimationPlayer _aniPlayer;
     [Export] ControlDisablerHandler _disabler;
     [Export] float _dashBufferTime = 0.15f;
+    [Export] float _airDashMultiplier = 1.1f;
     [Signal] public delegate void DashPerformedEventHandler(Vector2 dashVelocity);
     [Signal] public delegate void DashChargeStartedEventHandler(StringName chargeAnimation);
     [Signal] public delegate void DashCanceledEventHandler();
@@ -229,7 +230,16 @@ public partial class DashHandler : Node, IDisableableControl
             dashVelocity.X = dashVelocity.X < 0f ? -Mathf.Abs(_initialVelocity.X) : Mathf.Abs(_initialVelocity.X);
         }
 
-        _body.Velocity = direction.Normalized() * info.Speed.ToPixels();
+        if (_body.IsOnFloor())
+        {
+            _body.Velocity = direction.Normalized() * info.Speed.ToPixels();
+        }
+        else
+        {
+            Vector2 modifiedDir = direction.Normalized();
+            if (Mathf.Abs(direction.X) == 1f) direction.X *= _airDashMultiplier;
+            _body.Velocity = modifiedDir * (info.Speed.ToPixels() * _airDashMultiplier);
+        }
         _disabler.DisableControlsExcept(
             dashLength,
             ControlIDs.HITBOX);

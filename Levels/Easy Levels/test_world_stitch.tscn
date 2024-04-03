@@ -43,3 +43,5 @@ metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enter_Path"]
 shape = SubResource("RectangleShape2D_1ewrn")
+
+[connection signal="OnPlayerEntered" from="Exit_Path" to="." method="OnPlayerEnteredExit"]

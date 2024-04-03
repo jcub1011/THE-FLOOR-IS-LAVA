@@ -12,7 +12,7 @@ config_version=5
 
 config/name="The Floor Is Lava"
 config/version="1.0.1"
-run/main_scene="res://Levels/Easy Levels/test_world.tscn"
+run/main_scene="res://Levels/lock_key_world_generator.tscn"
 config/features=PackedStringArray("4.2", "C#", "Forward Plus")
 run/max_fps=240
 config/icon="res://icon.svg"
