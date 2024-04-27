@@ -32,12 +32,13 @@ public partial class LockKeySection : TileMap, IContinuableSection
     public override void _Ready()
     {
         base._Ready();
-        this.GetDirectChild<ExitPath>().OnPlayerEntered += OnPlayerEnteredExit;
+        this.GetDirectChild<ExitPath>().BodyEntered += OnPlayerEnteredExit;
     }
 
-    void OnPlayerEnteredExit(PlayerController player)
+    void OnPlayerEnteredExit(Node node)
     {
-        EmitSignal(SignalName.OnPlayerEnterExit, player);
+        if (node is PlayerController player)
+            EmitSignal(SignalName.OnPlayerEnterExit, player);
     }
 
     protected ExitPath GetExitPath()

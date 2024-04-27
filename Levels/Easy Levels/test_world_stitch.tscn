@@ -18,7 +18,11 @@ layer_0/tile_data = PackedInt32Array(-1900576, 0, 0, -1835040, 0, 0, -1769504, 0
 script = ExtResource("2_7qtfh")
 PossibleContinuations = PackedStringArray("res://Levels/Easy Levels/test_world_stitch.tscn")
 
-[node name="Focus Box" type="CollisionShape2D" parent="."]
+[node name="Focus Box" type="Area2D" parent="."]
+monitoring = false
+monitorable = false
+
+[node name="Focus Box" type="CollisionShape2D" parent="Focus Box"]
 z_index = -10
 position = Vector2(0.5, -2298)
 shape = SubResource("RectangleShape2D_2st4q")
@@ -43,5 +47,3 @@ metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enter_Path"]
 shape = SubResource("RectangleShape2D_1ewrn")
-
-[connection signal="OnPlayerEntered" from="Exit_Path" to="." method="OnPlayerEnteredExit"]

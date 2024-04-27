@@ -8,6 +8,16 @@ using WorldGeneration.Sections;
 
 namespace WorldGeneration;
 
+public static class CameraFocusChangedChannel
+{
+    public static void SetNewFocus(CollisionShape2D boundingBox)
+    {
+        FocusBoxSet?.Invoke(boundingBox);
+    }
+
+    public static event Action<CollisionShape2D> FocusBoxSet;
+}
+
 public partial class NewWorldGenerator : Node2D
 {
     [Export] string[] _starterSections;
@@ -17,6 +27,7 @@ public partial class NewWorldGenerator : Node2D
     List<PlayerController> _players;
     List<InputDevice> _inputDevices;
     bool _subscribedToReady;
+    const string SECTION_CONTAINER_NAME = "SectionContainer";
 
     public override void _Ready()
     {
@@ -43,7 +54,7 @@ public partial class NewWorldGenerator : Node2D
 
     void AddSection(Node2D section)
     {
-        GetNode("SectionContainer").AddChild(section);
+        GetNode(SECTION_CONTAINER_NAME).AddChild(section);
     }
 
     /// <summary>
@@ -78,6 +89,18 @@ public partial class NewWorldGenerator : Node2D
             PlayerInputHandler.SetDevice(newPlayer.GetDirectChild<PlayerInputHandler>(), _inputDevices[i]);
             playerContainer.AddChild(newPlayer);
             newPlayer.GlobalPosition = spawnLocations[i].GlobalPosition;
+        }
+    }
+
+    /// <summary>
+    /// Shifts all the child sections by the given world origin delta.
+    /// </summary>
+    /// <param name="deltaOrigin"></param>
+    void ShiftOrigin(Vector2 deltaOrigin)
+    {
+        foreach(var section in GetNode(SECTION_CONTAINER_NAME).GetChildren())
+        {
+            if (section is Node2D moveable) moveable.GlobalPosition += deltaOrigin;
         }
     }
 }

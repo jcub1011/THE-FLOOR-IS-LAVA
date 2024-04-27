@@ -22,11 +22,13 @@ public partial class EnterPath : Area2D
     {
         base._Ready();
         _playersInArea = new();
+        BodyEntered += OnBodyEnter;
+        BodyExited += OnBodyExit;
     }
 
     void OnBodyEnter(Node body)
     {
-        GD.Print(body);
+        GD.Print($"{body.Name} entered the enter path.");
         if (body is PlayerController controller)
         {
             _playersInArea.Add(controller);
@@ -35,6 +37,7 @@ public partial class EnterPath : Area2D
 
     void OnBodyExit(Node body)
     {
+        GD.Print($"{body.Name} exited the enter path.");
         if (body is PlayerController controller)
         {
             _playersInArea.Remove(controller);
@@ -44,6 +47,7 @@ public partial class EnterPath : Area2D
     public override void _Process(double delta)
     {
         base._Process(delta);
+        if (_playersInArea.Count == 0) return;
         Vector2 force = PathDirection.ToVector2() * ((float)delta * 10f);
         foreach(var player in _playersInArea)
         {
