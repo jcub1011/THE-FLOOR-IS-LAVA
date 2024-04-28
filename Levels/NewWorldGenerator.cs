@@ -182,11 +182,36 @@ public partial class NewWorldGenerator : Node2D
         AddSection(_activeSections.First());
         _activeSections.First().GlobalPosition = Vector2.Zero;
         GetNextSection();
-        this.GetDirectChild<NewWorldGeneratorCamera>()
-            .SetFocusTarget(
-            _activeSections.First().GetFocusBox(), 
-            new Vector2(1, 1));
+        //this.GetDirectChild<NewWorldGeneratorCamera>()
+        //    .SetFocusTarget(
+        //    _activeSections.First().GetFocusBox(), 
+        //    new Vector2(1, 1));
         SetPlayers(new() { new(DeviceType.KeyboardLeft, 0) });
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        base._PhysicsProcess(delta);
+        if (_activeSections == null || _activeSections.Count == 0) return;
+        bool addNewSection = false;
+
+        foreach(var section in _activeSections)
+        {
+            if ((~section.PlayersInSection & PlayerUtilityFlags.LivingPlayersMask) == 0)
+            {
+                this.GetDirectChild<NewWorldGeneratorCamera>()
+                    .SetFocusTarget(
+                    section.GetFocusBox(),
+                    new Vector2(1, 1));
+
+                if (_activeSections.Last() == section)
+                {
+                    addNewSection = true;
+                }
+            }
+        }
+
+        if (addNewSection) GetNextSection();
     }
 
     void GetNextSection()

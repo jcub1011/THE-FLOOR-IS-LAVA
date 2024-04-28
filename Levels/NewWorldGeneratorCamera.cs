@@ -24,6 +24,7 @@ public partial class NewWorldGeneratorCamera : Camera2D
     /// <param name="padding">Minimum tiles of space in the x and y direction.</param>
     public void SetFocusTarget(CollisionShape2D focusBox, Vector2 padding)
     {
+        if (_target == focusBox) return;
         if (focusBox.Shape is not RectangleShape2D focusRect)
         {
             GD.PushError($"Focus box must be a {nameof(RectangleShape2D)}.");
@@ -42,8 +43,8 @@ public partial class NewWorldGeneratorCamera : Camera2D
 
     void SmoothDampToTarget(float delta)
     {
-        GlobalPosition = GlobalPosition.SmoothDamp(_target.Position, ref _velocity, 0.5f, (float)delta);
-        float smoothed = Zoom.X.SmoothDamp(_targetZoom.X, ref _zoomVel, 0.5f, (float)delta);
+        GlobalPosition = GlobalPosition.SmoothDamp(_target.GlobalPosition, ref _velocity, 0.25f, (float)delta);
+        float smoothed = Zoom.X.SmoothDamp(_targetZoom.X, ref _zoomVel, 0.25f, (float)delta);
         Zoom = new Vector2(smoothed, smoothed);
     }
 

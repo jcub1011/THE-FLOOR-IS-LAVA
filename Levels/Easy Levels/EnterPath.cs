@@ -53,21 +53,21 @@ public partial class EnterPath : Area2D
     {
         base._Process(delta);
 
-        if (!_closed &&
-            (PlayerUtilityFlags.LivingPlayersMask & ~PlayerUtilityFlags.PlayersToMask(_playersInArea)) == 0)
-        {
-            GD.Print("All players have reached the next section.");
-            _closed = true;
-            OnSectionReached?.Invoke(GetParent<LockKeySection>());
-        }
+        //if (!_closed &&
+        //    (PlayerUtilityFlags.LivingPlayersMask & ~PlayerUtilityFlags.PlayersToMask(_playersInArea)) == 0)
+        //{
+        //    GD.Print("All players have reached the next section.");
+        //    _closed = true;
+        //    OnSectionReached?.Invoke(GetParent<LockKeySection>());
+        //}
 
-        foreach (var player in _playersInArea)
-        {
-            if (_closed)
-            {
-                player.Velocity = PathDirection.ToVector2() * 15f.ToPixels();
-            }
-            else player.Velocity = Vector2.Zero;
-        }
+        //foreach (var player in _playersInArea)
+        //{
+        //    if (_closed)
+        //    {
+        //        player.Velocity = PathDirection.ToVector2() * 15f.ToPixels();
+        //    }
+        //    else player.Velocity = Vector2.Zero;
+        //}
     }
 }
