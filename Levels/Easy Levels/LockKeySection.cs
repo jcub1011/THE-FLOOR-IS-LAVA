@@ -3,6 +3,8 @@ using Godot.NodeExtensions;
 using Players;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
 using WorldGeneration.Paths;
 
 namespace WorldGeneration.Sections;
@@ -18,7 +20,8 @@ public interface IContinuableSection
 
 public partial class LockKeySection : TileMap, IContinuableSection
 {
-    [Signal] public delegate void OnPlayerEnterExitEventHandler(PlayerController player);
+    //[Signal] public delegate void OnPlayerEnterExitEventHandler(PlayerController player);
+    public event Action<PlayerController> OnPlayerEnterExit;
     [Export]
     string[] PossibleContinuations;
     public string GetNextSection() => PossibleContinuations.PickRandom();
@@ -29,6 +32,34 @@ public partial class LockKeySection : TileMap, IContinuableSection
     [Export] float _lavaRaiseSpeed = 1;
     public float LavaRaiseSpeed { get => _lavaRaiseSpeed; }
 
+    /// <summary>
+    /// Gets a mask of the players in the section.
+    /// </summary>
+    public Players PlayersInSection
+    {
+        get
+        {
+            Players players = PlayerUtilityFlags.LivingPlayersMask;
+            Players returnVal = Players.None;
+
+            for (byte mask = 1; mask < (byte)Players.LastPlayer; mask <<= 1)
+            {
+                if (players.HasFlag((Players)mask))
+                {
+                    if (this.GetDirectChild<Area2D>()
+                        .OverlapsBody(
+                        PlayerUtilityFlags.FlagToPlayer((Players)mask)
+                        ))
+                    {
+                        returnVal |= (Players)mask;
+                    }
+                }
+            }
+
+            return returnVal;
+        }
+    }
+
     public override void _Ready()
     {
         base._Ready();
@@ -38,7 +69,10 @@ public partial class LockKeySection : TileMap, IContinuableSection
     void OnPlayerEnteredExit(Node node)
     {
         if (node is PlayerController player)
-            EmitSignal(SignalName.OnPlayerEnterExit, player);
+        {
+            OnPlayerEnterExit?.Invoke(player);
+        }
+        //EmitSignal(SignalName.OnPlayerEnterExit, player);
     }
 
     protected ExitPath GetExitPath()
@@ -49,6 +83,16 @@ public partial class LockKeySection : TileMap, IContinuableSection
     protected EnterPath GetEnterPath()
     {
         return this.GetDirectChild<EnterPath>();
+    }
+
+    protected Area2D GetSectionBoundary()
+    {
+        return GetNode<Area2D>("Section Boundary");
+    }
+
+    public CollisionShape2D GetFocusBox()
+    {
+        return GetNode<CollisionShape2D>("Focus Box");
     }
 
     /// <summary>

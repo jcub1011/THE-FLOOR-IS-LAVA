@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://dvu50mblkf2uk"]
+[gd_scene load_steps=11 format=3 uid="uid://dvu50mblkf2uk"]
 
 [ext_resource type="Script" path="res://Levels/NewWorldGenerator.cs" id="1_ys215"]
 [ext_resource type="Script" path="res://Levels/WorldDefinition.cs" id="2_3ecyl"]
 [ext_resource type="Script" path="res://Levels/LavaRaiseHandler.cs" id="3_c87il"]
+[ext_resource type="Script" path="res://Levels/NewWorldGeneratorCamera.cs" id="3_ln2gn"]
 [ext_resource type="PackedScene" uid="uid://cv7g2fnqrxx7s" path="res://Players/player.tscn" id="3_wmmw2"]
 [ext_resource type="TileSet" uid="uid://3yu3d8s3tqmi" path="res://Levels/Tilemaps/developer_tilemap_HD.tres" id="4_gttx0"]
 [ext_resource type="Texture2D" uid="uid://c4odmib8ofaak" path="res://Levels/Tilemaps/Lava_Frames/AnimatedFloorLava_1.png" id="5_laebi"]
@@ -28,6 +29,10 @@ animations = [{
 script = ExtResource("1_ys215")
 _starterSections = PackedStringArray("res://Levels/Easy Levels/test_world.tscn")
 _playerTemplate = ExtResource("3_wmmw2")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.15, 0.15)
+script = ExtResource("3_ln2gn")
 
 [node name="WorldDefinition" type="Node2D" parent="."]
 script = ExtResource("2_3ecyl")

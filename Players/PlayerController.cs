@@ -12,9 +12,18 @@ public partial class PlayerController : CharacterBody2D
     [Export] public Vector2 SpeedLimitInTiles { get; private set; } = new(50, 50);
     float _remainingBounceTime;
 
-    public bool IsAlive { get; private set; } = true;
+    bool _isAlive = true;
+    public bool IsAlive
+    {
+        get => _isAlive;
+        set
+        {
+            _isAlive = value;
+            PlayerUtilityFlags.UpdatePlayerLivingState(this);
+        }
+    }
 
-    public override void _Ready()          
+    public override void _Ready()
     {
         base._Ready();
         OriginShiftChannel.OriginShifted += OriginShifted;

@@ -356,6 +356,24 @@ namespace Godot.MathExtensions
         {
             return src - origin;
         }
+
+        /// <summary>
+        /// Shamelessly stolen from https://stackoverflow.com/questions/61372498/how-does-mathf-smoothdamp-work-what-is-it-algorithm.
+        /// </summary>
+        /// <param name="current">Current value.</param>
+        /// <param name="target">Target value.</param>
+        /// <param name="currentVel">Current velocity from current to target.</param>
+        /// <param name="smoothTime">How long it should take to reach the target value.</param>
+        /// <param name="deltaTime">Time since last call.</param>
+        /// <param name="maxSpeed">Max speed.</param>
+        /// <returns>The smooth damped value.</returns>
+        public static Vector2 SmoothDamp(this Vector2 current, Vector2 target, ref Vector2 currentVel, float smoothTime, float deltaTime, float maxSpeed = float.PositiveInfinity)
+        {
+            return new Vector2(
+                current.X.SmoothDamp(target.X, ref currentVel.X, smoothTime, deltaTime, maxSpeed),
+                current.Y.SmoothDamp(target.Y, ref currentVel.Y, smoothTime, deltaTime, maxSpeed)
+                );
+        }
         #endregion
 
         #region General Math Extensions
@@ -450,6 +468,45 @@ namespace Godot.MathExtensions
                 x2 = (root - b) / (2f * a);
                 return true;
             }
+        }
+
+        /// <summary>
+        /// Shamelessly stolen from https://stackoverflow.com/questions/61372498/how-does-mathf-smoothdamp-work-what-is-it-algorithm.
+        /// </summary>
+        /// <param name="current">Current value.</param>
+        /// <param name="target">Target value.</param>
+        /// <param name="currentVel">Current velocity from current to target.</param>
+        /// <param name="smoothTime">How long it should take to reach the target value.</param>
+        /// <param name="deltaTime">Time since last call.</param>
+        /// <param name="maxSpeed">Max speed.</param>
+        /// <returns>The smooth damped value.</returns>
+        public static float SmoothDamp(this float current, float target, ref float currentVel, float smoothTime, float deltaTime, float maxSpeed = float.PositiveInfinity)
+        {
+            smoothTime = Mathf.Max(0.0001F, smoothTime);
+            float omega = 2F / smoothTime;
+
+            float x = omega * deltaTime;
+            float exp = 1F / (1F + x + 0.48F * x * x + 0.235F * x * x * x);
+            float change = current - target;
+            float originalTo = target;
+
+            // Clamp maximum speed
+            float maxChange = maxSpeed * smoothTime;
+            change = Mathf.Clamp(change, -maxChange, maxChange);
+            target = current - change;
+
+            float temp = (currentVel + omega * change) * deltaTime;
+            currentVel = (currentVel - omega * temp) * exp;
+            float output = target + (change + temp) * exp;
+
+            // Prevent overshooting
+            if (originalTo - current > 0.0F == output > originalTo)
+            {
+                output = originalTo;
+                currentVel = (output - originalTo) / deltaTime;
+            }
+
+            return output;
         }
         #endregion
     }

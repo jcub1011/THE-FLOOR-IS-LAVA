@@ -1,12 +1,16 @@
 using Godot;
 using Players;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using WorldGeneration.Sections;
 
 namespace WorldGeneration.Paths;
 
 public partial class EnterPath : Area2D
 {
+    public event Action<LockKeySection> OnSectionReached;
     [Export] PathDirections PathDirection = PathDirections.Up;
     /// <summary>
     /// Units are tiles.
@@ -17,6 +21,7 @@ public partial class EnterPath : Area2D
     /// </summary>
     [Export] int PathHeight = 1;
     List<PlayerController> _playersInArea;
+    bool _closed = false;
 
     public override void _Ready()
     {
@@ -47,11 +52,22 @@ public partial class EnterPath : Area2D
     public override void _Process(double delta)
     {
         base._Process(delta);
-        if (_playersInArea.Count == 0) return;
-        Vector2 force = PathDirection.ToVector2() * ((float)delta * 10f);
-        foreach(var player in _playersInArea)
+
+        if (!_closed &&
+            (PlayerUtilityFlags.LivingPlayersMask & ~PlayerUtilityFlags.PlayersToMask(_playersInArea)) == 0)
         {
-            player.Velocity = force;
+            GD.Print("All players have reached the next section.");
+            _closed = true;
+            OnSectionReached?.Invoke(GetParent<LockKeySection>());
+        }
+
+        foreach (var player in _playersInArea)
+        {
+            if (_closed)
+            {
+                player.Velocity = PathDirection.ToVector2() * 15f.ToPixels();
+            }
+            else player.Velocity = Vector2.Zero;
         }
     }
 }

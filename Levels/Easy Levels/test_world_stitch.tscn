@@ -1,12 +1,15 @@
-[gd_scene load_steps=7 format=3 uid="uid://cyrphss5b06ml"]
+[gd_scene load_steps=8 format=3 uid="uid://cyrphss5b06ml"]
 
 [ext_resource type="TileSet" uid="uid://3yu3d8s3tqmi" path="res://Levels/Tilemaps/developer_tilemap_HD.tres" id="1_26yiq"]
 [ext_resource type="Script" path="res://Levels/Easy Levels/LockKeySection.cs" id="2_7qtfh"]
 [ext_resource type="Script" path="res://Levels/Easy Levels/EnterPath.cs" id="4_7dt1v"]
 [ext_resource type="Script" path="res://Levels/Easy Levels/ExitPath.cs" id="5_v4687"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_2st4q"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sbjtt"]
 size = Vector2(8253, 4725)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5h4lc"]
+size = Vector2(7936.01, 4352)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1ewrn"]
 size = Vector2(512, 128)
@@ -18,15 +21,22 @@ layer_0/tile_data = PackedInt32Array(-1900576, 0, 0, -1835040, 0, 0, -1769504, 0
 script = ExtResource("2_7qtfh")
 PossibleContinuations = PackedStringArray("res://Levels/Easy Levels/test_world_stitch.tscn")
 
-[node name="Focus Box" type="Area2D" parent="."]
-monitoring = false
-monitorable = false
-
-[node name="Focus Box" type="CollisionShape2D" parent="Focus Box"]
+[node name="Focus Box" type="CollisionShape2D" parent="."]
 z_index = -10
-position = Vector2(0.5, -2298)
-shape = SubResource("RectangleShape2D_2st4q")
+position = Vector2(0, -2305)
+shape = SubResource("RectangleShape2D_sbjtt")
 disabled = true
+
+[node name="Section Boundary" type="Area2D" parent="."]
+show_behind_parent = true
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Section Boundary"]
+position = Vector2(-0.000126004, -2304)
+rotation = -0.00100835
+scale = Vector2(0.999999, 0.999999)
+shape = SubResource("RectangleShape2D_5h4lc")
 
 [node name="Exit_Path" type="Area2D" parent="."]
 position = Vector2(1792, -4544)
