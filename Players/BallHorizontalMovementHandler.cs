@@ -8,9 +8,10 @@ public partial class BallHorizontalMovementHandler : Node, IDisableableControl
 {
     PlayerController _body;
     [Export] float _moveSpeedInTiles = 10;
+    public float MoveSpeedInTiles { get => _moveSpeedInTiles; }
     [Export] bool _isEnabled = true;
-    [Export] float _groundAccelerationInTiles = 150;
-    [Export] float _airAccelerationInTiles = 87.5f;
+    [Export] float _groundAccelerationInTiles = 140;
+    [Export] float _airAccelerationInTiles = 60f;
     [Export] float _airExcessSpeedDeceleration = 0.4f;
     [Export] float _groundExcessSpeedDeceleration = 3f;
     bool _isLeftButtonDown;

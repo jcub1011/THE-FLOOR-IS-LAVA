@@ -186,7 +186,7 @@ public partial class NewWorldGenerator : Node2D
         //    .SetFocusTarget(
         //    _activeSections.First().GetFocusBox(), 
         //    new Vector2(1, 1));
-        SetPlayers(new() { new(DeviceType.KeyboardLeft, 0) });
+        SetPlayers(new() { new(DeviceType.KeyboardLeft, 0), new(DeviceType.KeyboardRight, 0) });
     }
 
     public override void _PhysicsProcess(double delta)

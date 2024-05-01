@@ -39,11 +39,12 @@ internal class CoyoteTimer
 public partial class BallJumpHandler : Node, IDisableableControl
 {
     CharacterBody2D _body;
-    [Export] float _jumpVelocityInTiles = 17.75f;
+    [Export] float _jumpVelocityInTiles = 12f;
     [Export] float _maxJumpTime = 0.2f;
     [Export] bool _isEnabled = true;
     [Export] float _coyoteTime = 0.05f;
     [Export] float _jumpBuffer = 0.1f;
+    [Export] float _excessJumpSpeedDecell = 200f;
     bool _isJumpPressed;
     float _remainingJumpTime;
     CoyoteTimer _coyoteTimer;
@@ -100,5 +101,13 @@ public partial class BallJumpHandler : Node, IDisableableControl
             InputBuffer.ConsumeBuffer(_body, InputNames.JUMP);
             _body.Velocity = new(_body.Velocity.X, -_jumpVelocityInTiles.ToPixels());
         }
+
+        //if (_body.Velocity.Y < -_jumpVelocityInTiles.ToPixels())
+        //{
+        //    float yVel = _body.Velocity.Y;
+        //    yVel += _excessJumpSpeedDecell.ToPixels() * (float)delta;
+        //    yVel = Mathf.Clamp(yVel, float.NegativeInfinity, -_jumpVelocityInTiles.ToPixels());
+        //    _body.Velocity = new(_body.Velocity.X, yVel);
+        //}
     }
 }

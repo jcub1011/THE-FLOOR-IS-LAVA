@@ -2,6 +2,7 @@ using Godot;
 using Godot.NodeExtensions;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using WorldGeneration;
 
@@ -99,6 +100,10 @@ public partial class DashHandler : Node, IDisableableControl
     [Export] float _dashGravityDisableTime = 0.08f;
     [Export] float _movementDisableTime = 0.1f;
     [Export] float _dashSpeedFromDeflectingInTiles = 40f;
+    float? _additionalDisableTime;
+    [Export]
+    float[] _dashDistances = new float[2] { 4f, 6f };
+    Vector2? _exitVelocity;
     //[Export] StringName _dashAnimationName;
     [Export] AnimationPlayer _aniPlayer;
     [Export] ControlDisablerHandler _disabler;
@@ -169,7 +174,7 @@ public partial class DashHandler : Node, IDisableableControl
         }
         
         if (InputBuffer.IsBuffered(_body, InputNames.ACTION, _dashBufferTime)
-            && DashCharges > 0)
+            && DashCharges > 0 && _isEnabled)
         {
             InputBuffer.ConsumeBuffer(_body, InputNames.ACTION);
             GD.Print("Performing buffered dash.");
@@ -185,6 +190,21 @@ public partial class DashHandler : Node, IDisableableControl
     public override void _PhysicsProcess(double delta)
     {
         base._PhysicsProcess(delta);
+        if (!_isEnabled) return;
+
+        if (_additionalDisableTime != null)
+        {
+            _disabler.DisableControls(_additionalDisableTime.Value,
+                ControlIDs.DASH);
+            _additionalDisableTime = null;
+            if (_exitVelocity != null)
+            {
+                _body.Velocity = _exitVelocity.Value;
+                _exitVelocity = null;
+            }
+            return;
+        }
+
         _remainingDashHoldTime -= (float)delta;
 
         if (_holdingDash)
@@ -217,8 +237,31 @@ public partial class DashHandler : Node, IDisableableControl
         _aniPlayer.PlayIfNotPlaying(dashAnimation);
     }
 
+    void PerformNewDash(DashInfo info, Vector2 direction)
+    {
+        const float DASH_DURATION = 0.12f;
+        _additionalDisableTime = 0.1f;
+        _currentChargeAnimation = null;
+        float dashLength = info.PerformAnimation == "tank_dash" ?
+            _dashDistances[0] : _dashDistances[1];
+        _body.RemainingSpeedCapDisableTime = DASH_DURATION;
+        direction.X *= 1.2f;
+        _body.Velocity = direction.Normalized() * (dashLength / DASH_DURATION).ToPixels();
+        _exitVelocity = direction.Normalized() * _body.GetDirectChild<BallHorizontalMovementHandler>().MoveSpeedInTiles.ToPixels();
+        _exitVelocity = new(_exitVelocity.Value.X * 1.3f, _exitVelocity.Value.Y);
+
+        _disabler.DisableControlsExcept(
+            DASH_DURATION,
+            ControlIDs.HITBOX);
+        _aniPlayer.Play(info.PerformAnimation);
+        _meleeHurtbox.EnableHitbox(_hurtboxName, info.HurtboxEnabledTime);
+        EmitSignal(SignalName.DashPerformed, _body.Velocity);
+    }
+
     void PerformDash(DashInfo info, Vector2 direction)
     {
+        PerformNewDash(info, direction);
+        return;
         _currentChargeAnimation = null;
         float dashLength = _aniPlayer.GetAnimation(info.PerformAnimation).Length;
         Vector2 dashVelocity = direction.Normalized() * info.Speed.ToPixels();
@@ -326,10 +369,15 @@ public partial class DashHandler : Node, IDisableableControl
     public void OnHitLandedHandler(Node2D thingHit)
     {
         if (DashCharges <= 0) DashCharges = 1;
+        _exitVelocity = null;
+        _additionalDisableTime = null;
+        _disabler.EnableControls(ControlIDs.DASH);
     }
 
     public void OnBlockLandedHandler()
     {
+        _exitVelocity = null;
+        _additionalDisableTime = null;
         _disabler.EnableControls(ControlIDs.DASH);
         _nextDashIsDeflectDash = true;
     }

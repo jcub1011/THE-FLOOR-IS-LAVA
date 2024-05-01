@@ -35,7 +35,7 @@ size = Vector2(20, 7.875)
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_e5llx"]
 radius = 125.0
-height = 300.0
+height = 376.0
 
 [sub_resource type="Animation" id="Animation_lkr48"]
 length = 0.001
@@ -671,8 +671,6 @@ shape = SubResource("CapsuleShape2D_26252")
 script = ExtResource("3_vn5cb")
 _groundAccelerationInTiles = 140.0
 _airAccelerationInTiles = 60.0
-_airExcessSpeedDeceleration = 0.5
-_groundExcessSpeedDeceleration = 6.0
 
 [node name="BallJumpHandler" type="Node" parent="."]
 script = ExtResource("4_kdm3q")
@@ -680,10 +678,11 @@ _jumpVelocityInTiles = 12.0
 
 [node name="DashHandler" type="Node" parent="." node_paths=PackedStringArray("_aniPlayer", "_disabler")]
 script = ExtResource("13_c0kft")
-_dashTiers = PackedVector3Array(20, 0, 0.4, 20, 0.25, 0.4)
+_dashTiers = PackedVector3Array(20, 0, 0.4, 20, 1, 0.4)
 _dashTierPerformAnimations = PackedStringArray("tank_dash", "tank_dash_big")
 _dashTierChargeAnimations = PackedStringArray("tank_charge_light", "tank_charge_strong")
 _movementDisableTime = 0.04
+_dashDistances = PackedFloat32Array(3, 5)
 _aniPlayer = NodePath("../AnimationPlayer")
 _disabler = NodePath("../ControlDisablerHandler")
 
@@ -741,8 +740,9 @@ shape = SubResource("RectangleShape2D_sg5v1")
 script = ExtResource("7_xohju")
 
 [node name="DashHurtbox" type="CollisionShape2D" parent="MeleeHurtboxHandler"]
-position = Vector2(0, -7)
+position = Vector2(-2.27374e-13, -6)
 rotation = 1.5708
+scale = Vector2(0.86993, 1.02637)
 shape = SubResource("CapsuleShape2D_e5llx")
 script = ExtResource("7_xohju")
 

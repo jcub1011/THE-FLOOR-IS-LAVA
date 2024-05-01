@@ -1,6 +1,7 @@
 using Godot;
 using Godot.NodeExtensions;
 using System.Linq;
+using System.Reflection;
 using TheFloorIsLava.Subscriptions;
 using UI;
 using WorldGeneration;
@@ -23,6 +24,8 @@ public partial class PlayerController : CharacterBody2D
         }
     }
 
+    public float RemainingSpeedCapDisableTime { get; set; }
+
     public override void _Ready()
     {
         base._Ready();
@@ -38,6 +41,7 @@ public partial class PlayerController : CharacterBody2D
         _remainingBounceTime -= (float)delta;
 
         LimitVelocity();
+        RemainingSpeedCapDisableTime -= (float)delta;
 
         if (_remainingBounceTime > 0f)
         {
@@ -50,6 +54,11 @@ public partial class PlayerController : CharacterBody2D
 
     void LimitVelocity()
     {
+        if (RemainingSpeedCapDisableTime > 0f)
+        {
+            return;
+        }
+
         Vector2 newVel = Velocity;
         Vector2 speedLim = SpeedLimitInTiles.ToPixels();
 
