@@ -3,8 +3,6 @@ using Godot.NodeExtensions;
 using Players;
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Runtime.CompilerServices;
 using WorldGeneration.Paths;
 
 namespace WorldGeneration.Sections;

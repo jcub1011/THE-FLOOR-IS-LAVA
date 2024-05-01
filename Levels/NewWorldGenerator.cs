@@ -192,6 +192,8 @@ public partial class NewWorldGenerator : Node2D
     public override void _PhysicsProcess(double delta)
     {
         base._PhysicsProcess(delta);
+        if (PlayerUtilityFlags.LivingPlayersMask == Players.None) return;
+
         if (_activeSections == null || _activeSections.Count == 0) return;
         bool addNewSection = false;
 

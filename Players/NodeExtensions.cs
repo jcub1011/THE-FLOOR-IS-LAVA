@@ -374,9 +374,48 @@ namespace Godot.MathExtensions
                 current.Y.SmoothDamp(target.Y, ref currentVel.Y, smoothTime, deltaTime, maxSpeed)
                 );
         }
+
+        /// <summary>
+        /// Returns a vector eased between this vector and the end position.
+        /// </summary>
+        /// <param name="startPos"></param>
+        /// <param name="normalizedTime"></param>
+        /// <param name="endPos"></param>
+        /// <returns></returns>
+        public static Vector2 EaseOutQuintToTarget(this Vector2 startPos, float normalizedTime, Vector2 endPos)
+        {
+            if (normalizedTime == 0f) return startPos;
+            else if (normalizedTime >= 1f) return endPos;
+
+            Vector2 deltaPos = endPos - startPos;
+            return startPos + new Vector2(deltaPos.X * EaseOutQuint(normalizedTime), deltaPos.Y * EaseOutQuint(normalizedTime));
+        }
         #endregion
 
         #region General Math Extensions
+
+        /// <summary>
+        /// Returns a value between 0 and 1.
+        /// </summary>
+        /// <param name="t">A normalized time between 0 and 1.</param>
+        /// <returns></returns>
+        public static float EaseOutQuint(float t)
+        {
+            return 1 - Mathf.Pow(1 - t, 5);
+        }
+
+        /// <summary>
+        /// Eases this value to the target value.
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="normalizedTime">A normalized time between 0 and 1.</param>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public static float EaseOutToTarget(this float start,  float normalizedTime, float target)
+        {
+            return EaseOutQuint(normalizedTime) * (target - start) + start;
+        }
+
         /// <summary>
         /// Gets the normalized position between the range, where the midpoint is 0, min is -1, and max is 1.
         /// </summary>

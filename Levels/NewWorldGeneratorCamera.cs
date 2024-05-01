@@ -10,6 +10,9 @@ public partial class NewWorldGeneratorCamera : Camera2D
 {
     Node2D _target;
     Vector2 _targetZoom = Vector2.Zero;
+    Vector2 _startPos = Vector2.Zero;
+    float _startZoom = 1f;
+    float _timeSinceFocusStart = 0f;
     /// <summary>
     /// Tiles per second.
     /// </summary>
@@ -32,6 +35,9 @@ public partial class NewWorldGeneratorCamera : Camera2D
         }
 
         _target = focusBox;
+        _startPos = GlobalPosition;
+        _startZoom = Zoom.X;
+        _timeSinceFocusStart = 0f;
 
         Vector2 viewport = GodotExtensions.GetViewportSize();
 
@@ -43,8 +49,10 @@ public partial class NewWorldGeneratorCamera : Camera2D
 
     void SmoothDampToTarget(float delta)
     {
-        GlobalPosition = GlobalPosition.SmoothDamp(_target.GlobalPosition, ref _velocity, 0.25f, (float)delta);
-        float smoothed = Zoom.X.SmoothDamp(_targetZoom.X, ref _zoomVel, 0.25f, (float)delta);
+        _timeSinceFocusStart += delta;
+        GlobalPosition = _startPos.EaseOutQuintToTarget(Mathf.Clamp((_timeSinceFocusStart / 1f), 0f, 1f), _target.GlobalPosition);
+        float smoothed = _startZoom.EaseOutToTarget(Mathf.Clamp((_timeSinceFocusStart / 1f), 0f, 1f), _targetZoom.X);
+        //float smoothed = Zoom.X.SmoothDamp(_targetZoom.X, ref _zoomVel, 0.1f, (float)delta);
         Zoom = new Vector2(smoothed, smoothed);
     }
 
