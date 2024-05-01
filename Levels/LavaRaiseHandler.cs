@@ -10,7 +10,7 @@ public partial class LavaRaiseHandler : Area2D
 	[Export] float _raiseSpeedInTiles = 1;
 	[Export] float _maxRaiseSpeedInTiles = 3;
 	[Export] float _raiseAccelerationInTiles = 0.01f;
-	[Export] float _waitTimer = 2f;
+	[Export] float _waitTimer = 5f;
 	[Export] float _speedMultiplerPerTileOffscreen = 0.1f;
 	[Export] float _offscreenSpeedFactor = 0.1f;
 	CameraSimulator _cameraSimulator;

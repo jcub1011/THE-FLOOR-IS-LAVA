@@ -12,7 +12,7 @@ layer_0/tile_data = PackedInt32Array(-851994, 65536, 0, -786458, 65536, 0, -7209
 script = ExtResource("2_5pqaf")
 _sectionUpperBound = NodePath("True_Upper_Bound")
 _sectionLowerBound = NodePath("True_Lower_Bound")
-PossibleContinuations = Array[StringName]([&"plat_section_1_castle", &"plat_section_3_castle"])
+PossibleContinuations = Array[StringName]([&"plat_section_1_castle", &"plat_section_1_castle"])
 
 [node name="True_Upper_Bound" type="Marker2D" parent="."]
 position = Vector2(0, -1920)

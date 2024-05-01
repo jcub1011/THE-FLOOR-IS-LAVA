@@ -28,14 +28,27 @@ internal class SectionPreloader
     const string SECTION_PATH = "res://Levels/Sections/";
 
     string _sectionToLoad;
+    string[] _overridePattern;
+    int _overridePatternIndex;
 
     public SectionPreloader(string sectionStarter)
     {
         StartNextSection(sectionStarter);
     }
 
+    public SectionPreloader(string sectionStarter, string[] sectionGenerationOverride)
+    {
+        StartNextSection(sectionStarter);
+        _overridePatternIndex = 0;
+        _overridePattern = sectionGenerationOverride;
+    }
+
     void StartNextSection(string sectionName)
     {
+        if (_overridePattern != null && _overridePattern.Length > 0)
+        {
+            sectionName = _overridePattern[_overridePatternIndex++ % _overridePattern.Length];
+        }
         _sectionToLoad = ToPath(sectionName);
         ResourceLoader.LoadThreadedRequest(_sectionToLoad);
         //GD.Print("Printing orphaned nodes.");
@@ -63,6 +76,8 @@ public partial class LevelGenerator : Node2D
     [Export] LavaRaiseHandler _lava;
     [Export] CameraSimulator _camera;
     [Export] StringName _sectionToStartWith = "starter_section_2";
+    [Export]
+    string[] _sectionGenerationOverride;
 
     WorldSection _latestSection;
     [Export] Godot.Collections.Array<StringName> _templates;
@@ -80,7 +95,14 @@ public partial class LevelGenerator : Node2D
         Engine.TimeScale = 0f;
         ResourceLoader.LoadThreadedRequest(PlayerTemplatePath);
 
-        _preloader = new(_sectionToStartWith);
+        if (_sectionGenerationOverride != null && _sectionGenerationOverride.Length > 0)
+        {
+            _preloader = new(_sectionToStartWith, _sectionGenerationOverride);
+        }
+        else
+        {
+            _preloader = new(_sectionToStartWith);
+        }
 
         var newSection = _preloader.GetNextSection();
         AddChild(newSection);

@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://dwer2a4rvtn5a"]
+[gd_scene load_steps=25 format=3 uid="uid://dwer2a4rvtn5a"]
 
 [ext_resource type="Theme" uid="uid://bp1bagmcfevk7" path="res://UI/Styles/MenuTheme.tres" id="1_4fro4"]
 [ext_resource type="Script" path="res://UI/Tutorial.cs" id="1_oy248"]
@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://v1a1tibbbkmd" path="res://UI/Keyboard & Mouse/Dark/Arrow_Up_Key_Dark.png" id="5_yuov4"]
 [ext_resource type="Texture2D" uid="uid://b8bgffsq4h5hl" path="res://UI/Keyboard & Mouse/Dark/Arrow_Right_Key_Dark.png" id="6_fnp5k"]
 [ext_resource type="Texture2D" uid="uid://crtjkpemyi5u2" path="res://UI/Keyboard & Mouse/Dark/Arrow_Down_Key_Dark.png" id="7_r6oxd"]
+[ext_resource type="Texture2D" uid="uid://dyc07xaspqx7x" path="res://UI/Keyboard & Mouse/Dark/S_Key_Dark.png" id="8_co6na"]
 [ext_resource type="Texture2D" uid="uid://yx2wssodnimh" path="res://UI/Xbox Series/XboxSeriesX_Dpad.png" id="8_uitug"]
 [ext_resource type="Texture2D" uid="uid://b1dgohswyb531" path="res://UI/Keyboard & Mouse/Dark/C_Key_Dark.png" id="9_l5kyk"]
 [ext_resource type="Texture2D" uid="uid://bqcilts8jim2t" path="res://UI/Others/Positional Prompts/Positional_Prompts_Up.png" id="9_u2afw"]
@@ -156,7 +157,7 @@ offset_top = 80.0
 offset_right = 50.0
 offset_bottom = 180.0
 grow_horizontal = 2
-texture = ExtResource("3_tfhsm")
+texture = ExtResource("8_co6na")
 
 [node name="Movement KYB L2" type="RichTextLabel" parent="MarginContainer/GridContainer/KYB L Controls/VBoxContainer"]
 layout_mode = 2

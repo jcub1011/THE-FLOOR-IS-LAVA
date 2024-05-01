@@ -54,6 +54,7 @@ script = ExtResource("2_lriob")
 PlayerTemplatePath = &"res://Players/player.tscn"
 _lava = NodePath("../LAVA")
 _camera = NodePath("CameraSimulator")
+_sectionGenerationOverride = PackedStringArray("plat_section_4_castle", "plat_section_1_castle")
 _templates = Array[StringName]([&"res://Levels/Test Type/starter_section_1.tscn"])
 
 [node name="CameraSimulator" type="Node" parent="Level Generator" node_paths=PackedStringArray("_camera")]
@@ -109,7 +110,7 @@ texture_filter = 4
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("3_3li4a")
-_waitTimer = 80.0
+_waitTimer = 3.0
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
